@@ -37,6 +37,19 @@ static struct dmx_image* dmx_image_list;
 static unsigned int images_allocated=0;
 static unsigned int images_inuse=0;
 
+unsigned int dmx_image_get_count(void)
+{
+	return images_inuse;
+}
+struct dmx_image* dmx_image_getbyidx(unsigned int index)
+{
+	if(index < images_inuse)
+	{
+		return &dmx_image_list[index];
+	}
+	return NULL;
+}
+
 struct dmx_image * dmx_image_add(unsigned int type,char* name)
 {
 	if(0==images_allocated)

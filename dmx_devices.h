@@ -37,6 +37,7 @@ struct dmx_device_fog*  dmx_device_create_fog(unsigned int addr);
 unsigned int dmx_get_device_count(void);
 struct dmx_device* dmx_get_device(unsigned int type,char* name);
 struct dmx_device* dmx_get_device_byidx(unsigned int index);
+void dmx_devices_clear(void);
 
 
 struct dmx_device_ledpar * dmx_ledpar_lock(unsigned int addr,unsigned int type,char* name);

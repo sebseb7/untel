@@ -24,5 +24,7 @@ struct dmx_image
 struct dmx_image * dmx_image_add(unsigned int type,char* name);
 void dmx_image_add_setI(struct dmx_image* image,unsigned int attr,unsigned int value);
 void dmx_image_add_setF(struct dmx_image* image,unsigned int attr,float value);
+unsigned int dmx_image_get_count(void);
+struct dmx_image* dmx_image_getbyidx(unsigned int index);
 
 #endif
