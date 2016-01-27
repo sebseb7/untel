@@ -37,6 +37,11 @@ static void dmx_device_add(void* device,unsigned int addr,unsigned int type,char
 		devices_allocated=DMX_DEVICE_ALLOCATE_INITIAL;
 	}
 
+	if(devices_inuse == devices_allocated)
+	{
+		//implement realloc
+		exit(EXIT_FAILURE);
+	}
 	strncpy(dmx_device_list[devices_inuse].name,name,DMX_NAME_LENGTH);
 	dmx_device_list[devices_inuse].type=type;
 	dmx_device_list[devices_inuse].addr=addr;
