@@ -29,9 +29,29 @@ struct dmx_image
 
 #define DMX_IMAGE_SETLIST_ALLOCATE_INITIAL 10
 
+#define DMX_IMAGE_ALLOCATE_INITIAL 100
+#define DMX_IMAGE_ALLOCATE_STEP 10
+
+static struct dmx_image* dmx_image_list;
+
+static unsigned int images_allocated=0;
+static unsigned int images_inuse=0;
+
 struct dmx_image * dmx_image_add(unsigned int type,char* name)
 {
-	struct dmx_image* image = malloc(sizeof(*image));
+	if(0==images_allocated)
+	{
+		dmx_image_list = malloc(sizeof(*dmx_image_list)*DMX_IMAGE_ALLOCATE_INITIAL);
+		images_allocated=DMX_IMAGE_ALLOCATE_INITIAL;
+	}
+
+	if(images_inuse == images_allocated)
+	{
+		//implement realloc
+		exit(EXIT_FAILURE);
+	}
+	struct dmx_image* image = &dmx_image_list[images_inuse];
+	images_inuse++;
 
 	image->device_type = type;
 	strncpy(image->device_name,name,DMX_NAME_LENGTH);

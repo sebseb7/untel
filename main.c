@@ -17,6 +17,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	dmx_device_create_ledpar(32,0,"hinten rechts");
 
 
+	struct dmx_image* image1 = dmx_image_add(DMX_DEVICE_LEDPAR,"vorn links");
+	dmx_image_add_setI(image1,0,255);
 
 
 
