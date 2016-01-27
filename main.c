@@ -3,6 +3,7 @@
 
 #include "main.h"
 #include "dmx_devices.h"
+#include "dmx_image.h"
 
 
 int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unused__))) 

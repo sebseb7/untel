@@ -11,10 +11,10 @@ clean:
 	@rm -f dmxMidiCtrlNg
 
 
-dmxMidiCtrlNg: main.c main.h dmx_devices.c dmx_devices.h Makefile 
+dmxMidiCtrlNg: main.c main.h dmx_image.c dmx_image.h dmx_devices.c dmx_devices.h Makefile 
 	@rm -f dmxMidiCtrl
 	@echo "  \033[1;34mCompile\033[0m"
-	@$(COMPILER) main.c dmx_devices.c -o dmxMidiCtrlNg -I. $(FLAGS) $(LDFLAGS) 
+	@$(COMPILER) main.c dmx_image.c dmx_devices.c -o dmxMidiCtrlNg -I. $(FLAGS) $(LDFLAGS) 
 
 .PHONY : clean all 
 
