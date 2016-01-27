@@ -12,13 +12,13 @@ struct dmx_device {
 	unsigned int type;
 	unsigned int addr;
 	unsigned int refcount;
+	char name[DMX_NAME_LENGTH];
 	void* device;
 };
 
 struct dmx_device_ledpar {
 	unsigned int addr;
 	unsigned int type;
-	char name[DMX_NAME_LENGTH];
 	float red;
 	float green;
 	float blue;
@@ -28,7 +28,6 @@ struct dmx_device_ledpar {
 
 struct dmx_device_fog {
 	unsigned int addr;
-	char name[DMX_NAME_LENGTH];
 	unsigned int ch1;
 };
 
@@ -36,7 +35,8 @@ struct dmx_device_fog {
 struct dmx_device_ledpar * dmx_device_create_ledpar(unsigned int addr,unsigned int type,char* name);
 struct dmx_device_fog*  dmx_device_create_fog(unsigned int addr);
 unsigned int dmx_get_device_count(void);
-struct dmx_device* dmx_get_device(unsigned int index);
+struct dmx_device* dmx_get_device(unsigned int type,char* name);
+struct dmx_device* dmx_get_device_byidx(unsigned int index);
 
 
 struct dmx_device_ledpar * dmx_ledpar_lock(unsigned int addr,unsigned int type,char* name);
