@@ -114,11 +114,6 @@ struct dmx_device_ledpar* dmx_device_create_ledpar(unsigned int addr,unsigned in
 
 	ledpar->addr = addr;
 	ledpar->type = type;
-	ledpar->red = 0.0f;
-	ledpar->green = 0.0f;
-	ledpar->blue = 0.0f;
-	ledpar->dim = 0.0f;
-	ledpar->blackout = 0;
 
 	dmx_device_add(ledpar,addr,DMX_DEVICE_LEDPAR,name);
 
