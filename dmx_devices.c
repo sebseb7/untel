@@ -65,7 +65,7 @@ struct dmx_device_ledpar* dmx_device_create_ledpar(unsigned int addr,unsigned in
 	{
 		for(unsigned int i=0;i<devices_inuse;i++)
 		{
-			if((dmx_device_list[i].type=DMX_DEVICE_LEDPAR)&&(dmx_device_list[i].addr=addr))
+			if((dmx_device_list[i].type==DMX_DEVICE_LEDPAR)&&(dmx_device_list[i].addr==addr))
 			{
 				dmx_device_list[i].refcount++;
 				return dmx_device_list[i].device;
