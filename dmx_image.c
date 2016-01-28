@@ -5,6 +5,7 @@
 
 enum {
 	ATTR_TYPE_COLSET,
+	ATTR_TYPE_CODE,
 	ATTR_TYPE_DIM
 };
 
@@ -118,6 +119,16 @@ void dmx_image_add_setDim(struct dmx_image* image,float value)
 	}
 	image->set_list[image->set_count].attr_type=ATTR_TYPE_DIM;
 	image->set_list[image->set_count].dim=value;
+	image->set_count++;
+}
+void dmx_image_add_setCode(struct dmx_image* image,void (*ref)(void))
+{
+	if(image->set_count == image->sets_alloc)
+	{
+		exit(EXIT_FAILURE);
+	}
+	image->set_list[image->set_count].attr_type=ATTR_TYPE_CODE;
+	image->set_list[image->set_count].code=ref;
 	image->set_count++;
 }
 

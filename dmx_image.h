@@ -9,6 +9,7 @@ struct dmx_set
 	union {
 		unsigned char color[3];
 		float dim;
+		void (*code)(void);
 	};
 };
 
@@ -25,6 +26,7 @@ struct dmx_image
 struct dmx_image * dmx_image_add(unsigned int type,char* name);
 void dmx_image_add_setCol(struct dmx_image* image,unsigned char red,unsigned char green,unsigned char blue);
 void dmx_image_add_setDim(struct dmx_image* image,float value);
+void dmx_image_add_setCode(struct dmx_image* image,void (*ref)(void));
 void dmx_image_del(struct dmx_image* image);
 unsigned int dmx_image_get_count(void);
 struct dmx_image* dmx_image_getbyidx(unsigned int index);

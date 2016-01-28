@@ -24,6 +24,7 @@ struct dmx_selector
 struct dmx_selector * dmx_selector_add(void*(void),void*(void),void(unsigned int,char*),void(unsigned int));
 void dmx_selector_add_setCol(struct dmx_selector* selector,unsigned char red,unsigned char green,unsigned char blue);
 void dmx_selector_add_setDim(struct dmx_selector* selector,float value);
+void dmx_selector_add_setCode(struct dmx_selector* selector,void*(void));
 void dmx_selector_add_device(struct dmx_selector* selector,unsigned int type, char* name);
 
 
