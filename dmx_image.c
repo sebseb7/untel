@@ -149,6 +149,10 @@ void dmx_set_render(unsigned int type,char* name,struct dmx_set* set)
 		{
 			ledpar->dim=set->dim;
 		}
+		else if(set->attr_type==ATTR_TYPE_CODE)
+		{
+			set->code();
+		}
 	}
 
 }
