@@ -24,7 +24,7 @@ void dmx_channel_set(unsigned int ch,unsigned char value)
 
 void dmx_channels_print(void)
 {
-	for(unsigned int i = 0;i<48;i++)
+	for(unsigned int i = 0;i<18;i++)
 	{
 		printf("ch:%03i val:%03i ",i,dmx_channels[i]);
 

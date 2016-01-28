@@ -32,7 +32,7 @@ struct dmx_image
 #define DMX_IMAGE_ALLOCATE_INITIAL 100
 #define DMX_IMAGE_ALLOCATE_STEP 10
 
-static struct dmx_image* dmx_image_list;
+static struct dmx_image** dmx_image_list;
 
 static unsigned int images_allocated=0;
 static unsigned int images_inuse=0;
@@ -45,12 +45,12 @@ struct dmx_image* dmx_image_getbyidx(unsigned int index)
 {
 	if(index < images_inuse)
 	{
-		return &dmx_image_list[index];
+		return dmx_image_list[index];
 	}
 	return NULL;
 }
 
-struct dmx_image * dmx_image_add(unsigned int type,char* name)
+struct dmx_image* dmx_image_add(unsigned int type,char* name)
 {
 	if(0==images_allocated)
 	{
@@ -63,7 +63,8 @@ struct dmx_image * dmx_image_add(unsigned int type,char* name)
 		//implement realloc
 		exit(EXIT_FAILURE);
 	}
-	struct dmx_image* image = &dmx_image_list[images_inuse];
+	struct dmx_image* image = malloc(sizeof(*image));
+	dmx_image_list[images_inuse]=image;
 	images_inuse++;
 
 	image->device_type = type;
@@ -71,7 +72,7 @@ struct dmx_image * dmx_image_add(unsigned int type,char* name)
 	image->sets_alloc=DMX_IMAGE_SETLIST_ALLOCATE_INITIAL;
 	image->set_count=0;
 	image->set_list=malloc(sizeof(struct dmx_set)*DMX_IMAGE_SETLIST_ALLOCATE_INITIAL);
-
+	
 	return image;
 }
 
@@ -79,11 +80,12 @@ void dmx_image_del(struct dmx_image* image)
 {
 	for(unsigned int i=0;i<images_inuse;i++)
 	{
-		if(image == &dmx_image_list[i])
+		if(image == dmx_image_list[i])
 		{
 			free(image->set_list);
-			
-			if(i!=images_inuse)
+			free(image);
+
+			if(i != (images_inuse-1))
 			{
 				dmx_image_list[i]=dmx_image_list[images_inuse-1];
 			}
