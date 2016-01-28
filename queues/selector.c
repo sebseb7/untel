@@ -44,7 +44,7 @@ static void position(__attribute__((__unused__)) unsigned int index)
 
 
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
-void constructor(void) {
+static void constructor(void) {
 	
 	dmx_device_create_ledpar(1,0,"bar");
 

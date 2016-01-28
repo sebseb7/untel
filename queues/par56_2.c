@@ -41,7 +41,7 @@ static void tick(__attribute__((__unused__)) unsigned int time)
 
 
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
-void constructor(void) {
+static void constructor(void) {
 
 	dmx_queue_add(init,deinit,tick);
 
