@@ -10,15 +10,16 @@ struct dmx_selector
 	unsigned int active;
 	void (*render)(unsigned int);
 	void (*getname)(unsigned int,char*);
+	void (*init)(void);
 	void (*deinit)(void);
 	
 	unsigned int dev_alloc;
 	unsigned int dev_count;
-	struct dmx_device* dev_list;
-	
+	char** dev_names;
+	unsigned int* dev_types;	
 };
 
-struct dmx_selector * dmx_selector_add(char* name,void(*deinit)(void),void(*getname)(unsigned int,char*),void(*render)(unsigned int),unsigned int length);
+struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit)(void),void(*getname)(unsigned int,char*),void(*render)(unsigned int),unsigned int length);
 void dmx_selector_add_device(struct dmx_selector* selector,unsigned int type, char* name);
 void dmx_selector_set(struct dmx_selector* selector,unsigned int pos);
 

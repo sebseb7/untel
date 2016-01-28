@@ -12,15 +12,17 @@ struct dmx_selector
 	unsigned int active;
 	void (*render)(unsigned int);
 	void (*getname)(unsigned int,char*);
+	void (*init)(void);
 	void (*deinit)(void);
 	
 	unsigned int dev_alloc;
 	unsigned int dev_count;
-	struct dmx_device* dev_list;
+	char** dev_names;
+	unsigned int* dev_types;	
 	
 };
 
-struct dmx_selector * dmx_selector_add(char* name,void(*deinit)(void),void(*name)(unsigned int,char*),void(*render)(unsigned int),unsigned int length);
+struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit)(void),void(*name)(unsigned int,char*),void(*render)(unsigned int),unsigned int length);
 void dmx_selector_add_device(struct dmx_selector* selector,unsigned int type, char* name);
 void dmx_selector_set(struct dmx_selector* selector,unsigned int pos);
 
@@ -29,6 +31,8 @@ void dmx_selector_set(struct dmx_selector* selector,unsigned int pos);
 
 #define DMX_SELECTOR_ALLOCATE_INITIAL 100
 #define DMX_SELECTOR_ALLOCATE_STEP 10
+
+#define DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL 10
 
 static struct dmx_selector** dmx_selector_list;
 
@@ -49,7 +53,7 @@ struct dmx_selector* dmx_selector_getbyidx(unsigned int index)
 	return NULL;
 }
 
-struct dmx_selector * dmx_selector_add(char* name,void(*deinit)(void),void(*getname)(unsigned int,char*),void(*render)(unsigned int),unsigned int length)
+struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit)(void),void(*getname)(unsigned int,char*),void(*render)(unsigned int),unsigned int length)
 {
 	if(0==selector_allocated)
 	{
@@ -67,29 +71,49 @@ struct dmx_selector * dmx_selector_add(char* name,void(*deinit)(void),void(*getn
 	selector_inuse++;
 
 	strncpy(selector->name,name,DMX_NAME_LENGTH);
+	selector->deinit=init;
 	selector->deinit=deinit;
 	selector->getname=getname;
 	selector->render=render;
 	selector->length=length;
 	selector->active=0;
+
+	selector->dev_alloc=DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL;
+	selector->dev_count=0;
+	selector->dev_names=malloc(sizeof(char)*DMX_NAME_LENGTH*DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL);
+	selector->dev_types=malloc(sizeof(unsigned int)*DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL);
+
 	return selector;
 }
 
 void dmx_selector_set(struct dmx_selector* selector,unsigned int pos)
 {
-	selector->active=pos;
-	
 	if(pos == 0)
 	{
-		selector->deinit;
+		selector->deinit();
 	}
 	else if(pos <= selector->length)
 	{
+		if(selector->active == 0)
+		{
+			selector->init();
+		}
 		selector->render(pos);
 	}
+	selector->active=pos;
 }
 
 void dmx_selector_add_device(struct dmx_selector* selector,unsigned int type, char* name)
 {
+	unsigned int index = selector->dev_count;
+
+	if(selector->dev_count < selector->dev_alloc)
+	{
+		strncpy(selector->dev_names[index],name,DMX_NAME_LENGTH);
+		selector->dev_types[index]=type;
+
+		selector->dev_count++;
+	}
+
 }
 
