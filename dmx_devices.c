@@ -75,7 +75,7 @@ struct dmx_device* dmx_get_device(unsigned int type,char* name)
 {
 	for(unsigned int i=0;i<devices_inuse;i++)
 	{
-		if((dmx_device_list[i].type==type)&&(strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH)))
+		if((dmx_device_list[i].type==type)&&(0==strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH)))
 		{
 			return &dmx_device_list[i];
 		}
