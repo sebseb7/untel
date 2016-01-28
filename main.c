@@ -4,6 +4,7 @@
 #include "main.h"
 #include "dmx_devices.h"
 #include "dmx_image.h"
+#include "dmx_channels.h"
 
 
 int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unused__))) 
@@ -18,8 +19,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 
 	struct dmx_image* image1 = dmx_image_add(DMX_DEVICE_LEDPAR,"vorn links");
-	dmx_image_add_setI(image1,0,255);
-	dmx_image_add_setI(image1,1,255);
+	dmx_image_add_setCol(image1,255,0,0);
+	dmx_image_add_setDim(image1,1.0f);
 
 
 
@@ -32,14 +33,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 	//render
 
-	unsigned char channels[512];
-
-
 	while(1)
 	{
-		for(unsigned int i = 0;i<512;i++)
-			channels[i]=0;
-
+		dmx_channels_clear();
 		dmx_devices_clear();
 
 		//render devices
@@ -50,12 +46,19 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 			for(unsigned int j=0;j<image->set_count;j++)
 			{
-
+				dmx_set_render(image->device_type,image->device_name,&(image->set_list[j]));
 			}
 		}
 
 
 		//render channels
+		
+		unsigned int device_count = dmx_get_device_count();
+		for(unsigned int i = 0;i<device_count;i++)
+		{
+
+		}
+
 	}
 
 	return 0;

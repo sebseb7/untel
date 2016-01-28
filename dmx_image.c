@@ -4,8 +4,8 @@
 #include "dmx_image.h"
 
 enum {
-	ATTR_TYPE_INT,
-	ATTR_TYPE_FLOAT
+	ATTR_TYPE_COLSET,
+	ATTR_TYPE_DIM
 };
 
 /*
@@ -74,25 +74,46 @@ struct dmx_image * dmx_image_add(unsigned int type,char* name)
 
 	return image;
 }
-void dmx_image_add_setI(struct dmx_image* image,unsigned int attr,unsigned int value)
+void dmx_image_add_setCol(struct dmx_image* image,unsigned char red,unsigned char green,unsigned char blue)
 {
 	if(image->set_count == image->sets_alloc)
 	{
 		exit(EXIT_FAILURE);
 	}
-	image->set_list[image->set_count].attr=attr;
-	image->set_list[image->set_count].attr_type=ATTR_TYPE_INT;
-	image->set_list[image->set_count].ivalue=value;
+	image->set_list[image->set_count].attr_type=ATTR_TYPE_COLSET;
+	image->set_list[image->set_count].color[0]=red;
+	image->set_list[image->set_count].color[1]=green;
+	image->set_list[image->set_count].color[2]=blue;
 	image->set_count++;
 }
-void dmx_image_add_setF(struct dmx_image* image,unsigned int attr,float value)
+void dmx_image_add_setDim(struct dmx_image* image,float value)
 {
 	if(image->set_count == image->sets_alloc)
 	{
 		exit(EXIT_FAILURE);
 	}
-	image->set_list[image->set_count].attr=attr;
-	image->set_list[image->set_count].attr_type=ATTR_TYPE_FLOAT;
-	image->set_list[image->set_count].fvalue=value;
+	image->set_list[image->set_count].attr_type=ATTR_TYPE_DIM;
+	image->set_list[image->set_count].dim=value;
 	image->set_count++;
+}
+
+
+void dmx_set_render(unsigned int type,char* name,struct dmx_set* set)
+{
+	if(type == DMX_DEVICE_LEDPAR)
+	{
+		struct dmx_device_ledpar* ledpar = dmx_get_device(DMX_DEVICE_LEDPAR, name)->device;
+	
+		if(set->attr_type==ATTR_TYPE_COLSET)
+		{
+			ledpar->red=set->color[0];
+			ledpar->green=set->color[1];
+			ledpar->blue=set->color[2];
+		}
+		else if(set->attr_type==ATTR_TYPE_DIM)
+		{
+			ledpar->dim=set->dim;
+		}
+	}
+
 }

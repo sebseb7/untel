@@ -5,10 +5,11 @@
 
 struct dmx_set
 {
-	unsigned int attr;
 	unsigned int attr_type;
-	float fvalue;
-	unsigned int ivalue;
+	union {
+		unsigned char color[3];
+		float dim;
+	};
 };
 
 struct dmx_image 
@@ -22,9 +23,11 @@ struct dmx_image
 
 
 struct dmx_image * dmx_image_add(unsigned int type,char* name);
-void dmx_image_add_setI(struct dmx_image* image,unsigned int attr,unsigned int value);
-void dmx_image_add_setF(struct dmx_image* image,unsigned int attr,float value);
+void dmx_image_add_setCol(struct dmx_image* image,unsigned char red,unsigned char green,unsigned char blue);
+void dmx_image_add_setDim(struct dmx_image* image,float value);
 unsigned int dmx_image_get_count(void);
 struct dmx_image* dmx_image_getbyidx(unsigned int index);
+
+void dmx_set_render(unsigned int type,char* name,struct dmx_set* set);
 
 #endif

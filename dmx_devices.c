@@ -62,9 +62,9 @@ void dmx_devices_clear(void)
 		if(dmx_device_list[i].type == DMX_DEVICE_LEDPAR)
 		{
 			struct dmx_device_ledpar* ledpar = dmx_device_list[i].device;
-			ledpar->red = 0.0f;
-			ledpar->green = 0.0f;
-			ledpar->blue = 0.0f;
+			ledpar->red = 0;
+			ledpar->green = 0;
+			ledpar->blue = 0;
 			ledpar->dim = 0.0f;
 			ledpar->blackout = 0;
 		}

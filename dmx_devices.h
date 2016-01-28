@@ -4,6 +4,7 @@
 #define DMX_NAME_LENGTH 20
 
 enum {
+	DMX_DEVICE_GROUP,
 	DMX_DEVICE_FOG,
 	DMX_DEVICE_LEDPAR,
 };
@@ -19,9 +20,9 @@ struct dmx_device {
 struct dmx_device_ledpar {
 	unsigned int addr;
 	unsigned int type;
-	float red;
-	float green;
-	float blue;
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
 	float dim;
 	unsigned int blackout;
 };
