@@ -24,6 +24,8 @@ static void tick(__attribute__((__unused__)) unsigned int time)
 
 	if(step == 0)
 	{
+		dmx_image_del(image1);
+		
 		image1 = dmx_image_add(DMX_DEVICE_LEDPAR,"vorn links");
 		dmx_image_add_setCol(image1,255,0,0);
 	}
