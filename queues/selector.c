@@ -13,16 +13,10 @@ static struct dmx_set* set1;
 
 static void init(void)
 {
-	set1=malloc(sizeof(struct dmx_set));
-	set1->attr_type=ATTR_TYPE_COLSET;
-	set1->color[0]=0;
-	set1->color[1]=0;
-	set1->color[2]=0;
 }
 
 static void deinit(void)
 {
-	free(set1);
 }
 
 static void getname(__attribute__((__unused__)) unsigned int idx,__attribute__((__unused__)) char* name)
@@ -57,6 +51,16 @@ void constructor(void) {
 	struct dmx_selector* selector = dmx_selector_add("LP COL",init,deinit,getname,position,1);
 
 	dmx_selector_add_device(selector,DMX_DEVICE_LEDPAR,"bar");
+	
+	set1=malloc(sizeof(struct dmx_set));
+	set1->attr_type=ATTR_TYPE_COLSET;
+	set1->color[0]=0;
+	set1->color[1]=0;
+	set1->color[2]=0;
+	dmx_selector_attach_set(selector,set1);
+
+
+
 	dmx_selector_set(selector,1);
 
 }

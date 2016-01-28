@@ -33,6 +33,7 @@ void dmx_selector_set(struct dmx_selector* selector,unsigned int pos);
 #define DMX_SELECTOR_ALLOCATE_STEP 10
 
 #define DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL 10
+#define DMX_SELECTOR_SETLIST_ALLOCATE_INITIAL 10
 
 static struct dmx_selector** dmx_selector_list;
 
@@ -82,6 +83,10 @@ struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit
 	selector->dev_count=0;
 	selector->dev_names=malloc(sizeof(char)*DMX_NAME_LENGTH*DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL);
 	selector->dev_types=malloc(sizeof(unsigned int)*DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL);
+	
+	selector->sets_alloc=DMX_SELECTOR_SETLIST_ALLOCATE_INITIAL;
+	selector->set_count=0;
+	selector->set_list=malloc(sizeof(struct dmx_set*)*DMX_SELECTOR_SETLIST_ALLOCATE_INITIAL);
 
 	return selector;
 }
@@ -114,6 +119,19 @@ void dmx_selector_add_device(struct dmx_selector* selector,unsigned int type, ch
 		selector->dev_types[index]=type;
 
 		selector->dev_count++;
+	}
+
+}
+
+void dmx_selector_attach_set(struct dmx_selector* selector,struct dmx_set* set)
+{
+	unsigned int index = selector->set_count;
+
+	if(selector->set_count < selector->sets_alloc)
+	{
+		selector->set_list[index]=set;
+
+		selector->set_count++;
 	}
 
 }
