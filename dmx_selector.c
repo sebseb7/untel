@@ -109,7 +109,7 @@ void dmx_selector_add_device(struct dmx_selector* selector,unsigned int type, ch
 
 	if(selector->dev_count < selector->dev_alloc)
 	{
-		strncpy(selector->dev_names[index],name,DMX_NAME_LENGTH);
+		strncpy((char*)&(selector->dev_names[DMX_NAME_LENGTH*index]),name,DMX_NAME_LENGTH);
 		selector->dev_types[index]=type;
 
 		selector->dev_count++;
