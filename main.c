@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <unistd.h>
 
 #include "main.h"
 #include "dmx_devices.h"
@@ -36,6 +36,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 	while(1)
 	{
+
 		dmx_channels_clear();
 		dmx_devices_clear();
 
