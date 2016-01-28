@@ -30,6 +30,9 @@ static void tick(__attribute__((__unused__)) unsigned int time)
 	else if(step == 3)
 	{
 		dmx_image_del(image1);
+		
+		image1 = dmx_image_add(DMX_DEVICE_LEDPAR,"vorn links");
+		dmx_image_add_setCol(image1,0,255,0);
 	}
 
 
