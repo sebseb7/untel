@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "dmx_devices.h"
+#include "dmx_channels.h"
 
 /*struct dmx_device {
 	unsigned int type;
@@ -112,7 +113,6 @@ struct dmx_device_ledpar* dmx_device_create_ledpar(unsigned int addr,unsigned in
 	
 	struct dmx_device_ledpar* ledpar = malloc(sizeof(*ledpar));
 
-	ledpar->addr = addr;
 	ledpar->type = type;
 
 	dmx_device_add(ledpar,addr,DMX_DEVICE_LEDPAR,name);
@@ -120,5 +120,29 @@ struct dmx_device_ledpar* dmx_device_create_ledpar(unsigned int addr,unsigned in
 	return ledpar;
 }
 //void dmx_device_create_fog(unsigned int addr);
+
+
+void dmx_device_render_ledpar(struct dmx_device* device)
+{
+	struct dmx_device_ledpar* ledpar = device->device;
+
+	unsigned char red=0;
+	unsigned char green=0;
+	unsigned char blue=0;
+
+	red = ledpar->red*ledpar->dim;
+	green = ledpar->green*ledpar->dim;
+	blue = ledpar->blue*ledpar->dim;
+
+	dmx_channel_set(device->addr,red);
+	dmx_channel_set(device->addr+1,green);
+	dmx_channel_set(device->addr+2,blue);
+
+	dmx_channel_set(device->addr+3,0);
+	dmx_channel_set(device->addr+4,0);
+	dmx_channel_set(device->addr+5,0);
+
+
+}
 
 

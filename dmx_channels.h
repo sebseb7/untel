@@ -5,4 +5,6 @@
 
 void dmx_channels_clear(void);
 
+void dmx_channel_set(unsigned int ch,unsigned char value);
+
 #endif

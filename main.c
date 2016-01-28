@@ -56,7 +56,12 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		unsigned int device_count = dmx_get_device_count();
 		for(unsigned int i = 0;i<device_count;i++)
 		{
-
+			struct dmx_device* device = dmx_get_device_byidx(i);
+			
+			if(device->type == DMX_DEVICE_LEDPAR)
+			{
+				dmx_device_render_ledpar(device);
+			}
 		}
 
 	}

@@ -13,3 +13,11 @@ void dmx_channels_clear(void)
 	}
 }
 
+void dmx_channel_set(unsigned int ch,unsigned char value)
+{
+	if(ch < DMX_CHANNEL_COUNT)
+	{
+		dmx_channels[ch]=value;
+	}
+}
+
