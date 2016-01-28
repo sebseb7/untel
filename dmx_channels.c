@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 #include "dmx_channels.h"
 
@@ -18,6 +19,14 @@ void dmx_channel_set(unsigned int ch,unsigned char value)
 	if(ch < DMX_CHANNEL_COUNT)
 	{
 		dmx_channels[ch]=value;
+	}
+}
+
+void dmx_channels_print(void)
+{
+	for(unsigned int i = 0;i<48;i++)
+	{
+		printf("ch:%i val:%i \n",i,dmx_channels[i]);
 	}
 }
 

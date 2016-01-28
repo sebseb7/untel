@@ -20,20 +20,20 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 	struct dmx_image* image1 = dmx_image_add(DMX_DEVICE_LEDPAR,"vorn links");
 	dmx_image_add_setCol(image1,255,0,0);
-	dmx_image_add_setDim(image1,1.0f);
+	dmx_image_add_setDim(image1,0.5f);
 
 
 
 	for(unsigned int i = 0;i< dmx_get_device_count();i++)
 	{
-		printf("%ui %i %i %s\n",i,dmx_get_device_count(),dmx_get_device_byidx(i)->addr,dmx_get_device_byidx(i)->name);
+		printf("%u %i %i %s\n",i,dmx_get_device_count(),dmx_get_device_byidx(i)->addr,dmx_get_device_byidx(i)->name);
 	}
 
 
 
 	//render
 
-	while(1)
+	//while(1)
 	{
 		dmx_channels_clear();
 		dmx_devices_clear();
@@ -63,6 +63,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 				dmx_device_render_ledpar(device);
 			}
 		}
+
+
+		dmx_channels_print();
 
 	}
 
