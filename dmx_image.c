@@ -3,12 +3,6 @@
 
 #include "dmx_image.h"
 
-enum {
-	ATTR_TYPE_COLSET,
-	ATTR_TYPE_CODE,
-	ATTR_TYPE_DIM
-};
-
 /*
 struct dmx_set
 {

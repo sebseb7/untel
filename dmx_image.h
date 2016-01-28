@@ -3,6 +3,13 @@
 
 #include "dmx_devices.h"
 
+enum {
+	ATTR_TYPE_COLSET,
+	ATTR_TYPE_CODE,
+	ATTR_TYPE_DIM
+};
+
+
 struct dmx_set
 {
 	unsigned int attr_type;

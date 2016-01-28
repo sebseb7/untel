@@ -71,7 +71,7 @@ struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit
 	selector_inuse++;
 
 	strncpy(selector->name,name,DMX_NAME_LENGTH);
-	selector->deinit=init;
+	selector->init=init;
 	selector->deinit=deinit;
 	selector->getname=getname;
 	selector->render=render;
@@ -90,7 +90,8 @@ void dmx_selector_set(struct dmx_selector* selector,unsigned int pos)
 {
 	if(pos == 0)
 	{
-		selector->deinit();
+		if(selector->active != 0)
+			selector->deinit();
 	}
 	else if(pos <= selector->length)
 	{
