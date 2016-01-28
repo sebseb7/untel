@@ -26,7 +26,21 @@ void dmx_channels_print(void)
 {
 	for(unsigned int i = 0;i<48;i++)
 	{
-		printf("ch:%i val:%i \n",i,dmx_channels[i]);
+		printf("ch:%03i val:%03i ",i,dmx_channels[i]);
+
+		for(unsigned int j=0;j<64;j++)
+		{
+			if(j*4 > dmx_channels[i])
+			{
+				printf(".");
+			}
+			else
+			{
+				printf("#");
+			}
+		}
+
+		printf("\n");
 	}
 }
 

@@ -12,9 +12,23 @@ static struct dmx_queue* dmx_queue_list;
 static unsigned int queues_allocated=0;
 static unsigned int queues_inuse=0;
 
+unsigned int dmx_queue_get_count(void)
+{
+	return queues_inuse;
+}
+
+struct dmx_queue* dmx_queue_getbyidx(unsigned int index)
+{
+	if(index < queues_inuse)
+	{
+		return &dmx_queue_list[index];
+	}
+	return NULL;
+}
 
 
-struct dmx_queue* dmx_queue_add(void (*init)(void),void (*deinit)(void),void (*step)(unsigned int))
+
+struct dmx_queue* dmx_queue_add(void (*init)(void),void (*deinit)(void),void (*tick)(unsigned int))
 {
 	if(0==queues_allocated)
 	{
@@ -32,7 +46,7 @@ struct dmx_queue* dmx_queue_add(void (*init)(void),void (*deinit)(void),void (*s
 
 	queue->init = init;
 	queue->deinit = deinit;
-	queue->step = step;
+	queue->tick = tick;
 
 	return queue;
 }

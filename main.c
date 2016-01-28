@@ -5,32 +5,20 @@
 #include "dmx_devices.h"
 #include "dmx_image.h"
 #include "dmx_channels.h"
+#include "dmx_queue.h"
 
 
 int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unused__))) 
 {
 
-
-	dmx_device_create_ledpar(8,0,"vorn links");
-	dmx_device_create_ledpar(16,0,"vorn rechts");
-	dmx_device_create_ledpar(24,0,"hinten links");
-	dmx_device_create_ledpar(32,0,"hinten rechts");
-	dmx_device_create_ledpar(32,0,"hinten rechts");
-
-
-	struct dmx_image* image1 = dmx_image_add(DMX_DEVICE_LEDPAR,"vorn links");
-	dmx_image_add_setCol(image1,255,0,0);
-	dmx_image_add_setDim(image1,0.5f);
+	unsigned int queue_count = dmx_queue_get_count();
+	for(unsigned int i = 0;i<queue_count;i++)
+	{
+		struct dmx_queue* queue = dmx_queue_getbyidx(i);
+		queue->init();
+	}
 
 	printf("\033[2J");
-
-
-//	for(unsigned int i = 0;i< dmx_get_device_count();i++)
-//	{
-//		printf("%u %i %i %s\n",i,dmx_get_device_count(),dmx_get_device_byidx(i)->addr,dmx_get_device_byidx(i)->name);
-//	}
-
-
 
 	//render
 
@@ -39,6 +27,21 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 		dmx_channels_clear();
 		dmx_devices_clear();
+
+
+		// process queues
+
+		unsigned int queue_count = dmx_queue_get_count();
+		for(unsigned int i = 0;i<queue_count;i++)
+		{
+			struct dmx_queue* queue = dmx_queue_getbyidx(i);
+
+			queue->tick(0);
+		}
+
+
+
+
 
 		//render devices
 		unsigned int image_count = dmx_image_get_count();

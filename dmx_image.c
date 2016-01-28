@@ -74,6 +74,28 @@ struct dmx_image * dmx_image_add(unsigned int type,char* name)
 
 	return image;
 }
+
+void dmx_image_del(struct dmx_image* image)
+{
+	for(unsigned int i=0;i<images_inuse;i++)
+	{
+		if(image == &dmx_image_list[i])
+		{
+			free(image->set_list);
+			
+			if(i!=images_inuse)
+			{
+				dmx_image_list[i]=dmx_image_list[images_inuse-1];
+			}
+			images_inuse--;
+			return;
+		}
+	}
+}
+
+
+
+
 void dmx_image_add_setCol(struct dmx_image* image,unsigned char red,unsigned char green,unsigned char blue)
 {
 	if(image->set_count == image->sets_alloc)
