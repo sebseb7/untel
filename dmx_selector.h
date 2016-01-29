@@ -27,6 +27,7 @@ void dmx_selector_attach_set(struct dmx_selector* selector,struct dmx_set* set);
 void dmx_selector_del(struct dmx_selector* selector);
 unsigned int dmx_selector_get_count(void);
 struct dmx_selector* dmx_selector_getbyidx(unsigned int index);
+struct dmx_selector* dmx_selector_getbyname(char* name);
 
 
 

@@ -52,7 +52,17 @@ struct dmx_selector* dmx_selector_getbyidx(unsigned int index)
 	}
 	return NULL;
 }
-
+struct dmx_selector* dmx_selector_getbyname(char* name)
+{	
+	for(unsigned int i=0;i<selector_inuse;i++)
+	{
+		if(0==strncmp(dmx_selector_list[i]->name,name,DMX_NAME_LENGTH))
+		{
+			return dmx_selector_list[i];
+		}
+	}
+	return NULL;
+}
 struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit)(void),void(*getname)(unsigned int,char*),unsigned int(*getidbyname)(char *),void(*render)(unsigned int),unsigned int length)
 {
 	if(0==selector_allocated)

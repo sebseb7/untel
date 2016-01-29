@@ -22,22 +22,25 @@ struct dmx_set
 
 struct dmx_image 
 {
-	unsigned int device_type;
-	char device_name[DMX_NAME_LENGTH];
-	unsigned int sets_alloc;
-	unsigned int set_count;
-	struct dmx_set* set_list;
+	unsigned int dev_alloc;
+	unsigned int dev_count;
+	unsigned int* dev_types;
+	char** dev_names;
+
+	unsigned int selector_alloc;
+	unsigned int selector_count;
+	char** selector_names;
+	char** selector_pos;
 };
-
-
-struct dmx_image * dmx_image_add(unsigned int type,char* name);
-void dmx_image_add_setCol(struct dmx_image* image,unsigned char red,unsigned char green,unsigned char blue);
-void dmx_image_add_setDim(struct dmx_image* image,float value);
-void dmx_image_add_setCode(struct dmx_image* image,void (*ref)(void));
+	
+struct dmx_image * dmx_image_new(void);
+void dmx_image_add_device(struct dmx_image* image,unsigned int type,char* name);
+void dmx_image_add_selector(struct dmx_image* image,char* name, char* pos);
 void dmx_image_del(struct dmx_image* image);
 unsigned int dmx_image_get_count(void);
 struct dmx_image* dmx_image_getbyidx(unsigned int index);
 
-void dmx_set_render(unsigned int type,char* name,struct dmx_set* set);
+			
+void dmx_image_render(struct dmx_image* image);
 
 #endif

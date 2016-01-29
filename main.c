@@ -51,10 +51,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		{
 			struct dmx_image* image = dmx_image_getbyidx(i);
 
-			for(unsigned int j=0;j<image->set_count;j++)
-			{
-				dmx_set_render(image->device_type,image->device_name,&(image->set_list[j]));
-			}
+			dmx_image_render(image);
 		}
 
 

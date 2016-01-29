@@ -69,8 +69,6 @@ static void position(__attribute__((__unused__)) unsigned int index)
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 	
-	dmx_device_create_ledpar(1,0,"bar");
-
 	struct dmx_selector* selector = dmx_selector_add("LP DIM",init,deinit,getname,getidbyname,position,1);
 
 	
