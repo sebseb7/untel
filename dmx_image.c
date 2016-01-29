@@ -68,6 +68,8 @@ struct dmx_image * dmx_image_new(void)
 	struct dmx_image* image = malloc(sizeof(*image));
 	dmx_image_list[images_inuse]=image;
 	images_inuse++;
+	
+	image->active=0;
 
 	image->dev_alloc=DMX_IMAGE_DEVICELIST_ALLOCATE_INITIAL;
 	image->dev_count=0;
@@ -129,9 +131,14 @@ void dmx_image_del(struct dmx_image* image)
 	}
 }
 
-
-
-
+void dmx_image_show(struct dmx_image* image)
+{
+	image->active=1;
+}
+void dmx_image_hide(struct dmx_image* image)
+{
+	image->active=0;
+}
 
 static void dmx_set_render(unsigned int type,char* name,struct dmx_set* set)
 {
@@ -160,6 +167,8 @@ static void dmx_set_render(unsigned int type,char* name,struct dmx_set* set)
 void dmx_image_render(struct dmx_image* image)
 {
 	//printf("render image\n");
+	if(image->active == 0)
+		return;
 
 	for(unsigned int i=0;i<image->dev_count;i++)
 	{

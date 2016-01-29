@@ -1,7 +1,6 @@
 #ifndef _DMX_SELECTOR_H
 #define _DMX_SELECTOR_H
 
-#include "dmx_devices.h"
 #include "dmx_image.h"
 
 struct dmx_selector

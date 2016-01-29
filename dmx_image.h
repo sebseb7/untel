@@ -22,6 +22,8 @@ struct dmx_set
 
 struct dmx_image 
 {
+	unsigned int active;
+
 	unsigned int dev_alloc;
 	unsigned int dev_count;
 	unsigned int* dev_types;
@@ -37,6 +39,8 @@ struct dmx_image * dmx_image_new(void);
 void dmx_image_add_device(struct dmx_image* image,unsigned int type,char* name);
 void dmx_image_add_selector(struct dmx_image* image,char* name, char* pos);
 void dmx_image_del(struct dmx_image* image);
+void dmx_image_show(struct dmx_image* image);
+void dmx_image_hide(struct dmx_image* image);
 unsigned int dmx_image_get_count(void);
 struct dmx_image* dmx_image_getbyidx(unsigned int index);
 

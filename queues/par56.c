@@ -6,6 +6,7 @@
 #include "dmx_image.h"
 
 static struct dmx_image* image1;
+static struct dmx_image* image2;
 
 static void init(void)
 {
@@ -15,12 +16,16 @@ static void init(void)
 	dmx_device_create_ledpar(32,0,"hinten rechts");
 		
 	image1 = dmx_image_new();
-	
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR,"vorn links");
 	dmx_image_add_selector(image1,"LP DIM","on");
-	dmx_image_add_selector(image1,"LP COL","red");
+	dmx_image_show(image1);
 
-	printf("image1 initialized\n");
+	
+	image2 = dmx_image_new();
+	
+	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR,"vorn links");
+	dmx_image_add_selector(image2,"LP COL","red");
+
 }
 
 static void deinit(void)
@@ -28,8 +33,25 @@ static void deinit(void)
 }
 
 
+static unsigned int step = 0;
+
 static void tick(__attribute__((__unused__)) unsigned int time)
 {
+	step++;
+
+	if(step == 1)
+	{
+		dmx_image_show(image2);
+	}
+	if(step == 2)
+	{
+		dmx_image_hide(image2);
+	}
+
+
+
+	if(step==2)
+		step=0;
 }
 
 
