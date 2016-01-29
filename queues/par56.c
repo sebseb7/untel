@@ -17,15 +17,16 @@ static void init(void)
 		
 	image1 = dmx_image_new();
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR,"vorn links");
-	dmx_image_add_selector(image1,"LP DIM","on");
+	dmx_image_set_selector(image1,"LP DIM","on");
 	dmx_image_show(image1);
 
 	
 	image2 = dmx_image_new();
 	
 	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR,"vorn links");
-	dmx_image_add_selector(image2,"LP COL","red");
+	dmx_image_set_selector(image2,"LP COL","red");
 
+	dmx_image_show(image2);
 }
 
 static void deinit(void)
@@ -41,11 +42,12 @@ static void tick(__attribute__((__unused__)) unsigned int time)
 
 	if(step == 1)
 	{
-		dmx_image_show(image2);
+		dmx_image_set_selector(image2,"LP COL","red");
 	}
 	if(step == 2)
 	{
-		dmx_image_hide(image2);
+		dmx_image_set_selector(image2,"LP COL","blue");
+		//dmx_image_blend_selector(image2,"LP COL","blue",1.0f);
 	}
 
 

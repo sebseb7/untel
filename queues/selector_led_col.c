@@ -30,6 +30,10 @@ static unsigned int getidbyname(char* name)
 	{
 		return 1;
 	}
+	else if(strncmp(name,"blue",DMX_NAME_LENGTH)==0)
+	{
+		return 2;
+	}
 	return 0;
 }
 
@@ -44,6 +48,9 @@ static void position(__attribute__((__unused__)) unsigned int index)
 	{
 		case 1:
 			red=255;
+			break;
+		case 2:
+			blue=255;
 			break;
 	
 	}

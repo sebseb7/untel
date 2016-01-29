@@ -96,10 +96,19 @@ void dmx_image_add_device(struct dmx_image* image,unsigned int type,char* name)
 	}
 
 }
-void dmx_image_add_selector(struct dmx_image* image,char* name, char* pos)
+void dmx_image_set_selector(struct dmx_image* image,char* name, char* pos)
 {
-	unsigned int index = image->selector_count;
+	for(unsigned int i=0;i<image->selector_count;i++)
+	{
+		if(0==strncmp((char*)&(image->selector_names[i*DMX_NAME_LENGTH]),name,DMX_NAME_LENGTH))
+		{
+			strncpy((char*)&image->selector_pos[i*DMX_NAME_LENGTH], pos, DMX_NAME_LENGTH);
+			return;
+		}
+	}
 
+	
+	unsigned int index = image->selector_count;
 	if(image->selector_count < image->selector_alloc)
 	{
 		strncpy((char*)&image->selector_names[index*DMX_NAME_LENGTH],name,DMX_NAME_LENGTH);
@@ -108,6 +117,9 @@ void dmx_image_add_selector(struct dmx_image* image,char* name, char* pos)
 		image->selector_count++;
 	}
 }
+//void dmx_image_blend_selector(struct dmx_image* image,char* name, char* pos,float timepct)
+//{
+//}
 
 void dmx_image_del(struct dmx_image* image)
 {

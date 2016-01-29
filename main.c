@@ -9,6 +9,8 @@
 #include "dmx_selector.h"
 
 
+#define DMX_FRAMERATE 40
+
 int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unused__))) 
 {
 
@@ -72,7 +74,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		printf("\033[H");
 		dmx_channels_print();
 
-		usleep(100000);
+		usleep(25*1000);
 	}
 
 	return 0;

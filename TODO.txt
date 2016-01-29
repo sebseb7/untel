@@ -1,0 +1,6 @@
+next steps:
+
+- blend & hold time for queue
+- real dmx output
+- try some scenarios
+
