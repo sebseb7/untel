@@ -3,10 +3,10 @@ UNAME := $(shell uname)
 COMPILER = gcc
 
 FLAGS= -I.  --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra -L. 
-LDFLAGS= -lm
+LDFLAGS= -lm -lportmidi
 
-SOURCES=$(wildcard queues/*.c)
-HEADERS=$(wildcard queues/*.h)
+SOURCES=$(wildcard queues/*.c libs/*.c)
+HEADERS=$(wildcard queues/*.h libs/*.h)
 
 all: dmxMidiCtrlNg
 
