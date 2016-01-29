@@ -32,7 +32,6 @@ void dmx_selector_set(struct dmx_selector* selector,unsigned int pos);
 #define DMX_SELECTOR_ALLOCATE_INITIAL 100
 #define DMX_SELECTOR_ALLOCATE_STEP 10
 
-#define DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL 10
 #define DMX_SELECTOR_SETLIST_ALLOCATE_INITIAL 10
 
 static struct dmx_selector** dmx_selector_list;
@@ -78,50 +77,13 @@ struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit
 	selector->getidbyname=getidbyname;
 	selector->render=render;
 	selector->length=length;
-	selector->active=0;
 
-	selector->dev_alloc=DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL;
-	selector->dev_count=0;
-	selector->dev_names=malloc(sizeof(char)*DMX_NAME_LENGTH*DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL);
-	selector->dev_types=malloc(sizeof(unsigned int)*DMX_SELECTOR_DEVLIST_ALLOCATE_INITIAL);
 	
 	selector->sets_alloc=DMX_SELECTOR_SETLIST_ALLOCATE_INITIAL;
 	selector->set_count=0;
 	selector->set_list=malloc(sizeof(struct dmx_set*)*DMX_SELECTOR_SETLIST_ALLOCATE_INITIAL);
 
 	return selector;
-}
-
-void dmx_selector_set(struct dmx_selector* selector,unsigned int pos)
-{
-	if(pos == 0)
-	{
-		if(selector->active != 0)
-			selector->deinit();
-	}
-	else if(pos <= selector->length)
-	{
-		if(selector->active == 0)
-		{
-			selector->init();
-		}
-		selector->render(pos);
-	}
-	selector->active=pos;
-}
-
-void dmx_selector_add_device(struct dmx_selector* selector,unsigned int type, char* name)
-{
-	unsigned int index = selector->dev_count;
-
-	if(selector->dev_count < selector->dev_alloc)
-	{
-		strncpy((char*)&(selector->dev_names[DMX_NAME_LENGTH*index]),name,DMX_NAME_LENGTH);
-		selector->dev_types[index]=type;
-
-		selector->dev_count++;
-	}
-
 }
 
 void dmx_selector_attach_set(struct dmx_selector* selector,struct dmx_set* set)
@@ -137,15 +99,4 @@ void dmx_selector_attach_set(struct dmx_selector* selector,struct dmx_set* set)
 
 }
 
-void dmx_selector_render(struct dmx_selector* selector)
-{
-	for(unsigned int i=0;i< selector->set_count;i++)
-	{
-		for(unsigned int j=0;j< selector->dev_count;j++)
-		{
-			dmx_set_render(selector->dev_types[j],(char*)&selector->dev_names[DMX_NAME_LENGTH*j],selector->set_list[i]);
-		}
-	}
-
-}
 

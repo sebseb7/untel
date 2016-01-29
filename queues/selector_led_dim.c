@@ -26,9 +26,17 @@ static void getname(__attribute__((__unused__)) unsigned int idx,__attribute__((
 
 static unsigned int getidbyname(char* name)
 {
-	if(strncmp(name,"red",DMX_NAME_LENGTH)==0)
+	if(strncmp(name,"on",DMX_NAME_LENGTH)==0)
 	{
 		return 1;
+	}
+	else if(strncmp(name,"half",DMX_NAME_LENGTH)==0)
+	{
+		return 2;
+	}
+	else if(strncmp(name,"of",DMX_NAME_LENGTH)==0)
+	{
+		return 3;
 	}
 	return 0;
 }
@@ -43,6 +51,12 @@ static void position(__attribute__((__unused__)) unsigned int index)
 	{
 		case 1:
 			dim=1.0f;
+			break;
+		case 2:
+			dim=0.5f;
+			break;
+		case 3:
+			dim=0.0f;
 			break;
 	
 	}
@@ -59,16 +73,11 @@ static void constructor(void) {
 
 	struct dmx_selector* selector = dmx_selector_add("LP DIM",init,deinit,getname,getidbyname,position,1);
 
-	dmx_selector_add_device(selector,DMX_DEVICE_LEDPAR,"bar");
 	
 	set1=malloc(sizeof(struct dmx_set));
 	set1->attr_type=ATTR_TYPE_DIM;
 	set1->dim=0.0f;
 	dmx_selector_attach_set(selector,set1);
-
-
-
-	dmx_selector_set(selector,1);
 
 }
 

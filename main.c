@@ -58,18 +58,6 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		}
 
 
-		//render devices (selectors)
-		unsigned int selector_count = dmx_selector_get_count();
-		for(unsigned int i = 0;i<selector_count;i++)
-		{
-			struct dmx_selector* selector = dmx_selector_getbyidx(i);
-
-			if((selector->length > 0)&&(selector->active > 0))
-			{
-				dmx_selector_render(selector);
-			}
-		}
-
 
 		//render channels
 		
