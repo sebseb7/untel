@@ -6,6 +6,7 @@
 #include "dmx_image.h"
 #include "dmx_channels.h"
 #include "dmx_queue.h"
+#include "dmx_selector.h"
 
 
 int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unused__))) 
@@ -43,7 +44,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 
 
-		//render devices
+		
+		//render devices (images)
 		unsigned int image_count = dmx_image_get_count();
 		for(unsigned int i = 0;i<image_count;i++)
 		{
@@ -52,6 +54,19 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			for(unsigned int j=0;j<image->set_count;j++)
 			{
 				dmx_set_render(image->device_type,image->device_name,&(image->set_list[j]));
+			}
+		}
+
+
+		//render devices (selectors)
+		unsigned int selector_count = dmx_selector_get_count();
+		for(unsigned int i = 0;i<selector_count;i++)
+		{
+			struct dmx_selector* selector = dmx_selector_getbyidx(i);
+
+			if((selector->length > 0)&&(selector->active > 0))
+			{
+				dmx_selector_render(selector);
 			}
 		}
 

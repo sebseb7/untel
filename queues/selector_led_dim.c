@@ -29,7 +29,7 @@ static void position(__attribute__((__unused__)) unsigned int index)
 	float dim=0.0f;
 
 
-	if(index == 0)
+	if(index == 1)
 	{
 		dim=1.0f;
 	}

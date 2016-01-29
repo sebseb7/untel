@@ -136,3 +136,15 @@ void dmx_selector_attach_set(struct dmx_selector* selector,struct dmx_set* set)
 
 }
 
+void dmx_selector_render(struct dmx_selector* selector)
+{
+	for(unsigned int i=0;i< selector->set_count;i++)
+	{
+		for(unsigned int j=0;j< selector->dev_count;j++)
+		{
+			dmx_set_render(selector->dev_types[j],(char*)&selector->dev_names[DMX_NAME_LENGTH*j],selector->set_list[i]);
+		}
+	}
+
+}
+

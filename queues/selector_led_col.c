@@ -31,7 +31,7 @@ static void position(__attribute__((__unused__)) unsigned int index)
 	unsigned int blue=0;
 
 
-	if(index == 0)
+	if(index == 1)
 	{
 		red=255;
 	}
