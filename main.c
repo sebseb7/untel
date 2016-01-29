@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "main.h"
 #include "dmx_devices.h"
@@ -8,11 +10,32 @@
 #include "dmx_queue.h"
 #include "dmx_selector.h"
 
+#include "keyboard.h"
+
 
 #define DMX_FRAMERATE 40
 
+static unsigned long long start_time;
+
+static unsigned int getstarttime(void)
+{
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
+	unsigned long long current_time = tv.tv_sec*(unsigned long long)1000+(tv.tv_usec / 1000);
+
+	if(start_time == 0)
+		start_time = current_time;
+	
+	return current_time-start_time;
+}
+
+
+
+
 int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unused__))) 
 {
+//	keyboard_list();
+//	exit(0);
 
 	unsigned int queue_count = dmx_queue_get_count();
 	for(unsigned int i = 0;i<queue_count;i++)
@@ -25,9 +48,22 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 	//render
 
+	unsigned int bpm=165;
+	unsigned int beatms=60000/bpm;
+
+	unsigned int beats=0;
+	unsigned int last_beat=getstarttime();
+
+
 	while(1)
 	{
-
+		unsigned int currtime = getstarttime();
+		if(currtime > (last_beat+beatms) )
+		{
+			beats++;
+			last_beat=currtime;
+		}
+	
 		dmx_channels_clear();
 		dmx_devices_clear();
 
@@ -38,8 +74,11 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		for(unsigned int i = 0;i<queue_count;i++)
 		{
 			struct dmx_queue* queue = dmx_queue_getbyidx(i);
-
-			queue->tick(0);
+			if(queue->next < currtime)
+			{
+				unsigned int delay = queue->tick(beats);
+				queue->next = currtime+(beatms/24*delay);
+			}
 		}
 
 

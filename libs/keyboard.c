@@ -12,6 +12,17 @@ enum {
 
 static int initialized = 0;
 
+void	keyboard_list(void)
+{
+	const PmDeviceInfo *di;
+	for(int i= 0; ; i++)
+	{
+		di= Pm_GetDeviceInfo(i);
+		if(!di) break;
+		printf("found in device '%s' with interf '%s' (%i)(%i)\n", di->name, di->interf,di->input,di->output);
+	}
+}
+
 static int find_device_id_in(char* name)
 {
 	const PmDeviceInfo *di;

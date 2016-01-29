@@ -36,7 +36,7 @@ static void deinit(void)
 
 static unsigned int step = 0;
 
-static void tick(__attribute__((__unused__)) unsigned int time)
+unsigned int tick(__attribute__((__unused__)) unsigned int time)
 {
 	step++;
 
@@ -54,6 +54,8 @@ static void tick(__attribute__((__unused__)) unsigned int time)
 
 	if(step==2)
 		step=0;
+
+	return 12;
 }
 
 

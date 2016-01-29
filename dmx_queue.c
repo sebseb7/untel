@@ -28,7 +28,7 @@ struct dmx_queue* dmx_queue_getbyidx(unsigned int index)
 
 
 
-struct dmx_queue* dmx_queue_add(void (*init)(void),void (*deinit)(void),void (*tick)(unsigned int))
+struct dmx_queue* dmx_queue_add(void (*init)(void),void (*deinit)(void),unsigned int (*tick)(unsigned int))
 {
 	if(0==queues_allocated)
 	{
@@ -47,6 +47,7 @@ struct dmx_queue* dmx_queue_add(void (*init)(void),void (*deinit)(void),void (*t
 	queue->init = init;
 	queue->deinit = deinit;
 	queue->tick = tick;
+	queue->next = 0;
 
 	return queue;
 }

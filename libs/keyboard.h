@@ -14,6 +14,7 @@ typedef struct
 	PortMidiStream* midi_stream_out ;
 } MidiObj;
 
+void	keyboard_list(void);
 int		keyboard_init(MidiObj* m,char* name);
 void	keyboard_kill(MidiObj* m);
 int		keyboard_poll(MidiObj* m,KeyboardEvent* e);
