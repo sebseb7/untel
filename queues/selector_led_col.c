@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdlib.h>
 
 #include "main.h"
@@ -23,6 +24,15 @@ static void getname(__attribute__((__unused__)) unsigned int idx,__attribute__((
 {
 }
 
+static unsigned int getidbyname(char* name)
+{
+	if(strncmp(name,"red",DMX_NAME_LENGTH)==0)
+	{
+		return 1;
+	}
+	return 0;
+}
+
 
 static void position(__attribute__((__unused__)) unsigned int index)
 {
@@ -30,12 +40,13 @@ static void position(__attribute__((__unused__)) unsigned int index)
 	unsigned int green=0;
 	unsigned int blue=0;
 
-
-	if(index == 1)
+	switch(index)
 	{
-		red=255;
+		case 1:
+			red=255;
+			break;
+	
 	}
-		
 		
 	set1->color[0]=red;
 	set1->color[1]=green;
@@ -48,7 +59,7 @@ static void constructor(void) {
 	
 	dmx_device_create_ledpar(1,0,"bar");
 
-	struct dmx_selector* selector = dmx_selector_add("LP COL",init,deinit,getname,position,1);
+	struct dmx_selector* selector = dmx_selector_add("LP COL",init,deinit,getname,getidbyname,position,1);
 
 	dmx_selector_add_device(selector,DMX_DEVICE_LEDPAR,"bar");
 	

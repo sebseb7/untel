@@ -54,7 +54,7 @@ struct dmx_selector* dmx_selector_getbyidx(unsigned int index)
 	return NULL;
 }
 
-struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit)(void),void(*getname)(unsigned int,char*),void(*render)(unsigned int),unsigned int length)
+struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit)(void),void(*getname)(unsigned int,char*),unsigned int(*getidbyname)(char *),void(*render)(unsigned int),unsigned int length)
 {
 	if(0==selector_allocated)
 	{
@@ -75,6 +75,7 @@ struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit
 	selector->init=init;
 	selector->deinit=deinit;
 	selector->getname=getname;
+	selector->getidbyname=getidbyname;
 	selector->render=render;
 	selector->length=length;
 	selector->active=0;

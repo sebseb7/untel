@@ -11,6 +11,7 @@ struct dmx_selector
 	unsigned int active;
 	void (*render)(unsigned int);
 	void (*getname)(unsigned int,char*);
+	unsigned int (*getidbyname)(char*);
 	void (*init)(void);
 	void (*deinit)(void);
 	
@@ -24,7 +25,7 @@ struct dmx_selector
 	struct dmx_set** set_list;
 };
 
-struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit)(void),void(*getname)(unsigned int,char*),void(*render)(unsigned int),unsigned int length);
+struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit)(void),void(*getname)(unsigned int,char*),unsigned int(*getidbyname)(char *),void(*render)(unsigned int),unsigned int length);
 void dmx_selector_add_device(struct dmx_selector* selector,unsigned int type, char* name);
 void dmx_selector_set(struct dmx_selector* selector,unsigned int pos);
 void dmx_selector_attach_set(struct dmx_selector* selector,struct dmx_set* set);
