@@ -9,4 +9,6 @@ void dmx_channel_set(unsigned int ch,unsigned char value);
 		
 void dmx_channels_print(void);
 
+unsigned char* dmx_channels_get(void);
+
 #endif

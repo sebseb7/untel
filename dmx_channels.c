@@ -6,6 +6,11 @@
 
 static unsigned char dmx_channels[DMX_CHANNEL_COUNT];
 
+unsigned char* dmx_channels_get(void)
+{
+	return dmx_channels;
+}
+
 void dmx_channels_clear(void)
 {
 	for(unsigned int i = 0;i<DMX_CHANNEL_COUNT;i++)

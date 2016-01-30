@@ -9,6 +9,7 @@
 #include "dmx_channels.h"
 #include "dmx_queue.h"
 #include "dmx_selector.h"
+#include "dmx_output.h"
 
 #include "keyboard.h"
 
@@ -44,7 +45,6 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		queue->init();
 	}
 
-	printf("\033[2J");
 
 	//render
 
@@ -58,6 +58,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	unsigned int last_beat=getstarttime();
 	unsigned int last_beatpulse=getstarttime();
 
+	dmx_output_init();
+	
+	printf("\033[2J");
 
 	while(1)
 	{
@@ -121,6 +124,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 		printf("\033[H");
 		dmx_channels_print();
+
+		dmx_output_send(dmx_channels_get());
 
 		usleep(25*1000);
 	}
