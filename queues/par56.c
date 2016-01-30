@@ -36,25 +36,30 @@ static void deinit(void)
 
 static unsigned int step = 0;
 
+#define beatsmul 16
 unsigned int tick(__attribute__((__unused__)) unsigned int time)
 {
 	step++;
 
 	if(step == 1)
 	{
-		dmx_image_blend_selector(image2,"LP COL","red",4);
+		dmx_image_blend_selector(image2,"LP COL","red",6*beatsmul);
 	}
 	if(step == 2)
 	{
-		dmx_image_blend_selector(image2,"LP COL","blue",10);
+		dmx_image_blend_selector(image2,"LP COL","blue",6*beatsmul);
+	}
+	if(step == 3)
+	{
+		dmx_image_blend_selector(image2,"LP COL","green",6*beatsmul);
 	}
 
 
 
-	if(step==2)
+	if(step==3)
 		step=0;
 
-	return 24;
+	return 12*beatsmul;
 }
 
 
