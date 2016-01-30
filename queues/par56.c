@@ -42,12 +42,11 @@ unsigned int tick(__attribute__((__unused__)) unsigned int time)
 
 	if(step == 1)
 	{
-		dmx_image_set_selector(image2,"LP COL","red");
+		dmx_image_blend_selector(image2,"LP COL","red",12);
 	}
 	if(step == 2)
 	{
-		dmx_image_set_selector(image2,"LP COL","blue");
-		//dmx_image_blend_selector(image2,"LP COL","blue",1.0f);
+		dmx_image_blend_selector(image2,"LP COL","blue",12);
 	}
 
 
@@ -55,7 +54,7 @@ unsigned int tick(__attribute__((__unused__)) unsigned int time)
 	if(step==2)
 		step=0;
 
-	return 12;
+	return 48;
 }
 
 

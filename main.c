@@ -49,10 +49,14 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	//render
 
 	unsigned int bpm=165;
+	unsigned int beatpulse=bpm*24;
 	unsigned int beatms=60000/bpm;
+	unsigned int beatpulsems=60000/beatpulse;
 
 	unsigned int beats=0;
+	unsigned int beatpulses=0;
 	unsigned int last_beat=getstarttime();
+	unsigned int last_beatpulse=getstarttime();
 
 
 	while(1)
@@ -62,6 +66,11 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		{
 			beats++;
 			last_beat=currtime;
+		}
+		if(currtime > (last_beatpulse+beatpulsems) )
+		{
+			beatpulses++;
+			last_beatpulse=currtime;
 		}
 	
 		dmx_channels_clear();
@@ -92,7 +101,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		{
 			struct dmx_image* image = dmx_image_getbyidx(i);
 
-			dmx_image_render(image);
+			dmx_image_render(image,beatpulses);
 		}
 
 

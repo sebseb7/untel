@@ -33,12 +33,15 @@ struct dmx_image
 	unsigned int selector_count;
 	char** selector_names;
 	char** selector_pos;
+	unsigned int* selector_blendpulse;
+	unsigned int* selector_blendstart;
+	char** selector_blendtopos;
 };
 	
 struct dmx_image * dmx_image_new(void);
 void dmx_image_add_device(struct dmx_image* image,unsigned int type,char* name);
 void dmx_image_set_selector(struct dmx_image* image,char* name, char* pos);
-void dmx_image_blend_selector(struct dmx_image* image,char* name, char* pos,float timepct);
+void dmx_image_blend_selector(struct dmx_image* image,char* name, char* pos,unsigned int beatPulses);
 void dmx_image_del(struct dmx_image* image);
 void dmx_image_show(struct dmx_image* image);
 void dmx_image_hide(struct dmx_image* image);
@@ -46,6 +49,6 @@ unsigned int dmx_image_get_count(void);
 struct dmx_image* dmx_image_getbyidx(unsigned int index);
 
 			
-void dmx_image_render(struct dmx_image* image);
+void dmx_image_render(struct dmx_image* image,unsigned int beatpulse);
 
 #endif
