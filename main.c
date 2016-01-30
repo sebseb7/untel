@@ -86,7 +86,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		for(unsigned int i = 0;i<queue_count;i++)
 		{
 			struct dmx_queue* queue = dmx_queue_getbyidx(i);
-			if(queue->next < currtime)
+			if((queue->active!=0)&&(queue->next < currtime))
 			{
 				unsigned int delay = queue->tick(beats);
 				queue->next = currtime+((beatms/24)*delay);

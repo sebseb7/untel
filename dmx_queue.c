@@ -44,6 +44,7 @@ struct dmx_queue* dmx_queue_add(void (*init)(void),void (*deinit)(void),unsigned
 	struct dmx_queue* queue = &dmx_queue_list[queues_inuse];
 	queues_inuse++;
 
+	queue->active = 0;
 	queue->init = init;
 	queue->deinit = deinit;
 	queue->tick = tick;
@@ -51,4 +52,12 @@ struct dmx_queue* dmx_queue_add(void (*init)(void),void (*deinit)(void),unsigned
 
 	return queue;
 }
-
+void dmx_queue_activate(struct dmx_queue* queue)
+{
+	queue->active++;
+}
+void dmx_queue_deactivate(struct dmx_queue* queue)
+{
+	if(queue->active!=0)
+		queue->active--;
+}
