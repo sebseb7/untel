@@ -129,9 +129,14 @@ void dmx_image_blend_selector(struct dmx_image* image,char* name, char* pos,unsi
 	{
 		if(0==strncmp((char*)&(image->selector_names[i*DMX_NAME_LENGTH]),name,DMX_NAME_LENGTH))
 		{
+			if(image->selector_blendpulse[i] != 0)
+			{
+				strncpy((char*)&image->selector_pos[i*DMX_NAME_LENGTH], (char*)&image->selector_blendtopos[i*DMX_NAME_LENGTH], DMX_NAME_LENGTH);
+			}
 			//printf("blend start (%s)\n",pos);
 			strncpy((char*)&image->selector_blendtopos[i*DMX_NAME_LENGTH], pos, DMX_NAME_LENGTH);
 			image->selector_blendpulse[i]=beatPulses;
+			image->selector_blendstart[i]=0;
 			return;
 		}
 	}
@@ -209,7 +214,7 @@ static void dmx_set_render_blend(unsigned int type,char* name,struct dmx_set* se
 		}
 		else if(set->attr_type==ATTR_TYPE_DIM)
 		{
-			ledpar->blue= ((set->dim*pct)/100.0f)+((ledpar->dim*(100-pct)/100.0f));
+			ledpar->dim= ((set->dim*pct)/100.0f)+((ledpar->dim*(100-pct)/100.0f));
 		}
 		else if(set->attr_type==ATTR_TYPE_CODE)
 		{
@@ -252,9 +257,11 @@ void dmx_image_render(struct dmx_image* image,unsigned int beatpulse)
 				}
 				else
 				{
-					blendpct = (100*(beatpulse-start))/12;
+					blendpct = (100*(beatpulse-start))/duration;
+					if(blendpct > 100)
+						blendpct = 100;
 
-					//printf("pct: %i %i\n",blendpct,duration);
+					//printf("pct: %i %i        \n",blendpct,beatpulse-start);
 				}
 
 			}

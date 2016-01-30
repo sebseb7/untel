@@ -62,12 +62,12 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	while(1)
 	{
 		unsigned int currtime = getstarttime();
-		if(currtime > (last_beat+beatms) )
+		while(currtime > (last_beat+beatms) )
 		{
 			beats++;
 			last_beat=currtime;
 		}
-		if(currtime > (last_beatpulse+beatpulsems) )
+		while(currtime > (last_beatpulse+beatpulsems) )
 		{
 			beatpulses++;
 			last_beatpulse=currtime;
