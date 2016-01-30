@@ -65,7 +65,7 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 
-	struct dmx_queue* queue = dmx_queue_add(init,deinit,tick);
+	struct dmx_queue* queue = dmx_queue_add("LED-DIM-SEQ1",init,deinit,tick);
 	dmx_queue_activate(queue);
 
 }
