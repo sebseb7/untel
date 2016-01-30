@@ -3,7 +3,7 @@ UNAME := $(shell uname)
 COMPILER = gcc
 
 FLAGS= -I. -Ilibs --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra -L.
-LDFLAGS= -lm -lportmidi
+LDFLAGS= -lm -lportmidi -lftdi1
 
 SOURCES=$(wildcard queues/*.c libs/*.c)
 HEADERS=$(wildcard queues/*.h libs/*.h)
