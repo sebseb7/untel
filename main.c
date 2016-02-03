@@ -58,6 +58,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 	while(1)
 	{
+		osc_process_input();
+
 		unsigned int currtime = getstarttime();
 		while(currtime > (last_beat+beatms) )
 		{
@@ -117,14 +119,14 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		}
 			
 
-		printf("\033[H");
-		dmx_channels_print();
-		dmx_queues_print();
+//		printf("\033[H");
+//		dmx_channels_print();
+//		dmx_queues_print();
 		//dmx_selector_print();
 
 		osc_apply_manual(dmx_channels_get());
 		dmx_output_send(dmx_channels_get());
-		osc_send_faders(dmx_channels_get());
+		osc_update_ui();
 
 		usleep(25*1000);
 	}

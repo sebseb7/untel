@@ -110,9 +110,8 @@ int generic_handler(const char *path, __attribute__((unused)) const char *types,
 	char *copy;
 	char *token;
 	
-	
-/*	int i;
-	printf("path: <%s>\n", path);
+	//int i;
+/*	printf("path: <%s>\n", path);
 	for (i = 0; i < argc; i++) {
 		printf("arg %d '%c' ", i, types[i]);
 		lo_arg_pp((lo_type)types[i], argv[i]);
@@ -120,7 +119,7 @@ int generic_handler(const char *path, __attribute__((unused)) const char *types,
 	}
 	printf("\n");
 	fflush(stdout);
-*/
+*/	
 	running = strdup(path);
 	copy=running;
 	token = strsep (&running, delimiters);
@@ -134,9 +133,9 @@ int generic_handler(const char *path, __attribute__((unused)) const char *types,
 
 	if(strcmp("1",token)==0)
 	{
-		//printf("%s\n",running);
 		if(running != NULL)
 		{
+			//printf("%s\n",running);
 			token = strsep (&running, delimiters);
 			if(strcmp("q",token)==0)
 			{
@@ -302,11 +301,11 @@ void osc_start_server(void)
 {
 	evhead = evtail = eventsbuf;
 
-#ifdef OSC_OUT
+//#ifdef OSC_OUT
 	lo_server_thread st = lo_server_thread_new("8000", error);
 	lo_server_thread_add_method(st, NULL, NULL, generic_handler, NULL);
 	lo_server_thread_start(st);
-#endif
+//#endif
 }
 
 
