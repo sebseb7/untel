@@ -52,8 +52,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	unsigned int last_beatpulse=getstarttime();
 
 	dmx_output_init();
-	osc_connect("192.168.0.140");
-	osc_start_server();
+	osc_init();
 	
 	printf("\033[2J");
 
@@ -117,25 +116,15 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			}
 		}
 			
-			//if(osc_current_tab == 2)
-			//{
-				unsigned char* outch =dmx_channels_get();
-				for(int i=0;i<16;i++)
-				{
-					osc_update_fader(i,i,outch[i]);	
-					//osc_update_fader(i,i+osc_manual_ch_offset,out[1+i+osc_manual_ch_offset]);	
-					//osc_update_manual_state(i,manual[1+i+osc_manual_ch_offset]);	
-				}
-				//osc_update_xy(out[4],out[5]);	
-				osc_send_flush();
-			//}
 
 		printf("\033[H");
 		dmx_channels_print();
 		dmx_queues_print();
 		//dmx_selector_print();
 
+		osc_apply_manual(dmx_channels_get());
 		dmx_output_send(dmx_channels_get());
+		osc_send_faders(dmx_channels_get());
 
 		usleep(25*1000);
 	}

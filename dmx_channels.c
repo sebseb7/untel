@@ -2,7 +2,6 @@
 
 #include "dmx_channels.h"
 
-#define DMX_CHANNEL_COUNT 512
 
 static unsigned char dmx_channels[DMX_CHANNEL_COUNT];
 
