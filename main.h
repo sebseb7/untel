@@ -5,6 +5,8 @@
 
 #define CONSTRUCTOR_ATTRIBUTES	__attribute__((constructor));
 
+#define OSC_OUT 1
+
 
 #endif
 

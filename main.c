@@ -12,6 +12,7 @@
 #include "dmx_output.h"
 
 #include "keyboard.h"
+#include "osc.h"
 
 
 #define DMX_FRAMERATE 40
@@ -51,6 +52,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	unsigned int last_beatpulse=getstarttime();
 
 	dmx_output_init();
+	osc_connect("192.168.0.140");
+	osc_start_server();
 	
 	printf("\033[2J");
 
@@ -113,6 +116,19 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 				dmx_device_render_ledpar(device);
 			}
 		}
+			
+			//if(osc_current_tab == 2)
+			//{
+				unsigned char* outch =dmx_channels_get();
+				for(int i=0;i<16;i++)
+				{
+					osc_update_fader(i,i,outch[i]);	
+					//osc_update_fader(i,i+osc_manual_ch_offset,out[1+i+osc_manual_ch_offset]);	
+					//osc_update_manual_state(i,manual[1+i+osc_manual_ch_offset]);	
+				}
+				//osc_update_xy(out[4],out[5]);	
+				osc_send_flush();
+			//}
 
 		printf("\033[H");
 		dmx_channels_print();
