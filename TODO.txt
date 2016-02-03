@@ -1,6 +1,14 @@
 next steps:
 
-- blend & hold time for queue
-- real dmx output
-- try some scenarios
-
+- better api for blend & hold time for queue
+- gui for toggeling queues
+- device models
+- device parameters
+- examples for
+	* ledpar 6ch
+	* ledpar 7ch
+	* miniscanHPE
+	* quadPhase
+	* atomic strobe
+	* fog unit
+	* dimmer/switch pack
