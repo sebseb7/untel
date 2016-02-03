@@ -50,7 +50,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	unsigned int last_beat=getstarttime();
 	unsigned int last_beatpulse=getstarttime();
 
-//	dmx_output_init();
+	dmx_output_init();
 	
 	printf("\033[2J");
 
@@ -117,8 +117,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		printf("\033[H");
 		dmx_channels_print();
 		dmx_queues_print();
+		//dmx_selector_print();
 
-//		dmx_output_send(dmx_channels_get());
+		dmx_output_send(dmx_channels_get());
 
 		usleep(25*1000);
 	}

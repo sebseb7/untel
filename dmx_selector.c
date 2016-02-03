@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -108,5 +109,17 @@ void dmx_selector_attach_set(struct dmx_selector* selector,struct dmx_set* set)
 	}
 
 }
+
+void dmx_selector_print(void)
+{
+	for(unsigned int i=0;i<selector_inuse;i++)
+	{
+		struct dmx_selector* selector = dmx_selector_list[i];
+		printf("sel name:%s len:%i\n",selector->name,selector->length);
+
+	}
+	printf("\n");
+}
+
 
 

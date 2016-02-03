@@ -28,6 +28,7 @@ unsigned int dmx_selector_get_count(void);
 struct dmx_selector* dmx_selector_getbyidx(unsigned int index);
 struct dmx_selector* dmx_selector_getbyname(char* name);
 
+void dmx_selector_print(void);
 
 
 #endif
