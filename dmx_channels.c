@@ -47,5 +47,6 @@ void dmx_channels_print(void)
 
 		printf("\n");
 	}
+	printf("\n");
 }
 

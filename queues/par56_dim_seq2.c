@@ -5,7 +5,7 @@
 #include "dmx_devices.h"
 #include "dmx_image.h"
 
-static struct dmx_image* image2;
+static struct dmx_image* image1;
 
 static void init(void)
 {
@@ -14,53 +14,47 @@ static void init(void)
 	dmx_device_create_ledpar(24,0,"hinten links");
 	dmx_device_create_ledpar(32,0,"hinten rechts");
 		
-	image2 = dmx_image_new();
-	
-	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR,"vorn links");
-	dmx_image_set_selector(image2,"LP COL","green");
+	image1 = dmx_image_new();
+	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR,"vorn links");
+	dmx_image_set_selector(image1,"LP DIM","on");
+	dmx_image_show(image1);
 
-	dmx_image_show(image2);
+	
 }
 
 static void deinit(void)
 {
+//	dmx_image_del(image1);
 }
 
 
 static unsigned int step = 0;
 
-#define beatsmul 16
+#define beatsmul 1
 static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 {
 	step++;
 
 	if(step == 1)
 	{
-		dmx_image_blend_selector(image2,"LP COL","red",6*beatsmul);
+		dmx_image_blend_selector(image1,"LP DIM","half",5);
 	}
-	if(step == 2)
+	if(step == 20)
 	{
-		dmx_image_blend_selector(image2,"LP COL","blue",6*beatsmul);
-	}
-	if(step == 3)
-	{
-		dmx_image_blend_selector(image2,"LP COL","green",6*beatsmul);
+		dmx_image_blend_selector(image1,"LP DIM","on",5);
 	}
 
-
-
-	if(step==3)
+	if(step==40)
 		step=0;
 
-	return 12*beatsmul;
+	return 0;
 }
 
 
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 
-	struct dmx_queue* queue = dmx_queue_add("LED-COL-SLIDE",init,deinit,tick);
-	dmx_queue_activate(queue);
+	dmx_queue_add("LED-DIM-SEQ2",init,deinit,tick);
 
 }
 

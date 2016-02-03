@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -23,6 +24,17 @@ struct dmx_queue* dmx_queue_getbyidx(unsigned int index)
 	if(index < queues_inuse)
 	{
 		return dmx_queue_list[index];
+	}
+	return NULL;
+}
+struct dmx_queue* dmx_queue_getbyname(char* name)
+{	
+	for(unsigned int i=0;i<queues_inuse;i++)
+	{
+		if(0==strncmp(dmx_queue_list[i]->name,name,DMX_NAME_LENGTH))
+		{
+			return dmx_queue_list[i];
+		}
 	}
 	return NULL;
 }
@@ -57,22 +69,29 @@ struct dmx_queue* dmx_queue_add(char* name,void (*init)(void),void (*deinit)(voi
 }
 void dmx_queue_activate(struct dmx_queue* queue)
 {
+	if(queue->active==0)
+		queue->init();
+
 	queue->active++;
 }
 void dmx_queue_deactivate(struct dmx_queue* queue)
 {
+	if(queue->active==1)
+		queue->deinit();
+
 	if(queue->active!=0)
 		queue->active--;
 }
-struct dmx_queue* dmx_queue_getbyname(char* name)
-{	
+
+void dmx_queues_print(void)
+{
 	for(unsigned int i=0;i<queues_inuse;i++)
 	{
-		if(0==strncmp(dmx_queue_list[i]->name,name,DMX_NAME_LENGTH))
-		{
-			return dmx_queue_list[i];
-		}
+		struct dmx_queue* queue = dmx_queue_list[i];
+		printf("name:%s act:%i\n",queue->name,queue->active);
+
 	}
-	return NULL;
+	printf("\n");
 }
+
 
