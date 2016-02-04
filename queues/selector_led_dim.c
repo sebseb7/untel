@@ -10,6 +10,18 @@
 
 static struct dmx_set* set1;
 
+struct paramnames {
+	const char* name;
+	float value;
+};
+
+static struct paramnames paramlist[] = {
+
+	{"on"    ,1.0f  },
+	{"half"  ,0.5f  },
+	{"off"   ,0.0f  },
+
+};
 
 
 static void init(void)
@@ -26,45 +38,23 @@ static void getname(__attribute__((__unused__)) unsigned int idx,__attribute__((
 
 static unsigned int getidbyname(char* name)
 {
-	if(strncmp(name,"on",DMX_NAME_LENGTH)==0)
+	for(unsigned int i=0;i< (sizeof(paramlist)/sizeof(paramlist[0]));i++)
 	{
-		return 1;
-	}
-	else if(strncmp(name,"half",DMX_NAME_LENGTH)==0)
-	{
-		return 2;
-	}
-	else if(strncmp(name,"of",DMX_NAME_LENGTH)==0)
-	{
-		return 3;
+		if(strncmp(name,paramlist[i].name,DMX_NAME_LENGTH)==0)
+		{
+			return i+1;
+		}
 	}
 	return 0;
 }
 
-
-static void position(__attribute__((__unused__)) unsigned int index)
+static void position(unsigned int index)
 {
-	float dim=0.0f;
+	if(index > 	(sizeof(paramlist)/sizeof(paramlist[0])))
+		return;
 
-
-	switch(index)
-	{
-		case 1:
-			dim=1.0f;
-			break;
-		case 2:
-			dim=0.5f;
-			break;
-		case 3:
-			dim=0.0f;
-			break;
-	
-	}
-		
-		
-	set1->dim=dim;
+	set1->dim=paramlist[index-1].value;
 }
-
 
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
