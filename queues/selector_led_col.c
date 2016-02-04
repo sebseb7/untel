@@ -71,7 +71,7 @@ static void position(unsigned int index)
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 
-	struct dmx_selector* selector = dmx_selector_add("LP COL",init,deinit,getname,getidbyname,position,1);
+	struct dmx_selector* selector = dmx_selector_add("LP COL",init,deinit,getname,getidbyname,position,(sizeof(colornameslist)/sizeof(colornameslist[0])));
 
 	set1=malloc(sizeof(struct dmx_set));
 	set1->attr_type=ATTR_TYPE_COLSET;

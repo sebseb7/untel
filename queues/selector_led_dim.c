@@ -59,7 +59,7 @@ static void position(unsigned int index)
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 	
-	struct dmx_selector* selector = dmx_selector_add("LP DIM",init,deinit,getname,getidbyname,position,1);
+	struct dmx_selector* selector = dmx_selector_add("LP DIM",init,deinit,getname,getidbyname,position,(sizeof(paramlist)/sizeof(paramlist[0])));
 
 	
 	set1=malloc(sizeof(struct dmx_set));
