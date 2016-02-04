@@ -38,7 +38,7 @@ void osc_send_flush(void)
 	if(bundle_size>0)
 	{
 		lo_send_bundle_from(t,s,current_bundle);
-		lo_bundle_free(current_bundle);
+		lo_bundle_free_recursive(current_bundle);
 		current_bundle = lo_bundle_new(LO_TT_IMMEDIATE);
 		bundle_size=0;
 	}
