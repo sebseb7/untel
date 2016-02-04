@@ -31,19 +31,6 @@ static struct colornames colornameslist[] = {
 
 };
 
-
-static void init(void)
-{
-}
-
-static void deinit(void)
-{
-}
-
-static void getname(__attribute__((__unused__)) unsigned int idx,__attribute__((__unused__)) char* name)
-{
-}
-
 static unsigned int getidbyname(char* name)
 {
 	for(unsigned int i=0;i< (sizeof(colornameslist)/sizeof(colornameslist[0]));i++)
@@ -56,7 +43,6 @@ static unsigned int getidbyname(char* name)
 	return 0;
 }
 
-
 static void position(unsigned int index)
 {
 	if(index > 	(sizeof(colornameslist)/sizeof(colornameslist[0])))
@@ -67,11 +53,10 @@ static void position(unsigned int index)
 	set1->color[2]=colornameslist[index-1].blue;
 }
 
-
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 
-	struct dmx_selector* selector = dmx_selector_add("LP COL",init,deinit,getname,getidbyname,position,(sizeof(colornameslist)/sizeof(colornameslist[0])));
+	struct dmx_selector* selector = dmx_selector_add("LP COL",getidbyname,position,(sizeof(colornameslist)/sizeof(colornameslist[0])));
 
 	set1=malloc(sizeof(struct dmx_set));
 	set1->attr_type=ATTR_TYPE_COLSET;

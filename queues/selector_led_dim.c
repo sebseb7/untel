@@ -23,19 +23,6 @@ static struct paramnames paramlist[] = {
 
 };
 
-
-static void init(void)
-{
-}
-
-static void deinit(void)
-{
-}
-
-static void getname(__attribute__((__unused__)) unsigned int idx,__attribute__((__unused__)) char* name)
-{
-}
-
 static unsigned int getidbyname(char* name)
 {
 	for(unsigned int i=0;i< (sizeof(paramlist)/sizeof(paramlist[0]));i++)
@@ -59,14 +46,12 @@ static void position(unsigned int index)
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 	
-	struct dmx_selector* selector = dmx_selector_add("LP DIM",init,deinit,getname,getidbyname,position,(sizeof(paramlist)/sizeof(paramlist[0])));
-
+	struct dmx_selector* selector = dmx_selector_add("LP DIM",getidbyname,position,(sizeof(paramlist)/sizeof(paramlist[0])));
 	
 	set1=malloc(sizeof(struct dmx_set));
 	set1->attr_type=ATTR_TYPE_DIM;
 	set1->dim=0.0f;
 	dmx_selector_attach_set(selector,set1);
-
 }
 
 
