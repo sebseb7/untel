@@ -75,6 +75,7 @@ struct dmx_selector * dmx_selector_add(char* name,void(*init)(void),void(*deinit
 	if(selector_inuse == selector_allocated)
 	{
 		//implement realloc
+		printf("f4\n");
 		exit(EXIT_FAILURE);
 	}
 	struct dmx_selector* selector = malloc(sizeof(*selector));

@@ -24,7 +24,7 @@ static void init(void)
 
 static void deinit(void)
 {
-//	dmx_image_del(image1);
+	dmx_image_del(image1);
 }
 
 

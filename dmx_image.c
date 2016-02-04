@@ -63,6 +63,7 @@ struct dmx_image * dmx_image_new(void)
 	if(images_inuse == images_allocated)
 	{
 		//implement realloc
+		printf("f2\n");
 		exit(EXIT_FAILURE);
 	}
 	struct dmx_image* image = malloc(sizeof(*image));

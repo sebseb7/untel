@@ -52,6 +52,7 @@ struct dmx_queue* dmx_queue_add(char* name,void (*init)(void),void (*deinit)(voi
 	if(queues_inuse == queues_allocated)
 	{
 		//implement realloc
+		printf("f3\n");
 		exit(EXIT_FAILURE);
 	}
 	struct dmx_queue* queue = malloc(sizeof(*queue));

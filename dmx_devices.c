@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -41,6 +42,7 @@ static void dmx_device_add(void* device,unsigned int addr,unsigned int type,char
 	if(devices_inuse == devices_allocated)
 	{
 		//implement realloc
+		printf("f1\n");
 		exit(EXIT_FAILURE);
 	}
 	strncpy(dmx_device_list[devices_inuse].name,name,DMX_NAME_LENGTH);

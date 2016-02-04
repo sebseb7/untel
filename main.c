@@ -124,6 +124,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 //		dmx_queues_print();
 		//dmx_selector_print();
 
+		//printf("%i\n",dmx_image_get_count());
+
 		osc_apply_manual(dmx_channels_get());
 		dmx_output_send(dmx_channels_get());
 		osc_update_ui();

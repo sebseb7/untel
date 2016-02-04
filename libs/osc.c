@@ -97,6 +97,7 @@ void osc_init(void)
 {
 	osc_connect("192.168.0.140");
 	osc_start_server();
+	update_ui |= (1<<OSC_UI_UPDATE_FADERS);
 }
 
 
