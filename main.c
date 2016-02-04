@@ -11,7 +11,9 @@
 #include "dmx_selector.h"
 #include "dmx_output.h"
 
+#ifdef DMX_OUT
 #include "keyboard.h"
+#endif
 #include "osc.h"
 
 
@@ -51,7 +53,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	unsigned int last_beat=getstarttime();
 	unsigned int last_beatpulse=getstarttime();
 
+#ifdef DMX_OUT
 	dmx_output_init();
+#endif
 	osc_init();
 	
 	printf("\033[2J");
@@ -127,7 +131,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		//printf("%i\n",dmx_image_get_count());
 
 		osc_apply_manual(dmx_channels_get());
+#ifdef DMX_OUT
 		dmx_output_send(dmx_channels_get());
+#endif
 		osc_update_ui();
 
 		usleep(25*1000);
