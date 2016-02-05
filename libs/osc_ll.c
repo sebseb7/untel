@@ -350,6 +350,38 @@ void osc_stop_server(void)
 
 
 
+static const char * seq_label[18] = {
+	NULL,NULL,NULL,NULL,NULL,NULL,
+	NULL,NULL,NULL,NULL,NULL,NULL,
+	NULL,NULL,NULL,NULL,NULL,NULL,
+	};
+
+void osc_update_seq_label(uint16_t idx,const char * value)
+{
+	if(seq_label[idx] != value) return;
+	char path[200];
+	sprintf(path, "/5/label%i",idx+1);
+	osc_send_s(path,value);
+	seq_label[idx]=value;
+}
+
+static int seq_leds[18*4] = {
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	};
+
+void osc_update_seq_led(uint16_t idx,unsigned char led,int value)
+{
+	if(seq_leds[idx*4+led] != value) return;
+	char path[200];
+	sprintf(path, "/5/led%i_%i",idx+1,led);
+	osc_send_f(path,value);
+	seq_leds[idx*4+led]=1;
+}
+
+
 static int label_init[6] = {
 	-1,-1,-1,-1,-1,-1 };
 
