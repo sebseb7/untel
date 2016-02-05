@@ -1,6 +1,5 @@
 next steps:
 
-- better api for blend & hold time for queue
 - gui for toggeling queues
 - device models
 - device parameters
