@@ -83,6 +83,37 @@ struct dmx_selector * dmx_selector_add(char* name,unsigned int(*getidbyname)(cha
 
 	return selector;
 }
+void dmx_selector_del(struct dmx_selector* selector)
+{
+	for(unsigned int i=0;i<selector_inuse;i++)
+	{
+		if(selector == dmx_selector_list[i])
+		{
+
+			if(i != (selector_inuse-1))
+			{
+				dmx_selector_list[i]=dmx_selector_list[selector_inuse-1];
+			}
+			selector_inuse--;
+			break;
+		}
+	}
+
+	unsigned int set_count = selector->set_count;
+	for(unsigned int i = 0;i<set_count;i++)
+	{
+		free(selector->set_list[i]);
+	}
+	free(selector->set_list);
+	free(selector);
+
+	if(0==selector_inuse)
+	{
+		free(dmx_selector_list);
+		dmx_selector_list = NULL;
+		selector_allocated=0;
+	}
+}
 
 void dmx_selector_attach_set(struct dmx_selector* selector,struct dmx_set* set)
 {

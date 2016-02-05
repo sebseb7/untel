@@ -163,6 +163,12 @@ void dmx_image_del(struct dmx_image* image)
 				dmx_image_list[i]=dmx_image_list[images_inuse-1];
 			}
 			images_inuse--;
+			if(0==images_inuse)
+			{
+				free(dmx_image_list);
+				dmx_image_list = NULL;
+				images_allocated=0;
+			}
 			return;
 		}
 	}

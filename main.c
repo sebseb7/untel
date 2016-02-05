@@ -139,6 +139,25 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		usleep(25*1000);
 	}
 
+#ifdef DMX_OUT
+	dmx_output_deinit();
+#endif
+	osc_deinit();
+
+
+	unsigned int selector_count = dmx_selector_get_count();
+	for(unsigned int i = 0;i<selector_count;i++)
+	{
+		struct dmx_selector* selector = dmx_selector_getbyidx(0);
+		dmx_selector_del(selector);
+	}
+	unsigned int queue_count = dmx_queue_get_count();
+	for(unsigned int i = 0;i<queue_count;i++)
+	{
+		struct dmx_queue* queue = dmx_queue_getbyidx(0);
+		dmx_queue_del(queue);
+	}
+	dmx_devices_free();
 	return 0;
 }
 

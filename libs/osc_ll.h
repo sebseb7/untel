@@ -16,6 +16,8 @@ void osc_send_ff(const char * 	path,float num,float num2);
 void osc_send_s(const char * 	path,const char * value);
 void osc_send_flush(void);
 void osc_start_server(void);
+void osc_stop_server(void);
+void osc_disconnect(void);
 
 
 int poll_osc_event(struct osc_event* event_ref);

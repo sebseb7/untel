@@ -58,6 +58,20 @@ unsigned int dmx_get_device_count(void)
 {
 	return devices_inuse;
 }
+void dmx_devices_free(void)
+{
+	for(unsigned int i=0;i<devices_inuse;i++)
+	{
+		if(dmx_device_list[i].type == DMX_DEVICE_LEDPAR)
+		{
+			struct dmx_device_ledpar* ledpar = dmx_device_list[i].device;
+			free(ledpar);
+		}
+	}
+	devices_inuse=0;
+	devices_allocated=0;
+	free(dmx_device_list);
+}
 void dmx_devices_clear(void)
 {
 	for(unsigned int i=0;i<devices_inuse;i++)

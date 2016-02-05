@@ -38,6 +38,7 @@ unsigned int dmx_get_device_count(void);
 struct dmx_device* dmx_get_device(unsigned int type,char* name);
 struct dmx_device* dmx_get_device_byidx(unsigned int index);
 void dmx_devices_clear(void);
+void dmx_devices_free(void);
 				
 void dmx_device_render_ledpar(struct dmx_device* device);
 

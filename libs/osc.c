@@ -99,6 +99,11 @@ void osc_init(void)
 	osc_start_server();
 	update_ui |= (1<<OSC_UI_UPDATE_FADERS);
 }
+void osc_deinit(void)
+{
+	osc_disconnect();
+	osc_stop_server();
+}
 
 
 void osc_update_ui(void)

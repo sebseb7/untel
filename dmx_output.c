@@ -75,3 +75,17 @@ void dmx_output_send(unsigned char* out)
 		fprintf(stderr,"write failed , error %d (%s)\n",ret, ftdi_get_error_string(ftdi));
 	}
 }
+
+void dmx_output_deinit(void)
+{
+	int ret;
+
+	if ((ret = ftdi_usb_close(ftdi)) < 0)
+	{
+		fprintf(stderr, "unable to close ftdi device: %d (%s)\n", ret, ftdi_get_error_string(ftdi));
+		ftdi_free(ftdi);
+		exit(-1);
+	}
+	ftdi_free(ftdi);
+
+}

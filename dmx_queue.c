@@ -68,6 +68,33 @@ struct dmx_queue* dmx_queue_add(char* name,void (*init)(void),void (*deinit)(voi
 
 	return queue;
 }
+void dmx_queue_del(struct dmx_queue* queue)
+{
+	if(queue->active!=0)
+		queue->deinit();
+	
+	for(unsigned int i=0;i<queues_inuse;i++)
+	{
+		if(queue == dmx_queue_list[i])
+		{
+
+			if(i != (queues_inuse-1))
+			{
+				dmx_queue_list[i]=dmx_queue_list[queues_inuse-1];
+			}
+			queues_inuse--;
+			break;
+		}
+	}
+	free(queue);
+
+	if(0==queues_inuse)
+	{
+		free(dmx_queue_list);
+		dmx_queue_list = NULL;
+		queues_allocated=0;
+	}
+}
 void dmx_queue_activate(struct dmx_queue* queue)
 {
 	if(queue->active==0)
