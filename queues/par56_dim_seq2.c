@@ -14,7 +14,7 @@ static void init(void)
 	dmx_device_create_ledpar6(24,"hinten links");
 	dmx_device_create_ledpar6(32,"hinten rechts");
 		
-	image1 = dmx_image_new();
+	image1 = dmx_image_new(0);
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"vorn links");
 	dmx_image_set_selector(image1,"LP DIM","on");
 	dmx_image_show(image1);
@@ -33,21 +33,16 @@ static unsigned int step = 0;
 #define beatsmul 1
 static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 {
-	step++;
-
-	if(step == 1)
+	switch(step++)
 	{
-//		dmx_image_blend_selector(image1,"LP DIM","half",5);
+		case 0:
+			dmx_image_blend_selector(image1,"LP DIM","off",20000);
+			return 20000;
+		default:
+			dmx_image_blend_selector(image1,"LP DIM","on",20000);
+			step=0;
+			return 20000;
 	}
-	if(step == 20)
-	{
-		dmx_image_blend_selector(image1,"LP DIM","on",5);
-	}
-
-	if(step==40)
-		step=0;
-
-	return 0;
 }
 
 

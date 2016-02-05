@@ -14,7 +14,7 @@ static void init(void)
 	dmx_device_create_ledpar6(24,"hinten links");
 	dmx_device_create_ledpar6(32,"hinten rechts");
 		
-	image2 = dmx_image_new();
+	image2 = dmx_image_new(0);
 	
 	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"vorn links");
 	dmx_image_set_selector(image2,"LP COL","green");
@@ -34,28 +34,28 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 	switch(step++)
 	{
 		case 0:
-			dmx_image_set_selector(image2,"LP COL","red");
+			dmx_image_blend_selector(image2,"LP COL","red",20000);
 			return 20000;
 		case 1:
-			dmx_image_set_selector(image2,"LP COL","blue");
+			dmx_image_blend_selector(image2,"LP COL","blue",20000);
 			return 20000;
 		case 2:
-			dmx_image_set_selector(image2,"LP COL","green");
+			dmx_image_blend_selector(image2,"LP COL","green",20000);
 			return 20000;
 		case 3:
-			dmx_image_set_selector(image2,"LP COL","orange");
+			dmx_image_blend_selector(image2,"LP COL","orange",20000);
 			return 20000;
 		case 4:
-			dmx_image_set_selector(image2,"LP COL","cyan");
+			dmx_image_blend_selector(image2,"LP COL","cyan",20000);
 			return 20000;
 		case 5:
-			dmx_image_set_selector(image2,"LP COL","magenta");
+			dmx_image_blend_selector(image2,"LP COL","magenta",20000);
 			return 20000;
 		case 6:
-			dmx_image_set_selector(image2,"LP COL","yellow");
+			dmx_image_blend_selector(image2,"LP COL","yellow",20000);
 			return 20000;
 		default:
-			dmx_image_set_selector(image2,"LP COL","rose");
+			dmx_image_blend_selector(image2,"LP COL","rose",20000);
 			step=0;
 			return 20000;
 	}

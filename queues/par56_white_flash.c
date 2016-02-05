@@ -5,7 +5,7 @@
 #include "dmx_devices.h"
 #include "dmx_image.h"
 
-static struct dmx_image* image1;
+static struct dmx_image* image2;
 
 static void init(void)
 {
@@ -14,34 +14,32 @@ static void init(void)
 	dmx_device_create_ledpar6(24,"hinten links");
 	dmx_device_create_ledpar6(32,"hinten rechts");
 		
-	image1 = dmx_image_new(0);
-	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"vorn links");
-	dmx_image_set_selector(image1,"LP DIM","on");
-	dmx_image_show(image1);
-
-	
 }
 
 static void deinit(void)
 {
-	dmx_image_del(image1);
+	if(image2 != NULL)
+		dmx_image_del(image2);
 }
-
 
 static unsigned int step = 0;
 
-#define beatsmul 1
 static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 {
 	switch(step++)
 	{
 		case 0:
-			dmx_image_blend_selector(image1,"LP DIM","off",2000);
-			return 2000;
+			image2 = dmx_image_new(1);
+			dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"vorn links");
+			dmx_image_set_selector(image2,"LP COL","red");
+			dmx_image_set_selector(image2,"LP DIM","on");
+			dmx_image_show(image2);
+			return 100;
 		default:
-			dmx_image_blend_selector(image1,"LP DIM","on",2000);
+			dmx_image_del(image2);
+			image2 = NULL; 
 			step=0;
-			return 2000;
+			return 300;
 	}
 }
 
@@ -49,7 +47,7 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 
-	dmx_queue_add("LED-DIM-SEQ1",init,deinit,tick);
+	dmx_queue_add("LED-WHITEFLASH",init,deinit,tick);
 
 }
 

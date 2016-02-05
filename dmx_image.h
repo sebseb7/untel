@@ -24,6 +24,8 @@ struct dmx_image
 {
 	unsigned int active;
 
+	unsigned int priority;
+
 	unsigned int dev_alloc;
 	unsigned int dev_count;
 	unsigned int* dev_types;
@@ -38,7 +40,7 @@ struct dmx_image
 	char** selector_blendtopos;
 };
 	
-struct dmx_image * dmx_image_new(void);
+struct dmx_image * dmx_image_new(unsigned int priority);
 void dmx_image_add_device(struct dmx_image* image,unsigned int type,char* name);
 void dmx_image_set_selector(struct dmx_image* image,char* name, char* pos);
 void dmx_image_blend_selector(struct dmx_image* image,char* name, char* pos,unsigned int beatPulses);

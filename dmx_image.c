@@ -52,7 +52,7 @@ struct dmx_image* dmx_image_getbyidx(unsigned int index)
 	return NULL;
 }
 
-struct dmx_image * dmx_image_new(void)
+struct dmx_image * dmx_image_new(unsigned int priority)
 {
 	if(0==images_allocated)
 	{
@@ -71,6 +71,8 @@ struct dmx_image * dmx_image_new(void)
 	images_inuse++;
 	
 	image->active=0;
+
+	image->priority=priority;
 
 	image->dev_alloc=DMX_IMAGE_DEVICELIST_ALLOCATE_INITIAL;
 	image->dev_count=0;

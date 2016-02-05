@@ -100,11 +100,15 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		
 		//render devices (images)
 		unsigned int image_count = dmx_image_get_count();
-		for(unsigned int i = 0;i<image_count;i++)
+		for(unsigned int pri = 0;pri<3;pri++)
 		{
-			struct dmx_image* image = dmx_image_getbyidx(i);
+			for(unsigned int i = 0;i<image_count;i++)
+			{
+				struct dmx_image* image = dmx_image_getbyidx(i);
 
-			dmx_image_render(image,beatpulses);
+				if(image->priority == pri)
+					dmx_image_render(image,currtime);
+			}
 		}
 
 
