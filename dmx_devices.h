@@ -1,7 +1,7 @@
 #ifndef _DMX_DEVICES_H
 #define _DMX_DEVICES_H
 
-#define DMX_NAME_LENGTH 20
+#define DMX_NAME_LENGTH 40
 
 enum {
 	DMX_DEVICE_GROUP,

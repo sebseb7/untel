@@ -44,14 +44,10 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	//render
 
 	unsigned int bpm=165;
-	unsigned int beatpulse=bpm*24;
 	unsigned int beat01ms=600000/bpm;
-	unsigned int beatpulse01ms=600000/beatpulse;
 
-	unsigned int beats=0;
-	unsigned int beatpulses=0;
 	unsigned int last_beat=getstarttime();
-	unsigned int last_beatpulse=getstarttime();
+	unsigned int lastsend=getstarttime();
 
 #ifdef DMX_OUT
 	dmx_output_init();
@@ -67,13 +63,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		unsigned int currtime = getstarttime();
 		while(currtime > (last_beat+beat01ms) )
 		{
-			beats++;
 			last_beat=currtime;
-		}
-		while(currtime > (last_beatpulse+beatpulse01ms) )
-		{
-			beatpulses++;
-			last_beatpulse=currtime;
 		}
 	
 		dmx_channels_clear();
@@ -139,8 +129,12 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		dmx_output_send(dmx_channels_get());
 #endif
 		osc_update_ui();
-
-		usleep(25*1000);
+		
+		unsigned int currtime2 = getstarttime();
+		int sleeptime = (25*1000)-((currtime2-lastsend)/10);
+		//printf("%i\n",sleeptime);
+		if(sleeptime > 0) usleep(sleeptime);
+		lastsend = currtime2;
 	}
 
 #ifdef DMX_OUT

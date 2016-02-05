@@ -8,6 +8,7 @@
 #include "main.h"
 
 #include "dmx_channels.h"
+#include "dmx_queue.h"
 
 
 
@@ -118,18 +119,31 @@ void osc_update_ui(void)
 			{
 				osc_update_manual_state(i,manual[i+osc_manual_ch_offset]);	
 			}
+		
 		}
-	}
-	
-	
-	if((osc_current_tab == 2)||(osc_current_tab == 0))
-	{
+			
 		unsigned char* out = dmx_channels_get();
 		for(int i=0;i<16;i++)
 		{
 			osc_update_fader(i,i+osc_manual_ch_offset,out[i+osc_manual_ch_offset]);	
 		}
 	}
+
+	if((osc_current_tab == 1)||(osc_current_tab == 0))
+	{
+		unsigned int queue_count = dmx_queue_get_count();
+		for(unsigned int i = 0;i<queue_count;i++)
+		{
+			if(i < 6)
+			{
+				struct dmx_queue* queue = dmx_queue_getbyidx(i);
+
+				osc_update_queue_label(i,queue->name);
+				osc_update_queue_active(i,queue->active);
+			}
+		}
+	}
+
 	osc_send_flush();
 }
 

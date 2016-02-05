@@ -27,15 +27,16 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 
 	if(step == 1)
 	{
-		if(active == 1) dmx_queue_deactivate(dmx_queue_getbyname("LED-DIM-SEQ1"));
-		if(active != 2) dmx_queue_activate(dmx_queue_getbyname("LED-DIM-SEQ2"));
-		active=2;
+			dmx_queue_activate(dmx_queue_getbyname("LED-DIM-SEQ2"));
+//		if(active == 1) dmx_queue_deactivate(dmx_queue_getbyname("LED-DIM-SEQ1"));
+//		if(active != 2) dmx_queue_activate(dmx_queue_getbyname("LED-DIM-SEQ2"));
+//		active=2;
 	}
 	if(step == 500)
 	{
-		if(active != 1) dmx_queue_activate(dmx_queue_getbyname("LED-DIM-SEQ1"));
-		if(active == 2) dmx_queue_deactivate(dmx_queue_getbyname("LED-DIM-SEQ2"));
-		active=1;
+//		if(active != 1) dmx_queue_activate(dmx_queue_getbyname("LED-DIM-SEQ1"));
+//		if(active == 2) dmx_queue_deactivate(dmx_queue_getbyname("LED-DIM-SEQ2"));
+//		active=1;
 	}
 
 	if(step==1000)
