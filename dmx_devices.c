@@ -62,9 +62,9 @@ void dmx_devices_free(void)
 {
 	for(unsigned int i=0;i<devices_inuse;i++)
 	{
-		if(dmx_device_list[i].type == DMX_DEVICE_LEDPAR)
+		if(dmx_device_list[i].type == DMX_DEVICE_LEDPAR6)
 		{
-			struct dmx_device_ledpar* ledpar = dmx_device_list[i].device;
+			struct dmx_device_ledpar6* ledpar = dmx_device_list[i].device;
 			free(ledpar);
 		}
 	}
@@ -76,9 +76,9 @@ void dmx_devices_clear(void)
 {
 	for(unsigned int i=0;i<devices_inuse;i++)
 	{
-		if(dmx_device_list[i].type == DMX_DEVICE_LEDPAR)
+		if(dmx_device_list[i].type == DMX_DEVICE_LEDPAR6)
 		{
-			struct dmx_device_ledpar* ledpar = dmx_device_list[i].device;
+			struct dmx_device_ledpar6* ledpar = dmx_device_list[i].device;
 			ledpar->red = 0;
 			ledpar->green = 0;
 			ledpar->blue = 0;
@@ -108,17 +108,16 @@ struct dmx_device* dmx_get_device_byidx(unsigned int index)
 }
 
 
-struct dmx_device_ledpar* dmx_device_create_ledpar(unsigned int addr,unsigned int type,char* name)
+struct dmx_device_ledpar6* dmx_device_create_ledpar6(unsigned int addr,char* name)
 {
 	if(devices_inuse>0)
 	{
 		for(unsigned int i=0;i<devices_inuse;i++)
 		{
 			if(
-				(dmx_device_list[i].type==DMX_DEVICE_LEDPAR)&&
+				(dmx_device_list[i].type==DMX_DEVICE_LEDPAR6)&&
 				(dmx_device_list[i].addr==addr)&&
-				(0==strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH))&&
-				(((struct dmx_device_ledpar*) dmx_device_list[i].device)->type==type)
+				(0==strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH))
 			)
 			{
 					dmx_device_list[i].refcount++;
@@ -127,20 +126,19 @@ struct dmx_device_ledpar* dmx_device_create_ledpar(unsigned int addr,unsigned in
 		}
 	}
 	
-	struct dmx_device_ledpar* ledpar = malloc(sizeof(*ledpar));
+	struct dmx_device_ledpar6* ledpar = malloc(sizeof(*ledpar));
 
-	ledpar->type = type;
-
-	dmx_device_add(ledpar,addr,DMX_DEVICE_LEDPAR,name);
+	dmx_device_add(ledpar,addr,DMX_DEVICE_LEDPAR6,name);
 
 	return ledpar;
 }
 //void dmx_device_create_fog(unsigned int addr);
+//void dmx_device_create_miniscanhpe(unsigned int addr);
 
 
-void dmx_device_render_ledpar(struct dmx_device* device)
+void dmx_device_render_ledpar6(struct dmx_device* device)
 {
-	struct dmx_device_ledpar* ledpar = device->device;
+	struct dmx_device_ledpar6* ledpar = device->device;
 
 	unsigned char red=0;
 	unsigned char green=0;

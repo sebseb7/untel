@@ -185,9 +185,9 @@ void dmx_image_hide(struct dmx_image* image)
 
 static void dmx_set_render(unsigned int type,char* name,struct dmx_set* set)
 {
-	if(type == DMX_DEVICE_LEDPAR)
+	if(type == DMX_DEVICE_LEDPAR6)
 	{
-		struct dmx_device_ledpar* ledpar = dmx_get_device(DMX_DEVICE_LEDPAR, name)->device;
+		struct dmx_device_ledpar6* ledpar = dmx_get_device(DMX_DEVICE_LEDPAR6, name)->device;
 	
 		if(set->attr_type==ATTR_TYPE_COLSET)
 		{
@@ -209,9 +209,9 @@ static void dmx_set_render(unsigned int type,char* name,struct dmx_set* set)
 
 static void dmx_set_render_blend(unsigned int type,char* name,struct dmx_set* set,unsigned int pct)
 {
-	if(type == DMX_DEVICE_LEDPAR)
+	if(type == DMX_DEVICE_LEDPAR6)
 	{
-		struct dmx_device_ledpar* ledpar = dmx_get_device(DMX_DEVICE_LEDPAR, name)->device;
+		struct dmx_device_ledpar6* ledpar = dmx_get_device(DMX_DEVICE_LEDPAR6, name)->device;
 	
 		if(set->attr_type==ATTR_TYPE_COLSET)
 		{

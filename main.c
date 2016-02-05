@@ -25,7 +25,7 @@ static unsigned int getstarttime(void)
 {
 	struct timeval tv;
 	gettimeofday(&tv,NULL);
-	unsigned long long current_time = tv.tv_sec*(unsigned long long)1000+(tv.tv_usec / 1000);
+	unsigned long long current_time = tv.tv_sec*(unsigned long long)10000+(tv.tv_usec / 100);
 
 	if(start_time == 0)
 		start_time = current_time;
@@ -45,8 +45,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 	unsigned int bpm=165;
 	unsigned int beatpulse=bpm*24;
-	unsigned int beatms=60000/bpm;
-	unsigned int beatpulsems=60000/beatpulse;
+	unsigned int beat01ms=600000/bpm;
+	unsigned int beatpulse01ms=600000/beatpulse;
 
 	unsigned int beats=0;
 	unsigned int beatpulses=0;
@@ -65,12 +65,12 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		osc_process_input();
 
 		unsigned int currtime = getstarttime();
-		while(currtime > (last_beat+beatms) )
+		while(currtime > (last_beat+beat01ms) )
 		{
 			beats++;
 			last_beat=currtime;
 		}
-		while(currtime > (last_beatpulse+beatpulsems) )
+		while(currtime > (last_beatpulse+beatpulse01ms) )
 		{
 			beatpulses++;
 			last_beatpulse=currtime;
@@ -88,8 +88,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			struct dmx_queue* queue = dmx_queue_getbyidx(i);
 			if((queue->active!=0)&&(queue->next < currtime))
 			{
-				unsigned int delay = queue->tick(beats);
-				queue->next = currtime+((beatms/24)*delay);
+				unsigned int delay = queue->tick(beat01ms-(currtime-last_beat));
+				queue->next = currtime+delay;
 			}
 		}
 
@@ -116,9 +116,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		{
 			struct dmx_device* device = dmx_get_device_byidx(i);
 			
-			if(device->type == DMX_DEVICE_LEDPAR)
+			if(device->type == DMX_DEVICE_LEDPAR6)
 			{
-				dmx_device_render_ledpar(device);
+				dmx_device_render_ledpar6(device);
 			}
 		}
 			

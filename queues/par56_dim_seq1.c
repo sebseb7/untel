@@ -9,13 +9,13 @@ static struct dmx_image* image1;
 
 static void init(void)
 {
-	dmx_device_create_ledpar(8,0,"vorn links");
-	dmx_device_create_ledpar(16,0,"vorn rechts");
-	dmx_device_create_ledpar(24,0,"hinten links");
-	dmx_device_create_ledpar(32,0,"hinten rechts");
+	dmx_device_create_ledpar6(8,"vorn links");
+	dmx_device_create_ledpar6(16,"vorn rechts");
+	dmx_device_create_ledpar6(24,"hinten links");
+	dmx_device_create_ledpar6(32,"hinten rechts");
 		
 	image1 = dmx_image_new();
-	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR,"vorn links");
+	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"vorn links");
 	dmx_image_set_selector(image1,"LP DIM","on");
 	dmx_image_show(image1);
 
@@ -37,7 +37,7 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 
 	if(step == 1)
 	{
-		dmx_image_set_selector(image1,"LP DIM","off");
+//		dmx_image_set_selector(image1,"LP DIM","off");
 	}
 	if(step == 20)
 	{
@@ -45,7 +45,7 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 	}
 	if(step == 21)
 	{
-		dmx_image_set_selector(image1,"LP DIM","off");
+//		dmx_image_set_selector(image1,"LP DIM","off");
 	}
 	if(step == 24)
 	{
@@ -53,7 +53,7 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 	}
 	if(step == 25)
 	{
-		dmx_image_blend_selector(image1,"LP DIM","off",5);
+//		dmx_image_blend_selector(image1,"LP DIM","off",5);
 	}
 
 	if(step==60)

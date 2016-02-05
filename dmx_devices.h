@@ -6,7 +6,10 @@
 enum {
 	DMX_DEVICE_GROUP,
 	DMX_DEVICE_FOG,
-	DMX_DEVICE_LEDPAR,
+	DMX_DEVICE_LEDPAR6,
+	DMX_DEVICE_LEDPAR7,
+	DMX_DEVICE_MINISCANHPE,
+	DMX_DEVICE_QUADPHASE,
 };
 
 struct dmx_device {
@@ -17,12 +20,23 @@ struct dmx_device {
 	void* device;
 };
 
-struct dmx_device_ledpar {
-	unsigned int type;
+struct dmx_device_ledpar6 {
 	unsigned char red;
 	unsigned char green;
 	unsigned char blue;
 	float dim;
+	unsigned int blackout;
+};
+
+struct dmx_device_miniscanhpe {
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
+	float dim;
+	float x;
+	float y;
+	unsigned char gobo;
+	float gobo_rot;
 	unsigned int blackout;
 };
 
@@ -32,7 +46,8 @@ struct dmx_device_fog {
 };
 
 
-struct dmx_device_ledpar * dmx_device_create_ledpar(unsigned int addr,unsigned int type,char* name);
+struct dmx_device_ledpar6 * dmx_device_create_ledpar6(unsigned int addr,char* name);
+struct dmx_device_miniscanhpe * dmx_device_create_miniscanhpe(unsigned int addr,char* name);
 struct dmx_device_fog*  dmx_device_create_fog(unsigned int addr);
 unsigned int dmx_get_device_count(void);
 struct dmx_device* dmx_get_device(unsigned int type,char* name);
@@ -40,9 +55,10 @@ struct dmx_device* dmx_get_device_byidx(unsigned int index);
 void dmx_devices_clear(void);
 void dmx_devices_free(void);
 				
-void dmx_device_render_ledpar(struct dmx_device* device);
+void dmx_device_render_ledpar6(struct dmx_device* device);
+void dmx_device_render_miniscanhpe(struct dmx_device* device);
+void dmx_device_render_fog(struct dmx_device* device);
 
 
-struct dmx_device_ledpar * dmx_ledpar_lock(unsigned int addr,unsigned int type,char* name);
 
 #endif
