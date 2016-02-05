@@ -36,15 +36,18 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 
 	if(step == 1)
 	{
-		dmx_image_blend_selector(image2,"LP COL","red",6*beatsmul);
+		dmx_image_set_selector(image2,"LP COL","red");
+		//dmx_image_blend_selector(image2,"LP COL","red",6*beatsmul);
 	}
 	if(step == 2)
 	{
-		dmx_image_blend_selector(image2,"LP COL","blue",6*beatsmul);
+		dmx_image_set_selector(image2,"LP COL","blue");
+		//dmx_image_blend_selector(image2,"LP COL","blue",6*beatsmul);
 	}
 	if(step == 3)
 	{
-		dmx_image_blend_selector(image2,"LP COL","green",6*beatsmul);
+		dmx_image_set_selector(image2,"LP COL","green");
+		//dmx_image_blend_selector(image2,"LP COL","green",6*beatsmul);
 	}
 
 
