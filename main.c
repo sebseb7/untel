@@ -78,6 +78,11 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			struct dmx_queue* queue = dmx_queue_getbyidx(i);
 			if((queue->active!=0)&&(queue->next < currtime))
 			{
+				if(queue->led_tog==0)
+					queue->led_tog = 1;
+				else 
+					queue->led_tog = 0;
+
 				unsigned int delay = queue->tick(beat01ms-(currtime-last_beat));
 				queue->next = currtime+delay;
 			}
@@ -128,7 +133,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 #ifdef DMX_OUT
 		dmx_output_send(dmx_channels_get());
 #endif
-		osc_update_ui();
+		osc_update_ui(currtime);
 		
 		unsigned int currtime2 = getstarttime();
 		int sleeptime = (25*1000)-((currtime2-lastsend)/10);

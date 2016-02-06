@@ -61,6 +61,7 @@ struct dmx_queue* dmx_queue_add(char* name,void (*init)(void),void (*deinit)(voi
 
 	strncpy(queue->name,name,DMX_NAME_LENGTH);
 	queue->active = 0;
+	queue->led_tog = 0;
 	queue->init = init;
 	queue->deinit = deinit;
 	queue->tick = tick;

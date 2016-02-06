@@ -23,6 +23,7 @@ void osc_disconnect(void);
 int poll_osc_event(struct osc_event* event_ref);
 				
 void osc_update_seq_label(uint16_t idx,const char * value);
+void osc_update_seq_sublabel(uint16_t idx,char * value);
 void osc_update_seq_led(uint16_t idx,unsigned char led,int value);
 				
 void osc_update_queue_label(uint16_t idx,const char * value);

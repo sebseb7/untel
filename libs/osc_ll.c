@@ -36,23 +36,6 @@ void osc_connect(__attribute__((unused)) const char * 	host)
 	bundle_size=0;
 #endif
 }
-void osc_disconnect(void)
-{
-#ifdef OSC_OUT
-	lo_server_free(s);
-	s = NULL;
-	lo_address_free(t);
-	t= NULL;
-	lo_bundle_free_recursive(current_bundle);
-	for (unsigned int i = 0; i < bundle_size; i++)
-	{
-		free(bundle_path_names[i]);
-		bundle_path_names[i]=NULL;
-	}
-	current_bundle=NULL;
-#endif
-
-}
 void osc_send_flush(void)
 {
 #ifdef OSC_OUT
@@ -349,8 +332,9 @@ void osc_stop_server(void)
 
 
 
+#define OSC_SEQ_COUNT 18
 
-static const char * seq_label[18] = {
+static const char * seq_label[OSC_SEQ_COUNT] = {
 	NULL,NULL,NULL,NULL,NULL,NULL,
 	NULL,NULL,NULL,NULL,NULL,NULL,
 	NULL,NULL,NULL,NULL,NULL,NULL,
@@ -358,11 +342,30 @@ static const char * seq_label[18] = {
 
 void osc_update_seq_label(uint16_t idx,const char * value)
 {
-	if(seq_label[idx] != value) return;
+	if(seq_label[idx] == value) return;
 	char path[200];
 	sprintf(path, "/5/label%i",idx+1);
 	osc_send_s(path,value);
 	seq_label[idx]=value;
+}
+static char * seq_sublabel[OSC_SEQ_COUNT] = {
+	NULL,NULL,NULL,NULL,NULL,NULL,
+	NULL,NULL,NULL,NULL,NULL,NULL,
+	NULL,NULL,NULL,NULL,NULL,NULL,
+	};
+
+void osc_update_seq_sublabel(uint16_t idx,char * value)
+{
+	if(seq_sublabel[idx]!=NULL)
+		if(strcmp(value,seq_sublabel[idx])==0) return;
+
+	if(seq_sublabel[idx]!=NULL)
+		free(seq_sublabel[idx]);
+
+	seq_sublabel[idx] = strdup(value);
+	char path[200];
+	sprintf(path, "/5/sublabel%i",idx+1);
+	osc_send_s(path,seq_sublabel[idx]);
 }
 
 static int seq_leds[18*4] = {
@@ -374,11 +377,11 @@ static int seq_leds[18*4] = {
 
 void osc_update_seq_led(uint16_t idx,unsigned char led,int value)
 {
-	if(seq_leds[idx*4+led] != value) return;
+	if(seq_leds[idx*4+led] == value) return;
 	char path[200];
 	sprintf(path, "/5/led%i_%i",idx+1,led);
 	osc_send_f(path,value);
-	seq_leds[idx*4+led]=1;
+	seq_leds[idx*4+led]=value;
 }
 
 
@@ -571,5 +574,28 @@ void osc_update_manual_state(uint16_t slot,uint16_t state)
 	char path[200];
 	sprintf(path, "/2/override/1/%i",slot+1);
 	osc_send_f(path,state);
+}
+
+
+void osc_disconnect(void)
+{
+#ifdef OSC_OUT
+	lo_server_free(s);
+	s = NULL;
+	lo_address_free(t);
+	t= NULL;
+	lo_bundle_free_recursive(current_bundle);
+	for (unsigned int i = 0; i < bundle_size; i++)
+	{
+		free(bundle_path_names[i]);
+		bundle_path_names[i]=NULL;
+	}
+	current_bundle=NULL;
+#endif
+	
+	for(unsigned int i = 0;i<OSC_SEQ_COUNT;i++)
+		if(seq_sublabel[i]!=NULL)
+			free(seq_sublabel[i]);
+
 }
 

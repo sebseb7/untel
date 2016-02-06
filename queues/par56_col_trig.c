@@ -26,15 +26,14 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 	switch(step++)
 	{
 		case 0:
-			dmx_queue_activate(dmx_queue_getbyname("LED-COL-SWITCH"));
-//			if(active == 1) dmx_queue_deactivate(dmx_queue_getbyname("LED-COL-SLIDE"));
-//			if(active != 2) dmx_queue_activate(dmx_queue_getbyname("LED-COL-SWITCH"));
-//			active=2;
+			if(active == 1) dmx_queue_deactivate(dmx_queue_getbyname("LED-COL-SLIDE"));
+			if(active != 2) dmx_queue_activate(dmx_queue_getbyname("LED-COL-SWITCH"));
+			active=2;
 			return 200000;
 		default:
-//			if(active != 1) dmx_queue_activate(dmx_queue_getbyname("LED-COL-SLIDE"));
-//			if(active == 2) dmx_queue_deactivate(dmx_queue_getbyname("LED-COL-SWITCH"));
-//			active=1;
+			if(active != 1) dmx_queue_activate(dmx_queue_getbyname("LED-COL-SLIDE"));
+			if(active == 2) dmx_queue_deactivate(dmx_queue_getbyname("LED-COL-SWITCH"));
+			active=1;
 			step=0;
 			return 200000;
 	}

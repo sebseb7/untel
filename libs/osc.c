@@ -107,7 +107,7 @@ void osc_deinit(void)
 }
 
 
-void osc_update_ui(void)
+void osc_update_ui(unsigned int time)
 {
 	if((osc_current_tab == 2)||(osc_current_tab == 0))
 	{
@@ -129,17 +129,28 @@ void osc_update_ui(void)
 		}
 	}
 
-	if((osc_current_tab == 1)||(osc_current_tab == 0))
+	if((osc_current_tab == 5)||(osc_current_tab == 0))
 	{
 		unsigned int queue_count = dmx_queue_get_count();
 		for(unsigned int i = 0;i<queue_count;i++)
 		{
-			if(i < 6)
+			if(i < 18)
 			{
 				struct dmx_queue* queue = dmx_queue_getbyidx(i);
 
-				osc_update_queue_label(i,queue->name);
-				osc_update_queue_active(i,queue->active);
+				osc_update_seq_label(i,queue->name);
+				char sublabel[200];
+				if(queue->active)
+				{
+					sprintf(sublabel, "%i",((queue->next)-time)/1000);
+				}
+				else
+				{
+					sprintf(sublabel, "  ");
+				}
+				osc_update_seq_sublabel(i,sublabel);
+				osc_update_seq_led(i,2,queue->active);
+				osc_update_seq_led(i,3,queue->led_tog);
 			}
 		}
 	}
