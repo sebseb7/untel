@@ -127,6 +127,12 @@ struct dmx_device_ledpar6* dmx_device_create_ledpar6(unsigned int addr,char* nam
 	}
 	
 	struct dmx_device_ledpar6* ledpar = malloc(sizeof(*ledpar));
+	
+	ledpar->red = 0;
+	ledpar->green = 0;
+	ledpar->blue = 0;
+	ledpar->dim = 0.0f;
+	ledpar->blackout = 0;
 
 	dmx_device_add(ledpar,addr,DMX_DEVICE_LEDPAR6,name);
 

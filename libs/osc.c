@@ -61,6 +61,23 @@ void osc_process_input(void)
 		{
 			//	custom_master[oscev.a] = oscev.value;
 		}
+		else if(oscev.type == 11)
+		{
+			if(oscev.a < dmx_queue_get_count())
+			{
+				struct dmx_queue* queue = dmx_queue_getbyidx(oscev.a);
+				if(queue->button==1)
+				{
+					queue->button=0;
+					dmx_queue_deactivate(queue);
+				}
+				else
+				{
+					queue->button=1;
+					dmx_queue_activate(queue);
+				}
+			}
+		}
 		else if(oscev.type == 8)
 		{
 			update_ui |= (1<<OSC_UI_UPDATE_FADERS);
@@ -134,7 +151,7 @@ void osc_update_ui(unsigned int time)
 		unsigned int queue_count = dmx_queue_get_count();
 		for(unsigned int i = 0;i<queue_count;i++)
 		{
-			if(i < 18)
+			if((i < 18) &&(i <  dmx_queue_get_count()))
 			{
 				struct dmx_queue* queue = dmx_queue_getbyidx(i);
 
@@ -150,7 +167,8 @@ void osc_update_ui(unsigned int time)
 				}
 				osc_update_seq_sublabel(i,sublabel);
 				osc_update_seq_led(i,2,queue->active);
-				osc_update_seq_led(i,3,queue->led_tog);
+				osc_update_seq_led(i,3, queue->active ? queue->led_tog : 0 );
+				osc_update_seq_led(i,1,queue->button);
 			}
 		}
 	}

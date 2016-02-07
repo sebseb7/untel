@@ -6,6 +6,7 @@
 #include "dmx_image.h"
 
 static struct dmx_image* image1;
+static unsigned int step = 0;
 
 static void init(void)
 {
@@ -25,10 +26,10 @@ static void init(void)
 static void deinit(void)
 {
 	dmx_image_del(image1);
+	step=0;
 }
 
 
-static unsigned int step = 0;
 
 #define beatsmul 1
 static unsigned int tick(__attribute__((__unused__)) unsigned int time)

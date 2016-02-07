@@ -122,16 +122,18 @@ int generic_handler(const char *path, __attribute__((unused)) const char *types,
 	char *copy;
 	char *token;
 
-	//int i;
-	/*	printf("path: <%s>\n", path);
-		for (i = 0; i < argc; i++) {
+/*
+	int i;
+	printf("path: <%s>\n", path);
+	for (i = 0; i < argc; i++) {
 		printf("arg %d '%c' ", i, types[i]);
 		lo_arg_pp((lo_type)types[i], argv[i]);
 		printf("\n");
-		}
-		printf("\n");
-		fflush(stdout);
-		*/	
+	}
+	printf("\n");
+	fflush(stdout);
+*/
+
 	running = strdup(path);
 	copy=running;
 	token = strsep (&running, delimiters);
@@ -248,7 +250,6 @@ int generic_handler(const char *path, __attribute__((unused)) const char *types,
 		}
 
 	}
-
 	else if(strcmp("4",token)==0)
 	{
 		if(running != NULL)
@@ -261,14 +262,33 @@ int generic_handler(const char *path, __attribute__((unused)) const char *types,
 				osc_value = argv[0]->f * 2;
 				osc_type = 10;
 			}
-
 		}
 		else
 		{
 			osc_type=5;
 			osc_a=4;
 		}
-
+	}
+	else if(strcmp("5",token)==0)
+	{
+		if(running != NULL)
+		{
+			token = strsep (&running, delimiters);
+			if(strcmp("p",token)==0)
+			{
+				if(1.0f==argv[0]->f)
+				{
+					token = strsep (&running, delimiters);
+					osc_a = atoi(token)-1;
+					osc_type = 11;
+				}
+			}
+		}
+		else
+		{
+			osc_type=5;
+			osc_a=5;
+		}
 	}
 
 
@@ -338,7 +358,7 @@ static const char * seq_label[OSC_SEQ_COUNT] = {
 	NULL,NULL,NULL,NULL,NULL,NULL,
 	NULL,NULL,NULL,NULL,NULL,NULL,
 	NULL,NULL,NULL,NULL,NULL,NULL,
-	};
+};
 
 void osc_update_seq_label(uint16_t idx,const char * value)
 {
@@ -352,7 +372,7 @@ static char * seq_sublabel[OSC_SEQ_COUNT] = {
 	NULL,NULL,NULL,NULL,NULL,NULL,
 	NULL,NULL,NULL,NULL,NULL,NULL,
 	NULL,NULL,NULL,NULL,NULL,NULL,
-	};
+};
 
 void osc_update_seq_sublabel(uint16_t idx,char * value)
 {
@@ -373,7 +393,7 @@ static int seq_leds[18*4] = {
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	};
+};
 
 void osc_update_seq_led(uint16_t idx,unsigned char led,int value)
 {
@@ -592,7 +612,7 @@ void osc_disconnect(void)
 	}
 	current_bundle=NULL;
 #endif
-	
+
 	for(unsigned int i = 0;i<OSC_SEQ_COUNT;i++)
 		if(seq_sublabel[i]!=NULL)
 			free(seq_sublabel[i]);

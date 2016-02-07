@@ -61,6 +61,7 @@ struct dmx_queue* dmx_queue_add(char* name,void (*init)(void),void (*deinit)(voi
 
 	strncpy(queue->name,name,DMX_NAME_LENGTH);
 	queue->active = 0;
+	queue->button = 0;
 	queue->led_tog = 0;
 	queue->init = init;
 	queue->deinit = deinit;
@@ -99,7 +100,11 @@ void dmx_queue_del(struct dmx_queue* queue)
 void dmx_queue_activate(struct dmx_queue* queue)
 {
 	if(queue->active==0)
+	{
+		printf("acti\n");
 		queue->init();
+		queue->next = 0;
+	}
 
 	queue->active++;
 }

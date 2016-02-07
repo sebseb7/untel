@@ -6,6 +6,7 @@
 struct dmx_queue 
 {
 	unsigned int active;
+	unsigned int button;
 	unsigned int led_tog;
 	char name[DMX_NAME_LENGTH];
 	void (*init)(void);
