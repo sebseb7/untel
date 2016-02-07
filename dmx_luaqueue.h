@@ -20,12 +20,18 @@ struct dmx_luaqueue
 	unsigned int active_cnt;
 	unsigned int button;
 	unsigned int type; //0=loop;1=1loop
-	struct dmx_luastep* start;
+	struct dmx_luastep* start_step;
+	struct dmx_luastep* last_step;
 	struct dmx_luaqueue* next;
+	struct dmx_luastep* playing_next;
+	unsigned int play_at;
 	//locks hold (to prevent queue or select locks at queue end
 };
 
 struct dmx_luaqueue* dmx_luaqueue_add(const char* name);
+struct dmx_luastep* dmx_luaqueue_addstep(struct dmx_luaqueue* luaqueue,const char* code,unsigned int hold,unsigned int hold_unit,unsigned int blend,unsigned int blend_unit);
+
+void dmx_luaqueue_process_all(unsigned int time,unsigned int bpm);
 
 #endif
 

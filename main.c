@@ -8,6 +8,7 @@
 #include "dmx_image.h"
 #include "dmx_channels.h"
 #include "dmx_queue.h"
+#include "dmx_luaqueue.h"
 #include "dmx_selector.h"
 #include "dmx_output.h"
 
@@ -56,6 +57,11 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	
 	printf("\033[2J");
 
+	struct dmx_luaqueue* luaqueue = dmx_luaqueue_add("lua1");
+	dmx_luaqueue_addstep(luaqueue,"queue_on( \"LED-COL-SLIDE\")\nqueue_off(\"LED-COL-SWITCH\")",30000,0,0,0);
+	dmx_luaqueue_addstep(luaqueue,"queue_off(\"LED-COL-SLIDE\")\nqueue_on( \"LED-COL-SWITCH\")",30000,0,0,0);
+
+//	malloc_info();
 	while(1)
 	{
 		osc_process_input();
@@ -87,11 +93,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 				queue->next = currtime+delay;
 			}
 		}
-
-
-
-
-
+		
+		dmx_luaqueue_process_all(currtime,bpm);
 		
 		//render devices (images)
 		unsigned int image_count = dmx_image_get_count();

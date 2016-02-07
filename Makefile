@@ -2,8 +2,8 @@ UNAME := $(shell uname)
 
 COMPILER = gcc
 
-FLAGS= -O0 -g -I. -Ilibs --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra -L.
-LDFLAGS= -lm -lportmidi -lftdi1 -llo
+FLAGS= -O0 -g -I. -Ilibs -I/usr/include/lua5.2 --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra -L.
+LDFLAGS= -lm -lportmidi -lftdi1 -llo -llua5.2
 
 SOURCES=$(wildcard queues/*.c libs/*.c)
 HEADERS=$(wildcard queues/*.h libs/*.h)
