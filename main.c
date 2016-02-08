@@ -63,7 +63,8 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	dmx_luaqueue_activate(luaqueue);
 
 //	malloc_info();
-	while(1)
+	unsigned int looping=100;
+	while(looping-- > 0)
 	{
 		osc_process_input();
 
@@ -164,6 +165,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		struct dmx_queue* queue = dmx_queue_getbyidx(0);
 		dmx_queue_del(queue);
 	}
+	dmx_luaqueue_del_all();
 	dmx_devices_free();
 	return 0;
 }

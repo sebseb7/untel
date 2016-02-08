@@ -42,5 +42,7 @@ void dmx_luaqueue_process_all(unsigned int time,unsigned int bpm);
 void dmx_luaqueue_deactivate(struct dmx_luaqueue* luaqueue);
 void dmx_luaqueue_activate(struct dmx_luaqueue* luaqueue);
 
+void dmx_luaqueue_del_all(void);
+
 #endif
 

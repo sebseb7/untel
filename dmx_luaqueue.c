@@ -272,3 +272,63 @@ void dmx_luaqueue_process_all(unsigned int time,unsigned int bpm)
 	if(dmx_luaqueue_start == NULL) return;
 	dmx_luaqueue_process_next(dmx_luaqueue_start,time,bpm);
 }
+
+
+static void dmx_luaqueue_del_next_lock(struct dmx_luaqueuelock* lock)
+{
+	struct dmx_luaqueuelock* next_lock = lock->next;
+			
+	struct dmx_queue* queue = dmx_queue_getbyname(lock->name);
+	if(queue != NULL)
+	{
+		dmx_queue_deactivate(queue);
+	}
+	free(lock->name);
+	free(lock);
+
+	if(next_lock != NULL)
+	{
+		dmx_luaqueue_del_next_lock(next_lock);
+	}
+
+}
+
+static void dmx_luaqueue_del_next_step(struct dmx_luastep* step)
+{
+	struct dmx_luastep* next_step = step->next;
+
+	free(step->code);
+	free(step);
+
+	if(next_step != NULL)
+	{
+		dmx_luaqueue_del_next_step(next_step);
+	}
+}
+
+static void dmx_luaqueue_del_next(struct dmx_luaqueue* luaqueue)
+{
+	struct dmx_luaqueue* next_queue = luaqueue->next;
+
+	free(luaqueue->name);
+	
+	if(luaqueue->firstlock != NULL)
+		dmx_luaqueue_del_next_lock(luaqueue->firstlock);
+
+	if(luaqueue->start_step != NULL)
+		dmx_luaqueue_del_next_step(luaqueue->start_step);
+
+
+	free(luaqueue);
+
+
+	if(next_queue != NULL)
+	{
+		dmx_luaqueue_del_next(next_queue);
+	}
+}
+void dmx_luaqueue_del_all(void)
+{
+	if(dmx_luaqueue_start == NULL) return;
+	dmx_luaqueue_del_next(dmx_luaqueue_start);
+}
