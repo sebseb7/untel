@@ -13,6 +13,12 @@ struct dmx_luastep
 
 	struct dmx_luastep* next;
 };
+struct dmx_luaqueuelock
+{
+	char* name;
+
+	struct dmx_luaqueuelock* next;
+};
 
 struct dmx_luaqueue 
 {
@@ -25,6 +31,7 @@ struct dmx_luaqueue
 	struct dmx_luaqueue* next;
 	struct dmx_luastep* playing_next;
 	unsigned int play_at;
+	struct dmx_luaqueuelock* firstlock;
 	//locks hold (to prevent queue or select locks at queue end
 };
 

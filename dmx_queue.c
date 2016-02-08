@@ -27,7 +27,7 @@ struct dmx_queue* dmx_queue_getbyidx(unsigned int index)
 	}
 	return NULL;
 }
-struct dmx_queue* dmx_queue_getbyname(char* name)
+struct dmx_queue* dmx_queue_getbyname(const char* name)
 {	
 	for(unsigned int i=0;i<queues_inuse;i++)
 	{

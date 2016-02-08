@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "dmx_luaqueue.h"
+#include "dmx_queue.h"
 /*
    struct dmx_luastep
    {
@@ -46,6 +47,7 @@ struct dmx_luaqueue* dmx_luaqueue_add(const char* name)
 	luaqueue->last_step=NULL;
 	luaqueue->next=NULL;
 	luaqueue->playing_next=NULL;
+	luaqueue->firstlock=NULL;
 	luaqueue->play_at=0;
 
 
@@ -115,32 +117,115 @@ void dmx_luaqueue_deactivate(struct dmx_luaqueue* luaqueue)
 		luaqueue->active_cnt--;
 }
 
+static void dmx_luaqueue_addlock(struct dmx_luaqueue* luaqueue,const char* name)
+{
+	struct dmx_luaqueuelock* iter_lock = luaqueue->firstlock;
+	struct dmx_luaqueuelock* last_lock;
+
+	while(iter_lock != NULL)
+	{
+		if(strncmp(iter_lock->name,name,DMX_NAME_LENGTH)==0)
+		{
+			return;
+		}
+		last_lock = iter_lock;
+		iter_lock = iter_lock->next;
+	}
+
+	struct dmx_luaqueuelock* luaqueuelock = malloc(sizeof(struct dmx_luaqueuelock));
+	luaqueuelock->name = strndup(name,DMX_NAME_LENGTH);
+	luaqueuelock->next = NULL;
+
+	if(luaqueue->firstlock == NULL)
+	{
+		luaqueue->firstlock = luaqueuelock;
+	}
+	else
+	{
+		last_lock->next=luaqueuelock;
+	}
+
+	struct dmx_queue* queue = dmx_queue_getbyname(name);
+	if(queue != NULL)
+	{
+		dmx_queue_activate(queue);
+	}
+}
+
+static void dmx_luaqueue_dellock(struct dmx_luaqueue* luaqueue,const char* name)
+{
+	struct dmx_luaqueuelock* iter_lock = luaqueue->firstlock;
+	struct dmx_luaqueuelock* last_lock=NULL;
+
+	while(iter_lock != NULL)
+	{
+		if(strncmp(iter_lock->name,name,DMX_NAME_LENGTH)==0)
+		{
+			if(last_lock==NULL)
+			{
+				luaqueue->firstlock=iter_lock->next;
+			}
+			else
+			{
+				last_lock->next = iter_lock->next;
+			}
+			free(iter_lock->name);
+			free(iter_lock);
+
+			//actually deactivating the queue
+
+			struct dmx_queue* queue = dmx_queue_getbyname(name);
+			if(queue != NULL)
+			{
+				dmx_queue_deactivate(queue);
+			}
+
+			return;
+		}
+		last_lock = iter_lock;
+		iter_lock = iter_lock->next;
+	}
+}
+
+
 
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 
-static int lua_test (lua_State *L) {
-	double d = lua_tonumber(L, 1);  /* get argument */
-	printf("l_t %f\n",d);
-	d=d*2;
-	lua_pushnumber(L, d);  /* push result */
-	return 1;  /* number of results */
+static struct dmx_luaqueue* tmp_luaqueue_glob;
+static struct dmx_luastep* tmp_luastep_glob;
+
+static int dmx_luaqueue_callback_queue_on(lua_State *L) {
+	const char* queuename = lua_tolstring(L, 1,NULL);
+	dmx_luaqueue_addlock(tmp_luaqueue_glob,queuename);
+
+	printf("queue on %s\n",queuename);
+	return 0; 
+}
+static int dmx_luaqueue_callback_queue_off(lua_State *L) {
+	const char* queuename = lua_tolstring(L, 1,NULL);
+	dmx_luaqueue_dellock(tmp_luaqueue_glob,queuename);
+	printf("queue off %s\n",queuename);
+	return 0;
 }
 
 static void dmx_luaqueue_process_step(struct dmx_luaqueue* luaqueue,struct dmx_luastep* step)
 {
+	tmp_luaqueue_glob=luaqueue;
+	tmp_luastep_glob=step;
 	//execute lua
 	lua_State* L;
 	L=luaL_newstate();
 	luaL_openlibs(L);
-	lua_pushcfunction(L, lua_test);
-	lua_setglobal(L, "l_t");
-	if(luaL_loadstring(L,"a=0;for i=1,10 do;a=a+1;end;a=l_t(a);return a") == 0)
+	lua_pushcfunction(L, dmx_luaqueue_callback_queue_on);
+	lua_setglobal(L, "queue_on");
+	lua_pushcfunction(L, dmx_luaqueue_callback_queue_off);
+	lua_setglobal(L, "queue_off");
+	if(luaL_loadstring(L,step->code) == 0)
 	{
 		lua_pcall(L, 0, LUA_MULTRET, 0);
 	}
-	printf("%f\n",lua_tonumber(L,-1));
 	lua_close(L); 
 }
 
@@ -154,8 +239,24 @@ static void dmx_luaqueue_process_next(struct dmx_luaqueue* luaqueue,unsigned int
 	  )
 	{
 		dmx_luaqueue_process_step(luaqueue,luaqueue->playing_next);
-		//set next step
-		//set time for next execution
+		
+		if(luaqueue->playing_next->hold_unit == 0)
+		{
+			luaqueue->play_at = time+(luaqueue->playing_next->hold);
+		}
+		else
+		{
+			luaqueue->play_at = time+(luaqueue->playing_next->hold);
+		}
+		
+		if(luaqueue->playing_next == luaqueue->last_step)
+		{
+			luaqueue->playing_next = luaqueue->start_step;
+		}
+		else
+		{
+			luaqueue->playing_next = (luaqueue->playing_next)->next;
+		}
 	}
 
 
