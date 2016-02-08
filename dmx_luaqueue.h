@@ -32,6 +32,8 @@ struct dmx_luaqueue* dmx_luaqueue_add(const char* name);
 struct dmx_luastep* dmx_luaqueue_addstep(struct dmx_luaqueue* luaqueue,const char* code,unsigned int hold,unsigned int hold_unit,unsigned int blend,unsigned int blend_unit);
 
 void dmx_luaqueue_process_all(unsigned int time,unsigned int bpm);
+void dmx_luaqueue_deactivate(struct dmx_luaqueue* luaqueue);
+void dmx_luaqueue_activate(struct dmx_luaqueue* luaqueue);
 
 #endif
 
