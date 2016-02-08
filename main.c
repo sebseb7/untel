@@ -63,8 +63,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	dmx_luaqueue_activate(luaqueue);
 
 //	malloc_info();
-	unsigned int looping=100;
-	while(looping-- > 0)
+//	unsigned int looping=100;
+//	while(looping-- > 0)
+	while(1)
 	{
 		osc_process_input();
 
