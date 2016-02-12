@@ -16,6 +16,9 @@ static void init(void)
 		
 	image1 = dmx_image_new(0);
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"vorn links");
+	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"vorn rechts");
+	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"hinten links");
+//	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"hinten rechts");
 	dmx_image_set_selector(image1,"LP DIM","on");
 	dmx_image_show(image1);
 }
