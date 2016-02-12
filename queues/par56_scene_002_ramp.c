@@ -51,7 +51,7 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 			set1->dim = 0.0f;
 		if((step&1) == 1)
 			set1->dim = (step/20.0f)*1.0f;
-		return 600;
+		return 400;
 	}
 	else
 	{

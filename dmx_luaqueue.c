@@ -200,13 +200,13 @@ static int dmx_luaqueue_callback_queue_on(lua_State *L) {
 	const char* queuename = lua_tolstring(L, 1,NULL);
 	dmx_luaqueue_addlock(tmp_luaqueue_glob,queuename);
 
-	printf("queue on %s\n",queuename);
+	//printf("queue on %s\n",queuename);
 	return 0; 
 }
 static int dmx_luaqueue_callback_queue_off(lua_State *L) {
 	const char* queuename = lua_tolstring(L, 1,NULL);
 	dmx_luaqueue_dellock(tmp_luaqueue_glob,queuename);
-	printf("queue off %s\n",queuename);
+	//printf("queue off %s\n",queuename);
 	return 0;
 }
 

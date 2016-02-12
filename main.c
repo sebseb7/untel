@@ -65,11 +65,12 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	osc_init();
 	
 	//printf("plot '-' using (\\$1):(\\$2)\n");
+#ifdef CONCH_OUT
 	printf("\033[2J");
-
+#endif
 
 //	malloc_info();
-//	unsigned int looping=100;
+//	unsigned int looping=300;
 	
 //	KeyboardEvent e;
 	
@@ -77,7 +78,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	while(1)
 	{
 #ifdef SDL_OUT
-		if(0==sdl_handle_events(pixelbuffer)) return 0;
+		if(0==sdl_handle_events(pixelbuffer)) break;
 #endif
 //	while(keyboard_poll(&midi_djm,&e)) 
 //		{
@@ -149,9 +150,11 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		}
 			
 
+#ifdef CONCH_OUT
 		printf("\033[H");
 		dmx_channels_print();
 		dmx_queues_print();
+#endif
 
 //		printf("%i %i %i %i\nreplot\n",currtime,dmx_channels_get()[8],dmx_channels_get()[9],dmx_channels_get()[10]);
 //		fflush(stdout); 
@@ -181,14 +184,17 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		struct dmx_selector* selector = dmx_selector_getbyidx(0);
 		dmx_selector_del(selector);
 	}
+	dmx_luaqueue_del_all();
 	unsigned int queue_count = dmx_queue_get_count();
 	for(unsigned int i = 0;i<queue_count;i++)
 	{
 		struct dmx_queue* queue = dmx_queue_getbyidx(0);
 		dmx_queue_del(queue);
 	}
-	dmx_luaqueue_del_all();
 	dmx_devices_free();
+#ifdef SDL_OUT
+	sdl_deinit();
+#endif
 	return 0;
 }
 

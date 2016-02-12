@@ -97,24 +97,30 @@ void dmx_queue_del(struct dmx_queue* queue)
 		queues_allocated=0;
 	}
 }
-void dmx_queue_activate(struct dmx_queue* queue)
+unsigned int dmx_queue_activate(struct dmx_queue* queue)
 {
+	if(queue == NULL) return 0;
 	if(queue->active==0)
 	{
-		printf("acti\n");
+//		printf("acti %s\n",queue->name);
 		queue->init();
 		queue->next = 0;
 	}
 
 	queue->active++;
+
+	return 1;
 }
-void dmx_queue_deactivate(struct dmx_queue* queue)
+unsigned int dmx_queue_deactivate(struct dmx_queue* queue)
 {
+	if(queue == NULL) return 0;
 	if(queue->active==1)
 		queue->deinit();
 
 	if(queue->active!=0)
 		queue->active--;
+
+	return 1;
 }
 
 void dmx_queues_print(void)
