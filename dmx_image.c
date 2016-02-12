@@ -30,6 +30,7 @@ struct dmx_image
 
 #define DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL 10
 #define DMX_IMAGE_DEVICELIST_ALLOCATE_INITIAL 10
+#define DMX_IMAGE_SETLIST_ALLOCATE_INITIAL 10
 
 #define DMX_IMAGE_ALLOCATE_INITIAL 100
 #define DMX_IMAGE_ALLOCATE_STEP 10
@@ -78,6 +79,10 @@ struct dmx_image * dmx_image_new(unsigned int priority)
 	image->dev_count=0;
 	image->dev_types=malloc(sizeof(unsigned int)*DMX_IMAGE_DEVICELIST_ALLOCATE_INITIAL);
 	image->dev_names=malloc(sizeof(char)*DMX_NAME_LENGTH*DMX_IMAGE_DEVICELIST_ALLOCATE_INITIAL);
+
+	image->set_alloc=DMX_IMAGE_SETLIST_ALLOCATE_INITIAL;
+	image->set_count=0;
+	image->set_list=malloc(sizeof(struct dmx_set*)*DMX_IMAGE_SETLIST_ALLOCATE_INITIAL);
 
 	image->selector_alloc=DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL;
 	image->selector_count=0;
@@ -232,6 +237,24 @@ static void dmx_set_render_blend(unsigned int type,char* name,struct dmx_set* se
 	}
 
 }
+struct dmx_set* dmx_set_new_dim(float dim)
+{
+	struct dmx_set* set1 = malloc(sizeof(struct dmx_set));
+	set1->attr_type=ATTR_TYPE_DIM;
+	set1->dim=dim;
+
+	return set1;
+}
+void dmx_image_attach_set(struct dmx_image* image,struct dmx_set* set)
+{
+	unsigned int index = image->set_count;
+
+	if(image->set_count < image->set_alloc)
+	{
+		image->set_list[index]=set;
+		image->set_count++;
+	}
+}
 
 void dmx_image_render(struct dmx_image* image,unsigned int beatpulse)
 {
@@ -241,6 +264,11 @@ void dmx_image_render(struct dmx_image* image,unsigned int beatpulse)
 
 	for(unsigned int i=0;i<image->dev_count;i++)
 	{
+		for(unsigned int j=0;j<image->set_count;j++)
+		{
+			dmx_set_render(image->dev_types[i],(char*)(image->dev_names + (sizeof(char)*i*DMX_NAME_LENGTH)),image->set_list[j]);
+		}
+
 		for(unsigned int j=0;j<image->selector_count;j++)
 		{
 			struct dmx_selector* selector = dmx_selector_getbyname((char*)&image->selector_names[j*DMX_NAME_LENGTH]);	

@@ -18,9 +18,9 @@ static void init(void)
 	image2 = dmx_image_new(0);
 	
 	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"vorn links");
-//	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"vorn rechts");
-//	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"hinten links");
-//	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"hinten rechts");
+	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"vorn rechts");
+	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"hinten links");
+	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"hinten rechts");
 
 	dmx_image_show(image2);
 }

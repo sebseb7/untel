@@ -31,6 +31,10 @@ struct dmx_image
 	unsigned int* dev_types;
 	void* dev_names;
 
+	unsigned int set_alloc;
+	unsigned int set_count;
+	struct dmx_set** set_list;
+
 	unsigned int selector_alloc;
 	unsigned int selector_count;
 	char** selector_names;
@@ -41,6 +45,8 @@ struct dmx_image
 };
 	
 struct dmx_image * dmx_image_new(unsigned int priority);
+struct dmx_set* dmx_set_new_dim(float dim);
+void dmx_image_attach_set(struct dmx_image* image,struct dmx_set* set);
 void dmx_image_add_device(struct dmx_image* image,unsigned int type,char* name);
 void dmx_image_set_selector(struct dmx_image* image,char* name, char* pos);
 void dmx_image_blend_selector(struct dmx_image* image,char* name, char* pos,unsigned int beatPulses);

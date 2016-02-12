@@ -9,6 +9,6 @@ static void constructor(void) {
 	dmx_luaqueue_addstep(luaqueue,"queue_on(\"LED-DIM-SEQ_ON\")\nqueue_on( \"LED-COL-SLIDE\")\nqueue_off(\"LED-COL-SWITCH\")",30000,0,0,0);
 	dmx_luaqueue_addstep(luaqueue,"queue_off(\"LED-COL-SLIDE\")\nqueue_on( \"LED-COL-SWITCH\")",30000,0,0,0);
 
-	dmx_luaqueue_activate(luaqueue);
+//	dmx_luaqueue_activate(luaqueue);
 
 }
