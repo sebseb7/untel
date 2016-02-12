@@ -8,7 +8,13 @@ LDFLAGS= -lm -lportmidi -lftdi1 -llo -llua5.2
 SOURCES=$(wildcard queues/*.c libs/*.c)
 HEADERS=$(wildcard queues/*.h libs/*.h)
 
+FLAGS+=`sdl2-config --cflags`
+LDFLAGS+=`sdl2-config --libs`
+
 all: dmxMidiCtrlNg
+
+plot:
+	./dmxMidiCtrlNg | ./feedgnuplot --stream trigger --lines --domain --xlen 10000 --ymin 0 --ymax 256 --terminal 'x11'
 
 clean:
 	@rm -f dmxMidiCtrlNg
@@ -16,6 +22,7 @@ clean:
 
 
 dmxMidiCtrlNg: $(SOURCES) $(HEADERS) main.c main.h dmx_luaqueue.c dmx_luaqueue.h dmx_output.c dmx_output.h dmx_selector.c dmx_selector.h dmx_image.c dmx_image.h dmx_devices.c dmx_devices.h dmx_channels.c dmx_channels.h dmx_queue.c dmx_queue.h Makefile 
+	@clear
 	@rm -f dmxMidiCtrlNg
 	@echo "  \033[1;34mCompile\033[0m"
 	@$(COMPILER) main.c dmx_output.c dmx_luaqueue.c dmx_selector.c dmx_queue.c dmx_image.c dmx_devices.c dmx_channels.c $(SOURCES) -o dmxMidiCtrlNg $(FLAGS) $(LDFLAGS) 
@@ -25,5 +32,5 @@ gource:
 	gource --caption-file git.log --caption-duration 3 --caption-size 10 -max-files 99999 -disable-progress -stop-at-end  -user-scale 1 -highlight-all-users .
 	rm git.log
 
-.PHONY : clean all gource
+.PHONY : clean all gource plot
 
