@@ -96,7 +96,7 @@ void dmx_image_add_device(struct dmx_image* image,unsigned int type,char* name)
 	if(image->dev_count < image->dev_alloc)
 	{
 		image->dev_types[index]=type;
-		strncpy((char*)&image->dev_names[index*DMX_NAME_LENGTH],name,DMX_NAME_LENGTH);
+		strncpy((char *)(image->dev_names+(sizeof(char)*index*DMX_NAME_LENGTH)),name,DMX_NAME_LENGTH);
 
 		image->dev_count++;
 	}
@@ -285,13 +285,13 @@ void dmx_image_render(struct dmx_image* image,unsigned int beatpulse)
 
 				for(unsigned int k=0;k<selector->set_count;k++)
 				{
-					dmx_set_render(image->dev_types[i],(char*)&image->dev_names[i*DMX_NAME_LENGTH],selector->set_list[k]);
+					dmx_set_render(image->dev_types[i],(char*)(image->dev_names + (sizeof(char)*i*DMX_NAME_LENGTH)),selector->set_list[k]);
 				}
 				selector->render(posblendto);
 
 				for(unsigned int k=0;k<selector->set_count;k++)
 				{
-					dmx_set_render_blend(image->dev_types[i],(char*)&image->dev_names[i*DMX_NAME_LENGTH],selector->set_list[k],blendpct);
+					dmx_set_render_blend(image->dev_types[i],(char*)(image->dev_names + (sizeof(char)*i*DMX_NAME_LENGTH)),selector->set_list[k],blendpct);
 				}
 			}
 			else
@@ -305,7 +305,7 @@ void dmx_image_render(struct dmx_image* image,unsigned int beatpulse)
 					//printf("render image (%s) (%s) (%s)\n",(char*)&image->dev_names[i*DMX_NAME_LENGTH],(char*)&image->selector_names[j*DMX_NAME_LENGTH],(char*)&image->selector_pos[j*DMX_NAME_LENGTH]);
 
 
-					dmx_set_render(image->dev_types[i],(char*)&image->dev_names[i*DMX_NAME_LENGTH],selector->set_list[k]);
+					dmx_set_render(image->dev_types[i],(char*)(image->dev_names + (sizeof(char)*i*DMX_NAME_LENGTH)),selector->set_list[k]);
 				}
 			}
 

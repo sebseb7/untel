@@ -29,7 +29,7 @@ struct dmx_image
 	unsigned int dev_alloc;
 	unsigned int dev_count;
 	unsigned int* dev_types;
-	char** dev_names;
+	void* dev_names;
 
 	unsigned int selector_alloc;
 	unsigned int selector_count;
