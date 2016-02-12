@@ -19,7 +19,7 @@ static struct paramnames paramlist[] = {
 
 	{"on"    ,1.0f  },
 	{"half"  ,0.5f  },
-	{"low"  ,0.1f  },
+	{"low"   ,0.1f  },
 	{"off"   ,0.0f  },
 
 };

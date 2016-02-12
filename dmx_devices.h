@@ -59,6 +59,8 @@ void dmx_device_render_ledpar6(struct dmx_device* device);
 void dmx_device_render_miniscanhpe(struct dmx_device* device);
 void dmx_device_render_fog(struct dmx_device* device);
 
+void dmx_device_render_ledpar6_sdl(struct dmx_device* device,unsigned int* pixelbuffer,unsigned int row, unsigned int col);
+
 
 
 #endif

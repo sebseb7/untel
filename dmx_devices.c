@@ -165,4 +165,29 @@ void dmx_device_render_ledpar6(struct dmx_device* device)
 
 }
 
+void dmx_device_render_ledpar6_sdl(struct dmx_device* device,unsigned int* pixelbuffer,unsigned int row, unsigned int col)
+{
+	
+	struct dmx_device_ledpar6* ledpar = device->device;
 
+	unsigned char red=0;
+	unsigned char green=0;
+	unsigned char blue=0;
+
+	red = ledpar->red*ledpar->dim;
+	green = ledpar->green*ledpar->dim;
+	blue = ledpar->blue*ledpar->dim;
+
+	unsigned int color = (red<<16)+(green<<8)+blue;
+
+	if(pixelbuffer[((row*30)*300)+(col*30)] != color)
+	{
+		for(unsigned int i=0;i<30;i++)
+		{
+			for(unsigned int j=0;j<30;j++) 
+			{
+				pixelbuffer[(((row*30)+j)*300)+(col*30)+i] = color;
+			}
+		}
+	}
+}

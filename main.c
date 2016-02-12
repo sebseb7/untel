@@ -67,10 +67,6 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	//printf("plot '-' using (\\$1):(\\$2)\n");
 	printf("\033[2J");
 
-	struct dmx_luaqueue* luaqueue = dmx_luaqueue_add("lua1");
-	dmx_luaqueue_addstep(luaqueue,"queue_on(\"LED-DIM-SEQ_ON\")\nqueue_on( \"LED-COL-SLIDE\")\nqueue_off(\"LED-COL-SWITCH\")",30000,0,0,0);
-	dmx_luaqueue_addstep(luaqueue,"queue_off(\"LED-COL-SLIDE\")\nqueue_on( \"LED-COL-SWITCH\")",30000,0,0,0);
-	dmx_luaqueue_activate(luaqueue);
 
 //	malloc_info();
 //	unsigned int looping=100;
@@ -146,6 +142,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			if(device->type == DMX_DEVICE_LEDPAR6)
 			{
 				dmx_device_render_ledpar6(device);
+#ifdef SDL_OUT
+				dmx_device_render_ledpar6_sdl(device,pixelbuffer,0,i);
+#endif
 			}
 		}
 			
