@@ -37,11 +37,11 @@ struct dmx_image
 
 	unsigned int selector_alloc;
 	unsigned int selector_count;
-	char** selector_names;
-	char** selector_pos;
+	void* selector_names;
+	void* selector_pos;
 	unsigned int* selector_blendpulse;
 	unsigned int* selector_blendstart;
-	char** selector_blendtopos;
+	void* selector_blendtopos;
 };
 	
 struct dmx_image * dmx_image_new(unsigned int priority);
