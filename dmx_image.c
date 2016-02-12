@@ -86,11 +86,11 @@ struct dmx_image * dmx_image_new(unsigned int priority)
 
 	image->selector_alloc=DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL;
 	image->selector_count=0;
-	image->selector_names=malloc(sizeof(unsigned int)*DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL);
-	image->selector_pos=malloc(sizeof(char)*DMX_NAME_LENGTH*DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL);
+	image->selector_names=     malloc(sizeof(char)*DMX_NAME_LENGTH*DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL);
+	image->selector_pos=       malloc(sizeof(char)*DMX_NAME_LENGTH*DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL);
+	image->selector_blendtopos=malloc(sizeof(char)*DMX_NAME_LENGTH*DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL);
 	image->selector_blendpulse=malloc(sizeof(unsigned int)*DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL);
 	image->selector_blendstart=malloc(sizeof(unsigned int)*DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL);
-	image->selector_blendtopos=malloc(sizeof(char)*DMX_NAME_LENGTH*DMX_IMAGE_SELECTORLIST_ALLOCATE_INITIAL);
 	
 	return image;
 }
@@ -111,9 +111,9 @@ void dmx_image_set_selector(struct dmx_image* image,char* name, char* pos)
 {
 	for(unsigned int i=0;i<image->selector_count;i++)
 	{
-		if(0==strncmp((char*)&(image->selector_names[i*DMX_NAME_LENGTH]),name,DMX_NAME_LENGTH))
+		if(0==strncmp((char*)(image->selector_names +(i*DMX_NAME_LENGTH)),name,DMX_NAME_LENGTH))
 		{
-			strncpy((char*)&image->selector_pos[i*DMX_NAME_LENGTH], pos, DMX_NAME_LENGTH);
+			strncpy((char*)(image->selector_pos + (i*DMX_NAME_LENGTH)), pos, DMX_NAME_LENGTH);
 			image->selector_blendpulse[i]=0;
 			image->selector_blendstart[i]=0;
 			return;
@@ -124,8 +124,8 @@ void dmx_image_set_selector(struct dmx_image* image,char* name, char* pos)
 	unsigned int index = image->selector_count;
 	if(image->selector_count < image->selector_alloc)
 	{
-		strncpy((char*)&image->selector_names[index*DMX_NAME_LENGTH],name,DMX_NAME_LENGTH);
-		strncpy((char*)&image->selector_pos[index*DMX_NAME_LENGTH],  pos, DMX_NAME_LENGTH);
+		strncpy((char*)(image->selector_names + (index*DMX_NAME_LENGTH)),name,DMX_NAME_LENGTH);
+		strncpy((char*)(image->selector_pos +(index*DMX_NAME_LENGTH)),  pos, DMX_NAME_LENGTH);
 		image->selector_blendpulse[index]=0;
 		image->selector_blendstart[index]=0;
 		image->selector_count++;
@@ -135,14 +135,14 @@ void dmx_image_blend_selector(struct dmx_image* image,char* name, char* pos,unsi
 {
 	for(unsigned int i=0;i<image->selector_count;i++)
 	{
-		if(0==strncmp((char*)&(image->selector_names[i*DMX_NAME_LENGTH]),name,DMX_NAME_LENGTH))
+		if(0==strncmp((char*)(image->selector_names + (i*DMX_NAME_LENGTH)),name,DMX_NAME_LENGTH))
 		{
 			if(image->selector_blendpulse[i] != 0)
 			{
-				strncpy((char*)&image->selector_pos[i*DMX_NAME_LENGTH], (char*)&image->selector_blendtopos[i*DMX_NAME_LENGTH], DMX_NAME_LENGTH);
+				strncpy((char*)(image->selector_pos + (i*DMX_NAME_LENGTH)), (char*)(image->selector_blendtopos + (i*DMX_NAME_LENGTH)), DMX_NAME_LENGTH);
 			}
 			//printf("blend start (%s)\n",pos);
-			strncpy((char*)&image->selector_blendtopos[i*DMX_NAME_LENGTH], pos, DMX_NAME_LENGTH);
+			strncpy((char*)(image->selector_blendtopos + (i*DMX_NAME_LENGTH)), pos, DMX_NAME_LENGTH);
 			image->selector_blendpulse[i]=beatPulses;
 			image->selector_blendstart[i]=0;
 			return;
@@ -271,7 +271,7 @@ void dmx_image_render(struct dmx_image* image,unsigned int beatpulse)
 
 		for(unsigned int j=0;j<image->selector_count;j++)
 		{
-			struct dmx_selector* selector = dmx_selector_getbyname((char*)&image->selector_names[j*DMX_NAME_LENGTH]);	
+			struct dmx_selector* selector = dmx_selector_getbyname((char*)(image->selector_names + (j*DMX_NAME_LENGTH)));
 
 			unsigned int blendpct=0;
 
@@ -289,7 +289,7 @@ void dmx_image_render(struct dmx_image* image,unsigned int beatpulse)
 				{
 					image->selector_blendstart[j]=0;
 					image->selector_blendpulse[j]=0;
-					strncpy((char*)&image->selector_pos[j*DMX_NAME_LENGTH], (char*)&image->selector_blendtopos[j*DMX_NAME_LENGTH] , DMX_NAME_LENGTH);
+					strncpy((char*)(image->selector_pos + (j*DMX_NAME_LENGTH)), (char*)(image->selector_blendtopos + (j*DMX_NAME_LENGTH)) , DMX_NAME_LENGTH);
 					//printf("blend done (%s)\n",(char*)&image->selector_pos[j*DMX_NAME_LENGTH]);
 				}
 				else
@@ -305,8 +305,8 @@ void dmx_image_render(struct dmx_image* image,unsigned int beatpulse)
 			
 			if(blendpct > 0)
 			{
-				unsigned int pos = selector->getidbyname((char*)&image->selector_pos[j*DMX_NAME_LENGTH]);
-				unsigned int posblendto = selector->getidbyname((char*)&image->selector_blendtopos[j*DMX_NAME_LENGTH]);
+				unsigned int pos = selector->getidbyname((char*)(image->selector_pos + (j*DMX_NAME_LENGTH)));
+				unsigned int posblendto = selector->getidbyname((char*)(image->selector_blendtopos + (j*DMX_NAME_LENGTH)));
 				
 				
 				selector->render(pos);
@@ -324,7 +324,7 @@ void dmx_image_render(struct dmx_image* image,unsigned int beatpulse)
 			}
 			else
 			{
-				unsigned int pos = selector->getidbyname((char*)&image->selector_pos[j*DMX_NAME_LENGTH]);
+				unsigned int pos = selector->getidbyname((char*)(image->selector_pos + (j*DMX_NAME_LENGTH)));
 	
 				selector->render(pos);
 
