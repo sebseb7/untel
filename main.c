@@ -13,10 +13,13 @@
 #include "dmx_output.h"
 
 #ifdef DMX_OUT
-#include "keyboard.h"
+//#include "keyboard.h"
 #endif
 #include "osc.h"
 
+#ifdef SDL_OUT
+#include "sdl_util.h"
+#endif
 
 #define DMX_FRAMERATE 40
 
@@ -41,8 +44,14 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 {
 //	keyboard_list();
 //	exit(0);
+//	MidiObj midi_djm;
+//	keyboard_init(&midi_djm,"CH345 MIDI 1");
 
 	//render
+#ifdef SDL_OUT
+	unsigned int* pixelbuffer = sdl_init(300,300,"test",60);
+#endif
+
 
 	unsigned int bpm=165;
 	unsigned int beat01ms=600000/bpm;
@@ -55,6 +64,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 #endif
 	osc_init();
 	
+	//printf("plot '-' using (\\$1):(\\$2)\n");
 	printf("\033[2J");
 
 	struct dmx_luaqueue* luaqueue = dmx_luaqueue_add("lua1");
@@ -63,9 +73,22 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	dmx_luaqueue_activate(luaqueue);
 
 //	malloc_info();
-	unsigned int looping=100;
-	while(looping-- > 0)
+//	unsigned int looping=100;
+	
+//	KeyboardEvent e;
+	
+//	while(looping-- > 0)
+	while(1)
 	{
+#ifdef SDL_OUT
+		if(0==sdl_handle_events(pixelbuffer)) return 0;
+#endif
+//	while(keyboard_poll(&midi_djm,&e)) 
+//		{
+//			if(e.type != 248)
+//				printf("%d %d %d\n", e.x, e.y, e.type);
+//		};
+
 		osc_process_input();
 
 		unsigned int currtime = getstarttime();
@@ -130,9 +153,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		printf("\033[H");
 		dmx_channels_print();
 		dmx_queues_print();
-		//dmx_selector_print();
 
-		//printf("%i\n",dmx_image_get_count());
+//		printf("%i %i %i %i\nreplot\n",currtime,dmx_channels_get()[8],dmx_channels_get()[9],dmx_channels_get()[10]);
+//		fflush(stdout); 
 
 		osc_apply_manual(dmx_channels_get());
 #ifdef DMX_OUT

@@ -19,7 +19,7 @@ void	keyboard_list(void)
 	{
 		di= Pm_GetDeviceInfo(i);
 		if(!di) break;
-		printf("found in device '%s' with interf '%s' (%i)(%i)\n", di->name, di->interf,di->input,di->output);
+		//printf("found in device '%s' with interf '%s' (%i)(%i)\n", di->name, di->interf,di->input,di->output);
 	}
 }
 
@@ -32,7 +32,7 @@ static int find_device_id_in(char* name)
 		if(!di) break;
 		if(strstr(di->name, name) && di->input)
 		{
-			printf("found in device '%s' with interf '%s'\n", di->name, di->interf);
+		//	printf("found in device '%s' with interf '%s'\n", di->name, di->interf);
 			return i;
 		}
 	}
@@ -48,7 +48,7 @@ static int find_device_id_out(char* name)
 		if(!di) break;
 		if(strstr(di->name, name) && di->output)
 		{
-			printf("found out device '%s' with interf '%s'\n", di->name, di->interf);
+		//	printf("found out device '%s' with interf '%s'\n", di->name, di->interf);
 			return i;
 		}
 	}
