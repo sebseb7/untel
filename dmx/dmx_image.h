@@ -6,6 +6,7 @@
 enum {
 	ATTR_TYPE_COLSET,
 	ATTR_TYPE_CODE,
+	ATTR_TYPE_FREQ,
 	ATTR_TYPE_DIM
 };
 
@@ -16,6 +17,7 @@ struct dmx_set
 	union {
 		unsigned char color[3];
 		float dim;
+		float freq;
 		void (*code)(void);
 	};
 };
@@ -46,6 +48,7 @@ struct dmx_image
 	
 struct dmx_image * dmx_image_new(unsigned int priority);
 struct dmx_set* dmx_set_new_dim(float dim);
+struct dmx_set* dmx_set_new_freq(float freq);
 void dmx_image_attach_set(struct dmx_image* image,struct dmx_set* set);
 void dmx_image_add_device(struct dmx_image* image,unsigned int type,char* name);
 void dmx_image_set_selector(struct dmx_image* image,char* name, char* pos);
