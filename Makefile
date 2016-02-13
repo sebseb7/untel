@@ -5,8 +5,8 @@ COMPILER = gcc
 FLAGS= -O0 -g -I. -Ilibs -Idmx -I/usr/include/lua5.2 --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra -L.
 LDFLAGS= -lm -lportmidi -lftdi1 -llo -llua5.2
 
-SOURCES=$(wildcard queues/*.c queues/par56/*.c libs/*.c dmx/*.c)
-HEADERS=$(wildcard queues/*.h queues/pat56/*.h libs/*.h dmx/*.h)
+SOURCES=$(wildcard queues/*.c queues/par56/*.c queues/strobe/*.c libs/*.c dmx/*.c)
+HEADERS=$(wildcard queues/*.h queues/pat56/*.h queues/strobe/*.h libs/*.h dmx/*.h)
 
 FLAGS+=`sdl2-config --cflags`
 LDFLAGS+=`sdl2-config --libs`
