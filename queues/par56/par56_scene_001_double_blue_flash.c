@@ -10,42 +10,56 @@ static struct dmx_image* image1;
 static struct dmx_image* image2;
 static struct dmx_image* image3;
 static struct dmx_image* image4;
+static struct dmx_image* image5;
+static struct dmx_image* image6;
 
 static void init(void)
 {
-	dmx_device_create_ledpar6(8,"vorn links");
-	dmx_device_create_ledpar6(16,"vorn rechts");
-	dmx_device_create_ledpar6(24,"hinten links");
-	dmx_device_create_ledpar6(32,"hinten rechts");
+	dmx_device_create_ledpar6(8,"par-1");
+	dmx_device_create_ledpar6(16,"par-2");
+	dmx_device_create_ledpar6(24,"par-3");
+	dmx_device_create_ledpar6(32,"par-4");
+	dmx_device_create_ledpar6(40,"par-5");
+	dmx_device_create_ledpar6(48,"par-6");
 		
 	image1 = dmx_image_new(0);
 	image2 = dmx_image_new(0);
 	image3 = dmx_image_new(0);
 	image4 = dmx_image_new(0);
-	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"vorn links");
-	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"vorn rechts");
-	dmx_image_add_device(image3,DMX_DEVICE_LEDPAR6,"hinten links");
-	dmx_image_add_device(image4,DMX_DEVICE_LEDPAR6,"hinten rechts");
+	image5 = dmx_image_new(0);
+	image6 = dmx_image_new(0);
+	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-1");
+	dmx_image_add_device(image2,DMX_DEVICE_LEDPAR6,"par-2");
+	dmx_image_add_device(image3,DMX_DEVICE_LEDPAR6,"par-3");
+	dmx_image_add_device(image4,DMX_DEVICE_LEDPAR6,"par-4");
+	dmx_image_add_device(image5,DMX_DEVICE_LEDPAR6,"par-5");
+	dmx_image_add_device(image6,DMX_DEVICE_LEDPAR6,"par-6");
 	dmx_image_set_selector(image1,"LP COL","blue");
 	dmx_image_set_selector(image2,"LP COL","blue");
 	dmx_image_set_selector(image3,"LP COL","blue");
 	dmx_image_set_selector(image4,"LP COL","blue");
+	dmx_image_set_selector(image5,"LP COL","blue");
+	dmx_image_set_selector(image6,"LP COL","blue");
 	dmx_image_show(image1);
 	dmx_image_show(image2);
 	dmx_image_show(image3);
 	dmx_image_show(image4);
+	dmx_image_show(image5);
+	dmx_image_show(image6);
 }
 
 static unsigned int step = 0;
-static unsigned int map = (1<<0)|(1<<1)|(1<<2)|(1<<3);
+static unsigned int map = (1<<0)|(1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5);
 static void deinit(void)
 {
 	dmx_image_del(image1);
 	dmx_image_del(image2);
 	dmx_image_del(image3);
 	dmx_image_del(image4);
+	dmx_image_del(image5);
+	dmx_image_del(image6);
 	step=0;
-	map = (1<<0)|(1<<1)|(1<<2)|(1<<3);
+	map = (1<<0)|(1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5);
 }
 
 static unsigned int tick(__attribute__((__unused__)) unsigned int time)
@@ -55,24 +69,32 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 	{
 		case 0:
 			dmx_globvar_get("barcnt",&bar);
-			unsigned int substep = bar % 4;
+			unsigned int substep = bar % 6;
 
 			map=0;
 			if(substep == 0)
 			{
-				map = (1<<0)|(1<<1)|(1<<2)|(1<<3);
+				map = (1<<0)|(1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5);
 			}
 			else if(substep == 1)
 			{
-				map = (1<<0)|(1<<3);	
+				map = (1<<0)|(1<<5);	
 			}
 			else if(substep == 2)
 			{
-				map = (1<<1)|(1<<2);	
+				map = (1<<1)|(1<<4);	
 			}
 			else if(substep == 3)
 			{
-				map = (1<<0)|(1<<3);	
+				map = (1<<2)|(1<<3);	
+			}
+			else if(substep == 4)
+			{
+				map = (1<<1)|(1<<4);	
+			}
+			else if(substep == 5)
+			{
+				map = (1<<0)|(1<<5);	
 			}
 
 
@@ -80,24 +102,32 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 			if(map & (1<<1))dmx_image_set_selector(image2,"LP DIM","on");
 			if(map & (1<<2))dmx_image_set_selector(image3,"LP DIM","on");
 			if(map & (1<<3))dmx_image_set_selector(image4,"LP DIM","on");
+			if(map & (1<<4))dmx_image_set_selector(image5,"LP DIM","on");
+			if(map & (1<<5))dmx_image_set_selector(image6,"LP DIM","on");
 			return 300;
 		case 1:
 			if(map & (1<<0))dmx_image_set_selector(image1,"LP DIM","off");
 			if(map & (1<<1))dmx_image_set_selector(image2,"LP DIM","off");
 			if(map & (1<<2))dmx_image_set_selector(image3,"LP DIM","off");
 			if(map & (1<<3))dmx_image_set_selector(image4,"LP DIM","off");
+			if(map & (1<<4))dmx_image_set_selector(image5,"LP DIM","off");
+			if(map & (1<<5))dmx_image_set_selector(image6,"LP DIM","off");
 			return 300;
 		case 2:
 			if(map & (1<<0))dmx_image_set_selector(image1,"LP DIM","on");
-			if(map & (1<<2))dmx_image_set_selector(image2,"LP DIM","on");
+			if(map & (1<<1))dmx_image_set_selector(image2,"LP DIM","on");
 			if(map & (1<<2))dmx_image_set_selector(image3,"LP DIM","on");
 			if(map & (1<<3))dmx_image_set_selector(image4,"LP DIM","on");
+			if(map & (1<<4))dmx_image_set_selector(image5,"LP DIM","on");
+			if(map & (1<<5))dmx_image_set_selector(image6,"LP DIM","on");
 			return 300;
 		default:
 			if(map & (1<<0))dmx_image_set_selector(image1,"LP DIM","off");
 			if(map & (1<<1))dmx_image_set_selector(image2,"LP DIM","off");
 			if(map & (1<<2))dmx_image_set_selector(image3,"LP DIM","off");
 			if(map & (1<<3))dmx_image_set_selector(image4,"LP DIM","off");
+			if(map & (1<<4))dmx_image_set_selector(image5,"LP DIM","off");
+			if(map & (1<<5))dmx_image_set_selector(image6,"LP DIM","off");
 			step=0;
 			return 5000;
 	}

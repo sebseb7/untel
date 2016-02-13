@@ -8,6 +8,7 @@
 #include "dmx_globvar.h"
 
 
+static struct dmx_image* images[6];
 static struct dmx_set* sets[6];
 static struct dmx_image* image1;
 static struct dmx_image* image2;
@@ -21,7 +22,6 @@ static struct dmx_set* set3;
 static struct dmx_set* set4;
 static struct dmx_set* set5;
 static struct dmx_set* set6;
-static unsigned int activated = 0;
 
 static void init(void)
 {
@@ -70,16 +70,19 @@ static void init(void)
 	sets[3]=set4;
 	sets[4]=set5;
 	sets[5]=set6;
+	images[0]=image1;
+	images[1]=image2;
+	images[2]=image3;
+	images[3]=image4;
+	images[4]=image5;
+	images[5]=image6;
 	
-	activated = dmx_queue_activate(dmx_queue_getbyname("LED-COL-SLIDE"));
 
 }
 
 static unsigned int step = 0;
 static void deinit(void)
 {
-	if(activated) dmx_queue_deactivate(dmx_queue_getbyname("LED-COL-SLIDE"));
-	activated=0;
 	dmx_image_del(image1);
 	free(set1);
 	dmx_image_del(image2);
@@ -95,17 +98,48 @@ static void deinit(void)
 	step=0;
 }
 
+
 static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 {
-	
-	if(activated ==0) activated=dmx_queue_activate(dmx_queue_getbyname("LED-COL-SLIDE"));
+			
 
 
 	step++;
 
-	if(step == 1)
+	if((step%8) == 1)
 	{
-		unsigned int lamp = rand() % 6;
+		unsigned int lamp=10;
+		while(lamp > 5)
+			lamp = rand()&0xf;
+
+		switch(rand()%7)
+		{
+			case 0:
+				dmx_image_set_selector(images[lamp],"LP COL","red");
+				break;
+			case 1:
+				dmx_image_set_selector(images[lamp],"LP COL","blue");
+				break;
+			case 2:
+				dmx_image_set_selector(images[lamp],"LP COL","green");
+				break;
+			case 3:
+				dmx_image_set_selector(images[lamp],"LP COL","orange");
+				break;
+			case 4:
+				dmx_image_set_selector(images[lamp],"LP COL","cyan");
+				break;
+			case 5:
+				dmx_image_set_selector(images[lamp],"LP COL","magenta");
+				break;
+			case 6:
+				dmx_image_set_selector(images[lamp],"LP COL","yellow");
+				break;
+			default:
+				dmx_image_set_selector(images[lamp],"LP COL","rose");
+				break;
+		}
+
 
 
 		sets[lamp]->dim=1.0f;
@@ -113,20 +147,19 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 	}
 	else
 	{
-		set1->dim=0.0f;
-		set2->dim=0.0f;
-		set3->dim=0.0f;
-		set4->dim=0.0f;
-		set5->dim=0.0f;
-		set6->dim=0.0f;
-		step=0;
-		return 800;
+		if(set1->dim > 0.01f)set1->dim /= 2.0f;
+		if(set2->dim > 0.01f)set2->dim /= 2.0f;
+		if(set3->dim > 0.01f)set3->dim /= 2.0f;
+		if(set4->dim > 0.01f)set4->dim /= 2.0f;
+		if(set5->dim > 0.01f)set5->dim /= 2.0f;
+		if(set6->dim > 0.01f)set6->dim /= 2.0f;
+		return 500;
 	}
 }
 
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 
-	dmx_queue_add("LED-SCENE-003",init,deinit,tick);
+	dmx_queue_add("LED-SCENE-004",init,deinit,tick);
 
 }

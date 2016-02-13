@@ -8,7 +8,7 @@
 //#define OSC_OUT 1
 #define SDL_OUT 1
 //#define DMX_OUT 1
-#define CONCH_OUT 1
+//#define CONCH_OUT 1
 
 
 #endif
