@@ -67,6 +67,11 @@ void dmx_devices_free(void)
 			struct dmx_device_ledpar6* ledpar = dmx_device_list[i].device;
 			free(ledpar);
 		}
+		else if(dmx_device_list[i].type == DMX_DEVICE_STROBE)
+		{
+			struct dmx_device_strobe* strobe = dmx_device_list[i].device;
+			free(strobe);
+		}
 	}
 	devices_inuse=0;
 	devices_allocated=0;
@@ -84,6 +89,12 @@ void dmx_devices_clear(void)
 			ledpar->blue = 0;
 			ledpar->dim = 0.0f;
 			ledpar->blackout = 0;
+		}
+		else if(dmx_device_list[i].type == DMX_DEVICE_STROBE)
+		{
+			struct dmx_device_strobe* strobe = dmx_device_list[i].device;
+			strobe->dim = 0.0f;
+			strobe->dim = 0.0f;
 		}
 	}
 }
@@ -138,6 +149,34 @@ struct dmx_device_ledpar6* dmx_device_create_ledpar6(unsigned int addr,char* nam
 
 	return ledpar;
 }
+
+struct dmx_device_strobe* dmx_device_create_strobe(unsigned int addr,char* name)
+{
+	if(devices_inuse>0)
+	{
+		for(unsigned int i=0;i<devices_inuse;i++)
+		{
+			if(
+				(dmx_device_list[i].type==DMX_DEVICE_STROBE)&&
+				(dmx_device_list[i].addr==addr)&&
+				(0==strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH))
+			)
+			{
+					dmx_device_list[i].refcount++;
+					return dmx_device_list[i].device;
+			}
+		}
+	}
+	
+	struct dmx_device_strobe* strobe = malloc(sizeof(*strobe));
+	
+	strobe->freq = 0.0f;
+	strobe->dim  = 0.0f;
+
+	dmx_device_add(strobe,addr,DMX_DEVICE_STROBE,name);
+
+	return strobe;
+}
 //void dmx_device_create_fog(unsigned int addr);
 //void dmx_device_create_miniscanhpe(unsigned int addr);
 
@@ -165,6 +204,22 @@ void dmx_device_render_ledpar6(struct dmx_device* device)
 
 }
 
+void dmx_device_render_strobe(struct dmx_device* device)
+{
+	struct dmx_device_strobe* strobe = device->device;
+
+	unsigned char freq=0;
+	unsigned char dim=0;
+
+	dim = 255*strobe->dim;
+	freq = 255*strobe->freq;
+	
+	dmx_channel_set(device->addr,freq);
+	dmx_channel_set(device->addr+1,dim);
+
+
+}
+
 void dmx_device_render_ledpar6_sdl(struct dmx_device* device,unsigned int* pixelbuffer,unsigned int row, unsigned int col)
 {
 	
@@ -177,6 +232,28 @@ void dmx_device_render_ledpar6_sdl(struct dmx_device* device,unsigned int* pixel
 	red = ledpar->red*ledpar->dim;
 	green = ledpar->green*ledpar->dim;
 	blue = ledpar->blue*ledpar->dim;
+
+	unsigned int color = (red<<16)+(green<<8)+blue;
+
+	if(pixelbuffer[((row*30)*300)+(col*30)] != color)
+	{
+		for(unsigned int i=0;i<30;i++)
+		{
+			for(unsigned int j=0;j<30;j++) 
+			{
+				pixelbuffer[(((row*30)+j)*300)+(col*30)+i] = color;
+			}
+		}
+	}
+}
+void dmx_device_render_strobe_sdl(struct dmx_device* device,unsigned int* pixelbuffer,unsigned int row, unsigned int col)
+{
+	
+	struct dmx_device_strobe* strobe = device->device;
+
+	unsigned int red = 255*strobe->dim;
+	unsigned int green = 255*strobe->dim;
+	unsigned int blue = 255*strobe->dim;
 
 	unsigned int color = (red<<16)+(green<<8)+blue;
 
