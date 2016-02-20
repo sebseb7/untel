@@ -1,5 +1,6 @@
 next steps:
 
+- dmxbox style gui for most objects
 - gui for toggeling queues
 - device models
 - device parameters
