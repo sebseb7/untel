@@ -49,7 +49,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 	//render
 #ifdef SDL_OUT
-	unsigned int* pixelbuffer = sdl_init(300,300,"test",60);
+	unsigned int* pixelbuffer = sdl_init(600,300,"test",60);
 #endif
 
 
