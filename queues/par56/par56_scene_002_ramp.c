@@ -6,27 +6,21 @@
 #include "dmx_devices.h"
 #include "dmx_image.h"
 #include "dmx_globvar.h"
+#include "par56.h"
 
 static struct dmx_image* image1;
 static struct dmx_set* set1;
 
 static void init(void)
 {
-	dmx_device_create_ledpar6(8,"par-1");
-	dmx_device_create_ledpar6(16,"par-2");
-	dmx_device_create_ledpar6(24,"par-3");
-	dmx_device_create_ledpar6(32,"par-4");
-	dmx_device_create_ledpar6(40,"par-5");
-	dmx_device_create_ledpar6(48,"par-6");
+	create_par56();
 		
 	image1 = dmx_image_new(0);
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-1");
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-2");
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-3");
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-4");
-	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-5");
-	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-6");
-	dmx_image_set_selector(image1,"LP COL","blue");
+	dmx_image_set_selector(image1,"LP COL","orange");
 
 	set1 = dmx_set_new_dim(0.0f);
 	dmx_image_attach_set(image1,set1);
@@ -46,9 +40,9 @@ static void deinit(void)
 static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 {
 
-	if(0==(rand() % 10))dmx_image_set_selector(image1,"LP COL","blue");
-	if(0==(rand() % 25))dmx_image_set_selector(image1,"LP COL","white");
-	if(0==(rand() % 50))dmx_image_set_selector(image1,"LP COL","green");
+//	if(0==(rand() % 10))dmx_image_set_selector(image1,"LP COL","blue");
+//	if(0==(rand() % 25))dmx_image_set_selector(image1,"LP COL","white");
+//	if(0==(rand() % 50))dmx_image_set_selector(image1,"LP COL","green");
 
 	step++;
 
@@ -64,7 +58,7 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 	{
 		set1->dim=0.0f;
 		step=0;
-		return 40000;
+		return 10000;
 	}
 }
 

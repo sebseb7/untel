@@ -4,25 +4,19 @@
 #include "dmx_queue.h"
 #include "dmx_devices.h"
 #include "dmx_image.h"
+#include "par56.h"
 
 static struct dmx_image* image1;
 
 static void init(void)
 {
-	dmx_device_create_ledpar6(8,"par-1");
-	dmx_device_create_ledpar6(16,"par-2");
-	dmx_device_create_ledpar6(24,"par-3");
-	dmx_device_create_ledpar6(32,"par-4");
-	dmx_device_create_ledpar6(40,"par-5");
-	dmx_device_create_ledpar6(48,"par-6");
+	create_par56();
 		
 	image1 = dmx_image_new(0);
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-1");
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-2");
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-3");
 	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-4");
-	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-5");
-	dmx_image_add_device(image1,DMX_DEVICE_LEDPAR6,"par-6");
 	dmx_image_set_selector(image1,"LP DIM","on");
 	dmx_image_show(image1);
 }
