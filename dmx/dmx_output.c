@@ -102,13 +102,14 @@ void dmx_output_send(unsigned char* out)
 
 void dmx_output_deinit(void)
 {
+	initialized=0;
 	int ret;
 
 	if ((ret = ftdi_usb_close(ftdi)) < 0)
 	{
 		fprintf(stderr, "unable to close ftdi device: %d (%s)\n", ret, ftdi_get_error_string(ftdi));
 		ftdi_free(ftdi);
-		exit(-1);
+		return;
 	}
 	ftdi_free(ftdi);
 
