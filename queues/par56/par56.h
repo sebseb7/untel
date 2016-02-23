@@ -1,6 +1,9 @@
 #ifndef _PAR56_H
 #define _PAR56_H
 
+#define PAR56_COUNT 4
+#define PAR56_BASE_ADDR 8
+#define PAR56_ADD_OFFSET 8
 
 static void create_par56(void)
 {
