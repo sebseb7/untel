@@ -23,6 +23,9 @@
 
 #define DMX_FRAMERATE 40
 
+#include "pixel_hal.h"
+#include "menu.h"
+
 static unsigned long long start_time;
 
 static unsigned int getstarttime(void)
@@ -39,7 +42,6 @@ static unsigned int getstarttime(void)
 
 
 
-
 int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unused__))) 
 {
 //	keyboard_list();
@@ -49,9 +51,10 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 
 	//render
 #ifdef SDL_OUT
-	unsigned int* pixelbuffer = sdl_init(600,300,"test",60);
+	unsigned int* pixelbuffer = sdl_init(1024,600,"test",60);
 #endif
 
+	menu_init();
 
 	unsigned int bpm=165;
 	unsigned int beat01ms=600000/bpm;
@@ -164,6 +167,24 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		dmx_output_send(dmx_channels_get());
 #endif
 		osc_update_ui(currtime);
+		
+		draw_menu();
+		
+		for(unsigned int i=0;i<1024;i++)
+		{
+			for(unsigned int j=0;j<550;j++) 
+			{
+				uint8_t r;
+				uint8_t g;
+				uint8_t b;
+
+				getLedXY(i,j,&r,&g,&b);
+	
+				unsigned int color = (r<<16)+(g<<8)+b;
+
+				pixelbuffer[(j*1024)+i] = color;
+			}
+		}
 		
 		unsigned int currtime2 = getstarttime();
 		int sleeptime = (25*1000)-((currtime2-lastsend)/10);

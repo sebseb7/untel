@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#define LCD_PIXEL_WIDTH          600
-#define LCD_PIXEL_HEIGHT         300
+#define LCD_PIXEL_WIDTH          1024
+#define LCD_PIXEL_HEIGHT         550
 
 #define LCD_WIDTH  LCD_PIXEL_WIDTH          
 #define LCD_HEIGHT LCD_PIXEL_HEIGHT     

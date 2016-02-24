@@ -225,7 +225,7 @@ void dmx_device_render_strobe(struct dmx_device* device)
 
 }
 
-#define ZOOM 90
+#define ZOOM 50
 
 void dmx_device_render_ledpar6_sdl(struct dmx_device* device,unsigned int* pixelbuffer,unsigned int row, unsigned int col)
 {
@@ -242,13 +242,13 @@ void dmx_device_render_ledpar6_sdl(struct dmx_device* device,unsigned int* pixel
 
 	unsigned int color = (red<<16)+(green<<8)+blue;
 
-	if(pixelbuffer[((row*ZOOM)*600)+(col*ZOOM)] != color)
+	if(pixelbuffer[(1024*550)+((row*ZOOM)*1024)+(col*ZOOM)] != color)
 	{
 		for(unsigned int i=0;i<ZOOM;i++)
 		{
 			for(unsigned int j=0;j<ZOOM;j++) 
 			{
-				pixelbuffer[(((row*ZOOM)+j)*600)+(col*ZOOM)+i] = color;
+				pixelbuffer[(1024*550)+(((row*ZOOM)+j)*1024)+(col*ZOOM)+i] = color;
 			}
 		}
 	}
@@ -264,13 +264,13 @@ void dmx_device_render_strobe_sdl(struct dmx_device* device,unsigned int* pixelb
 
 	unsigned int color = (red<<16)+(green<<8)+blue;
 
-	if(pixelbuffer[((row*30)*600)+(col*30)] != color)
+	if(pixelbuffer[((row*30)*1024)+(col*30)] != color)
 	{
 		for(unsigned int i=0;i<30;i++)
 		{
 			for(unsigned int j=0;j<30;j++) 
 			{
-				pixelbuffer[(((row*30)+j)*600)+(col*30)+i] = color;
+				pixelbuffer[(((row*30)+j)*1024)+(col*30)+i] = color;
 			}
 		}
 	}
