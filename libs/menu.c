@@ -64,5 +64,13 @@ void draw_menu()
 {
 	current_execution();
 }
-
+		
+unsigned int button_x(unsigned int x)
+{
+	return x*103+11;
+}
+unsigned int button_y(unsigned int y)
+{
+	return y*65+45;
+}
 

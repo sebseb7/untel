@@ -1,4 +1,5 @@
 
+#include "menu.h"
 #include "menu_main.h"
 //#include "menu_setup.h"
 //#include "menu_directdmx.h"
@@ -27,15 +28,15 @@ void menu_main()
 		draw_text_16pt((LCD_WIDTH-text_width)>>1,9, "DMX BOX", 200,200,255);
 
 
-		draw_button_icon(11,45,92,1,"Toggle Zones",155,0,0,0,255,0);
-		draw_button_icon(114,45,92,1,"Trigger Action",155,0,0,0,255,0);
-		draw_button_icon(217,45,92,1,"",55,55,55,0,0,0);
-		draw_button_icon(11,110,92,1,"",55,55,55,0,0,0);
-		draw_button_icon(114,110,92,1,"",55,55,55,0,0,0);
-		draw_button_icon(217,110,92,1,"",55,55,55,0,0,0);
-		draw_button_icon(11,175,92,1,"Direct DMX",155,0,0,0,255,0);
-		draw_button_icon(114,175,92,1,"",55,55,55,0,0,0);
-		draw_button_icon(217,175,92,1,"Setup",155,0,0,0,255,0);
+		draw_button_icon(button_x(0),button_y(0),92,1,"Cue Ctrl",155,0,0,0,255,0);
+		draw_button_icon(button_x(1),button_y(0),92,1,"",55,55,55,0,0,0);
+		draw_button_icon(button_x(2),button_y(0),92,1,"",55,55,55,0,0,0);
+		draw_button_icon(button_x(0),button_y(1),92,1,"",55,55,55,0,0,0);
+		draw_button_icon(button_x(1),button_y(1),92,1,"",55,55,55,0,0,0);
+		draw_button_icon(button_x(2),button_y(1),92,1,"",55,55,55,0,0,0);
+		draw_button_icon(button_x(0),button_y(2),92,1,"Direct DMX",155,0,0,0,255,0);
+		draw_button_icon(button_x(1),button_y(2),92,1,"",55,55,55,0,0,0);
+		draw_button_icon(button_x(2),button_y(2),92,1,"Setup",155,0,0,0,255,0);
 	}
 
 
