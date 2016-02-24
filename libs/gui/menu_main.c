@@ -81,6 +81,7 @@ struct menu* get_menu_main()
 	struct menu* menu_main = malloc(sizeof(struct menu));
 	menu_main->redraw = menu_main_redraw;
 	menu_main->touch = menu_main_touch;
+	menu_main->parent = NULL;
 
 	return menu_main;
 }

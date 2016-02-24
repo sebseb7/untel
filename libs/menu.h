@@ -6,6 +6,7 @@ struct menu
 {
 	void (*redraw)(void);
 	void (*touch)(unsigned int,unsigned int);
+	struct menu* parent;
 };
 
 
