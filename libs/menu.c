@@ -47,22 +47,19 @@ void getLedXY(uint16_t x, uint16_t y, uint8_t* red,uint8_t* green, uint8_t* blue
 
 #include "gui/menu_main.h"
 
-static void (*current_execution)(void);
-void set_current_execution(void (*new_execution)(void))
+static struct menu* current_menu;
+
+void set_current_menu(struct menu* new_menu)
 {
-	current_execution = new_execution;
-}
-void (*get_current_execution(void))(void)
-{
-	return current_execution;
+	current_menu = new_menu;
 }
 void menu_init()
 {
-	current_execution = menu_main;
+	current_menu = get_menu_main();
 }
 void draw_menu()
 {
-	current_execution();
+	current_menu->redraw();
 }
 		
 unsigned int button_x(unsigned int x)

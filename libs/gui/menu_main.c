@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 
 #include "menu.h"
 #include "menu_main.h"
@@ -10,17 +12,10 @@
 #include "mcugui/button.h"
 
 
-static uint8_t redraw = 1;
-
-void menu_main()
+static void menu_main_redraw(void)
 {
-
-
-	if(redraw)
-	{
 		//clearDisplay();
 		//clear_buttons();
-		redraw=0;
 
 		draw_filledRect(0,0,LCD_WIDTH,35,155,100,100);
 
@@ -37,51 +32,56 @@ void menu_main()
 		draw_button_icon(button_x(0),button_y(2),92,1,"Direct DMX",155,0,0,0,255,0);
 		draw_button_icon(button_x(1),button_y(2),92,1,"",55,55,55,0,0,0);
 		draw_button_icon(button_x(2),button_y(2),92,1,"Setup",155,0,0,0,255,0);
-	}
+}
 
+
+static void menu_main_touch(unsigned int x, unsigned int y)
+{
 
 	uint8_t field=0;
-	uint16_t x;
-	uint16_t y;
-	//if(check_button_press(&x,&y)==1)
-	if(0)
+	if(y > 41)
 	{
-		if(y > 41)
+		field+=1;
+
+		if(y > 171)
+		{
+			field+=6;
+		}else if(y > 105)
+		{
+			field+=3;
+		}
+
+		if(x > 212)
+		{
+			field+=2;
+		}else if (x > 109)
 		{
 			field+=1;
-
-			if(y > 171)
-			{
-				field+=6;
-			}else if(y > 105)
-			{
-				field+=3;
-			}
-
-			if(x > 212)
-			{
-				field+=2;
-			}else if (x > 109)
-			{
-				field+=1;
-			}
-		}
-		if(field == 9)
-		{
-			redraw=1;
-//			set_current_execution(menu_setup);
-		}
-		else if(field == 7)
-		{
-			redraw=1;
-//			set_current_execution(menu_directdmx);
-		}
-		else if(field == 8)
-		{
-			redraw=1;
-//			invoke_numeric_keyboard("test",0);
 		}
 	}
+	if(field == 9)
+	{
+		//redraw=1;
+		//			set_current_execution(menu_setup);
+	}
+	else if(field == 7)
+	{
+		//redraw=1;
+		//			set_current_execution(menu_directdmx);
+	}
+	else if(field == 8)
+	{
+		//redraw=1;
+		//			invoke_numeric_keyboard("test",0);
+	}
+}
 
+struct menu* get_menu_main()
+{
+	struct menu* menu_main = malloc(sizeof(struct menu));
+	menu_main->redraw = menu_main_redraw;
+	menu_main->touch = menu_main_touch;
+
+	return menu_main;
 }
 

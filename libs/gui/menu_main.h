@@ -3,7 +3,7 @@
 
 
 
-void menu_main(void);
+struct menu* get_menu_main(void);
 
 #endif
 
