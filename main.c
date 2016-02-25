@@ -168,23 +168,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 #endif
 		osc_update_ui(currtime);
 		
-		draw_menu();
-		
-		for(unsigned int i=0;i<1024;i++)
-		{
-			for(unsigned int j=0;j<550;j++) 
-			{
-				uint8_t r;
-				uint8_t g;
-				uint8_t b;
-
-				getLedXY(i,j,&r,&g,&b);
-	
-				unsigned int color = (r<<16)+(g<<8)+b;
-
-				pixelbuffer[(j*1024)+i] = color;
-			}
-		}
+		draw_menu(pixelbuffer);
 		
 		unsigned int currtime2 = getstarttime();
 		int sleeptime = (25*1000)-((currtime2-lastsend)/10);
