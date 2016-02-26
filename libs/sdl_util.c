@@ -87,6 +87,31 @@ static void keydown(int key)
 
 int init_tick;
 
+
+static unsigned int touch_avail = 0;
+static unsigned int touch_x = 0;
+static unsigned int touch_y = 0;
+
+static void touch_event(unsigned int x,unsigned int y)
+{
+	touch_x = x;
+	touch_y = y;
+	touch_avail=1;
+}
+
+unsigned int get_touch(unsigned int *x, unsigned int *y)
+{
+	if(touch_avail == 1)
+	{
+		*x = touch_x;
+		*y = touch_y;
+		touch_avail = 0;
+		return 1;
+	}
+	return 0;
+}
+
+
 int sdl_handle_events(const void* pixels)
 {
 
@@ -109,6 +134,9 @@ int sdl_handle_events(const void* pixels)
 		switch(ev.type) {
 			case SDL_QUIT:
 				return 0;
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				touch_event(ev.button.x,ev.button.y);
 				break;
 			case SDL_KEYUP:
 				switch(ev.key.keysym.sym) 

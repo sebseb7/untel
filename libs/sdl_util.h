@@ -6,5 +6,6 @@ void sdl_deinit(void);
 int sdl_handle_events(const void* pixels);
 void release_upped_keys(void);
 int getkey(int key);
+unsigned int get_touch(unsigned int *x, unsigned int *y);
 
 #endif

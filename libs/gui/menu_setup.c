@@ -14,6 +14,7 @@
 //#include "loadsave.h"
 
 
+static struct menu* menu_setup = NULL;
 
 
 static void menu_setup_redraw(void)
@@ -73,7 +74,8 @@ static void menu_setup_touch(unsigned int x, unsigned int y)
 	{
 		if(x < 40)
 		{
-			//				set_current_execution(menu_main);
+			if(menu_setup->parent != NULL)
+				set_current_menu(menu_setup->parent);
 		}
 	}
 
@@ -98,10 +100,13 @@ static void menu_setup_touch(unsigned int x, unsigned int y)
 
 struct menu* get_menu_setup()
 {
-	struct menu* menu_setup = malloc(sizeof(struct menu));
-	menu_setup->redraw = menu_setup_redraw;
-	menu_setup->touch = menu_setup_touch;
-	menu_setup->parent = NULL;
+	if(menu_setup == NULL)
+	{
+		menu_setup = malloc(sizeof(struct menu));
+		menu_setup->redraw = menu_setup_redraw;
+		menu_setup->touch = menu_setup_touch;
+		menu_setup->parent = NULL;
+	}
 
 	return menu_setup;
 }

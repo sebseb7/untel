@@ -14,6 +14,7 @@ struct menu
 
 
 void clearDisplay(void);
+void set_current_menu(struct menu* new_menu);
 void draw_menu(unsigned int* pixelbuffer);
 void menu_init(void);
 

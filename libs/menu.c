@@ -3,6 +3,7 @@
 
 #include "pixel_hal.h"
 #include "menu.h"
+#include "sdl_util.h"
 
 
 static unsigned int* current_pixelbuffer=NULL;
@@ -72,6 +73,14 @@ void menu_init()
 }
 void draw_menu(unsigned int* pixelbuffer)
 {
+	unsigned int x;
+	unsigned int y;
+
+	if(get_touch(&x,&y)==1)
+	{
+		current_menu->touch(x,y);
+	}
+
 	if(dirty)
 	{
 		current_pixelbuffer=pixelbuffer;

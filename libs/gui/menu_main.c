@@ -11,6 +11,7 @@
 #include "mcugui/text.h"
 #include "mcugui/button.h"
 
+static struct menu* menu_main = NULL;
 
 static void menu_main_redraw(void)
 {
@@ -38,6 +39,8 @@ static void menu_main_redraw(void)
 static void menu_main_touch(unsigned int x, unsigned int y)
 {
 
+	printf("%i %i \n",x,y);
+
 	uint8_t field=0;
 	if(y > 41)
 	{
@@ -61,8 +64,8 @@ static void menu_main_touch(unsigned int x, unsigned int y)
 	}
 	if(field == 9)
 	{
-		//redraw=1;
-		//			set_current_execution(menu_setup);
+		menu_setup->parent=get_menu_setup();
+		set_current_menu(menu_setup);
 	}
 	else if(field == 7)
 	{
@@ -78,11 +81,13 @@ static void menu_main_touch(unsigned int x, unsigned int y)
 
 struct menu* get_menu_main()
 {
-	struct menu* menu_main = malloc(sizeof(struct menu));
-	menu_main->redraw = menu_main_redraw;
-	menu_main->touch = menu_main_touch;
-	menu_main->parent = NULL;
-
+	if(menu_main == NULL)
+	{
+		menu_main = malloc(sizeof(struct menu));
+		menu_main->redraw = menu_main_redraw;
+		menu_main->touch = menu_main_touch;
+		menu_main->parent = NULL;
+	}
 	return menu_main;
 }
 
