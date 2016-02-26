@@ -3,7 +3,7 @@
 
 #include "menu.h"
 #include "menu_main.h"
-//#include "menu_setup.h"
+#include "menu_setup.h"
 //#include "menu_directdmx.h"
 //#include "screen_keyboard.h"
 //#include "dmxbox_hal.h"
@@ -39,7 +39,7 @@ static void menu_main_redraw(void)
 static void menu_main_touch(unsigned int x, unsigned int y)
 {
 
-	printf("%i %i \n",x,y);
+//	printf("%i %i \n",x,y);
 
 	uint8_t field=0;
 	if(y > 41)
@@ -64,7 +64,8 @@ static void menu_main_touch(unsigned int x, unsigned int y)
 	}
 	if(field == 9)
 	{
-		menu_setup->parent=get_menu_setup();
+		struct menu* menu_setup = get_menu_setup();
+		menu_setup->parent=menu_main;
 		set_current_menu(menu_setup);
 	}
 	else if(field == 7)
@@ -83,7 +84,7 @@ struct menu* get_menu_main()
 {
 	if(menu_main == NULL)
 	{
-		menu_main = malloc(sizeof(struct menu));
+		menu_main = malloc(sizeof(struct menu*));
 		menu_main->redraw = menu_main_redraw;
 		menu_main->touch = menu_main_touch;
 		menu_main->parent = NULL;
