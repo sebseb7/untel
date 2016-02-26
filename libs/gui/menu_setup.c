@@ -20,7 +20,7 @@ static struct menu* menu_setup = NULL;
 static void menu_setup_redraw(void)
 {
 
-	//		clearDisplay();
+	clearDisplay();
 	//		clear_buttons();
 
 	draw_filledRect(0,0,LCD_WIDTH,35,155,100,100);

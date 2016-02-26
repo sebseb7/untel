@@ -13,10 +13,7 @@ void clearDisplay()
 	int x, y;
 	for(x = 0; x < LCD_WIDTH; x++) {
 		for(y = 0; y < LCD_HEIGHT; y++) {
-//			leds[y][x][0] = 0;
-//			leds[y][x][1] = 0;
-//			leds[y][x][2] = 0;
-//			leds[y][x][3] = 1;
+			current_pixelbuffer[(y*LCD_WIDTH)+x]=0;
 		}
 	}
 }
@@ -32,7 +29,6 @@ void setLedXY(uint16_t x, uint16_t y, uint8_t red,uint8_t green, uint8_t blue) {
 	}
 }
 
-
 void invLedXY(uint16_t x, uint16_t y) {
 	if (x >= LCD_WIDTH) return;
 	if (y >= LCD_HEIGHT) return;
@@ -41,6 +37,7 @@ void invLedXY(uint16_t x, uint16_t y) {
 //	leds[y][x][2] = 255 - leds[y][x][2];
 //	leds[y][x][3] = 1;
 }
+
 void getLedXY(uint16_t x, uint16_t y, uint8_t* red,uint8_t* green, uint8_t* blue) {
 	if (x >= LCD_WIDTH) return;
 	if (y >= LCD_HEIGHT) return;

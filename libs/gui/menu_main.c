@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "menu_main.h"
 #include "menu_setup.h"
+#include "menu_quectrl.h"
 //#include "menu_directdmx.h"
 //#include "screen_keyboard.h"
 //#include "dmxbox_hal.h"
@@ -15,7 +16,7 @@ static struct menu* menu_main = NULL;
 
 static void menu_main_redraw(void)
 {
-		//clearDisplay();
+		clearDisplay();
 		//clear_buttons();
 
 		draw_filledRect(0,0,LCD_WIDTH,35,155,100,100);
@@ -62,7 +63,13 @@ static void menu_main_touch(unsigned int x, unsigned int y)
 			field+=1;
 		}
 	}
-	if(field == 9)
+	if(field == 1)
+	{
+		struct menu* menu_quectrl = get_menu_quectrl();
+		menu_quectrl->parent=menu_main;
+		set_current_menu(menu_quectrl);
+	}
+	else if(field == 9)
 	{
 		struct menu* menu_setup = get_menu_setup();
 		menu_setup->parent=menu_main;
