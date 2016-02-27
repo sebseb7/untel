@@ -10,7 +10,9 @@
 #include "dmx_queue.h"
 #include "dmx_luaqueue.h"
 #include "dmx_selector.h"
+#ifdef DMX_OUT
 #include "dmx_output.h"
+#endif
 
 #ifdef DMX_OUT
 //#include "keyboard.h"
@@ -23,8 +25,10 @@
 
 #define DMX_FRAMERATE 40
 
+#ifdef SDL_OUT
 #include "pixel_hal.h"
 #include "menu.h"
+#endif
 
 static unsigned long long start_time;
 
@@ -54,7 +58,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	unsigned int* pixelbuffer = sdl_init(1024,600,"test",60);
 #endif
 
+#ifdef SDL_OUT
 	menu_init();
+#endif
 
 	unsigned int bpm=165;
 	unsigned int beat01ms=600000/bpm;
@@ -168,8 +174,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 #endif
 		osc_update_ui(currtime);
 		
+#ifdef SDL_OUT
 		draw_menu(pixelbuffer);
-		
+#endif		
 		unsigned int currtime2 = getstarttime();
 		int sleeptime = (25*1000)-((currtime2-lastsend)/10);
 		//printf("%i\n",sleeptime);
