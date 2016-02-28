@@ -44,5 +44,8 @@ void dmx_luaqueue_activate(struct dmx_luaqueue* luaqueue);
 
 void dmx_luaqueue_del_all(void);
 
+unsigned int dmx_luaqueue_get_count(void);
+struct dmx_luaqueue* dmx_luaqueue_getbyidx(unsigned int index);
+
 #endif
 

@@ -35,6 +35,32 @@ static struct dmx_luaqueue* dmx_luaqueue_start = NULL;
 static struct dmx_luaqueue* dmx_luaqueue_last = NULL;
 static unsigned int dmx_luaqueue_count=0;
 
+unsigned int dmx_luaqueue_get_count(void)
+{
+	return dmx_luaqueue_count;
+}
+
+struct dmx_luaqueue* dmx_luaqueue_getbyidx(unsigned int index)
+{
+	if(dmx_luaqueue_start == NULL)
+		return NULL;
+
+	struct dmx_luaqueue* dmx_luaqueue = dmx_luaqueue_start;
+	while(index > 0)
+	{
+		index--;
+		if(dmx_luaqueue->next == NULL)
+		{
+			return NULL;
+		}
+		else
+		{
+			dmx_luaqueue = dmx_luaqueue->next;
+		}
+	}
+	return dmx_luaqueue;
+}
+
 struct dmx_luaqueue* dmx_luaqueue_add(const char* name)
 {
 	struct dmx_luaqueue* luaqueue = malloc(sizeof(struct dmx_luaqueue));
