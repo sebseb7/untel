@@ -102,7 +102,7 @@ struct menu* get_menu_setup()
 {
 	if(menu_setup == NULL)
 	{
-		menu_setup = malloc(sizeof(struct menu*));
+		menu_setup = malloc(sizeof(struct menu));
 		menu_setup->redraw = menu_setup_redraw;
 		menu_setup->touch = menu_setup_touch;
 		menu_setup->parent = NULL;

@@ -81,7 +81,7 @@ struct menu* get_menu_quectrl()
 {
 	if(menu_quectrl == NULL)
 	{
-		menu_quectrl = malloc(sizeof(struct menu*));
+		menu_quectrl = malloc(sizeof(struct menu));
 		menu_quectrl->update = menu_quectrl_update;
 		menu_quectrl->redraw = menu_quectrl_redraw;
 		menu_quectrl->touch = menu_quectrl_touch;
