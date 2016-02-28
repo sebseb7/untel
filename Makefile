@@ -26,13 +26,13 @@ clean:
 
 dmxMidiCtrlNg: $(OBJECTS) Makefile 
 	@rm -f dmxMidiCtrlNg
-	@echo "  \033[1;34mCompile\033[0m"
+	@echo "  \033[1;36mLink   \033[0m dmxMidiCtrlNg"
 	@$(COMPILER) $(OBJECTS) $(LDFLAGS)  -o dmxMidiCtrlNg
 
 -include $(DEPS)
 
 .bin/%.o: %.c Makefile
-	@echo "  GCC $<"
+	@echo "  \033[1;34mCompile\033[0m $<"
 	@mkdir -p $(dir $@)
 	@$(COMPILER) $(FLAGS) -o $@ -c $<
 	@$(COMPILER) $(FLAGS) -MM $< > $*.d.tmp
