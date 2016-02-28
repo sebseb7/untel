@@ -58,6 +58,11 @@ static struct menu* current_menu;
 
 static unsigned int dirty = 1;
 
+void menu_autoupdate()
+{
+	dirty = 2;
+};
+
 void set_current_menu(struct menu* new_menu)
 {
 	current_menu = new_menu;
@@ -81,9 +86,15 @@ void draw_menu(unsigned int* pixelbuffer)
 	if(dirty)
 	{
 		current_pixelbuffer=pixelbuffer;
-		current_menu->redraw();
+		if(dirty==2)
+			if(current_menu->update != NULL)
+				current_menu->update();
+		if(dirty==1)
+			if(current_menu->redraw != NULL)
+				current_menu->redraw();
 		current_pixelbuffer=NULL;
-		dirty = 0;
+		if(dirty==1)
+			dirty = 0;
 	}
 }
 		
