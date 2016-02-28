@@ -2,6 +2,7 @@ next steps:
 
 - dmxbox style gui for most objects
 - gui for toggeling queues
+- implement chemsys style ques functionality (group+selector+blend+hold) including save/load to json
 - device models
 - device parameters
 - examples for
@@ -12,3 +13,4 @@ next steps:
 	* atomic strobe
 	* fog unit
 	* dimmer/switch pack
+
