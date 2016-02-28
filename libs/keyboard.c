@@ -3,7 +3,6 @@
 #include	<stdio.h>
 #include	<string.h>
 #include	"keyboard.h"
-#include	"main.h"
 
 enum {
 	KEYBOARD_MAX_EVENTS = 256,

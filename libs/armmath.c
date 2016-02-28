@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "armmath.h"
-#include "main.h"
 
 
 // table size: 8kb
@@ -44,10 +43,13 @@ double pythagoras( double side1, double side2 )
 }
 
 #if defined(__arm__) && defined (__ARM_PCS_VFP)
-__attribute__( ( always_inline ) ) static __INLINE float __VSQRTF(float op1)
+//__attribute__( ( always_inline ) ) 
+//static __INLINE float __VSQRTF(float op1)
+static float __VSQRTF(float op1)
 {
 	float result;
-	__ASM volatile ("vsqrt.f32 %0, %1" : "=w" (result) : "w" (op1) );
+	//__ASM volatile ("vsqrt.f32 %0, %1" : "=w" (result) : "w" (op1) );
+	asm volatile ("vsqrt.f32 %0, %1" : "=w" (result) : "w" (op1) );
 	return(result);
 }
 #endif
