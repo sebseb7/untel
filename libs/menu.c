@@ -68,6 +68,12 @@ void set_current_menu(struct menu* new_menu)
 	current_menu = new_menu;
 	dirty = 1;
 }
+void set_menu_dirty(void)
+{
+	if(dirty == 0)
+		dirty = 1;
+}
+
 void menu_init()
 {
 	current_menu = get_menu_main();

@@ -2,7 +2,7 @@
 
 #include "menu.h"
 #include "menu_setup.h"
-//#include "menu_setup_devices.h"
+#include "menu_setup_devices.h"
 //#include "menu_setup_device_classes.h"
 //#include "menu_main.h"
 //#include "dmxbox_hal.h"
@@ -85,7 +85,9 @@ static void menu_setup_touch(unsigned int x, unsigned int y)
 	}
 	else if(field == 2)
 	{
-		//			set_current_execution(menu_setup_devices);
+		struct menu* menu_setup_devices = get_menu_setup_devices();
+		menu_setup_devices->parent=menu_setup;
+		set_current_menu(menu_setup_devices);
 	}
 	else if(field == 7)
 	{

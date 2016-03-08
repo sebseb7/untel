@@ -19,6 +19,7 @@ void set_current_menu(struct menu* new_menu);
 void draw_menu(unsigned int* pixelbuffer);
 void menu_init(void);
 void menu_autoupdate(void);
+void set_menu_dirty(void);
 
 
 unsigned int button_x(unsigned int x);
