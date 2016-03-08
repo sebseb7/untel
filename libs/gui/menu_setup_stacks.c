@@ -2,6 +2,7 @@
 #include "menu.h"
 #include "menu_setup.h"
 #include "menu_setup_stacks.h"
+#include "menu_setup_stacks_add.h"
 #include "mcugui/rect.h"
 #include "mcugui/text.h"
 #include "mcugui/circle.h"
@@ -159,10 +160,9 @@ static void menu_setup_stacks_touch(unsigned int x, unsigned int y)
 		//			redraw=1;
 		if(active_row==0)
 		{
-			if(dmx_stack_get_count()<50)
-			{
-				//			set_current_execution(menu_setup_devices_add);
-			}
+			struct menu* menu_setup_stacks_add = get_menu_setup_stacks_add();
+			menu_setup_stacks_add->parent=menu_setup_stacks;
+			set_current_menu(menu_setup_stacks_add);
 		}
 		else
 		{

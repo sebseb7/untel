@@ -12,6 +12,7 @@ enum {
 enum {
 	DMX_STACK_FRAME_IMAGE,
 	DMX_STACK_FRAME_WAIT,
+	DMX_STACK_FRAME_COMMAND,
 };
 
 
@@ -33,11 +34,24 @@ struct dmx_stack_frame_wait
 	unsigned int milis;
 };
 
+struct dmx_stack_frame_command
+{
+	unsigned int type;
+	unsigned int command;
+	char *svalue1;
+	char *svalue2;
+	unsigned int ivalue1;
+	unsigned int ivalue2;
+	float fvalue1;
+	float fvalue2;
+};
+
 union dmx_stack_frame
 {
 	unsigned int type;
 	struct dmx_stack_frame_wait wait;
 	struct dmx_stack_frame_image image; 
+	struct dmx_stack_frame_command command; 
 };
 
 struct dmx_stack 
