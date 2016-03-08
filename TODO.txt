@@ -1,5 +1,15 @@
 next steps:
 
+
+new plan:
+
+- stacks
+- frames (image,effect,wait,blend)
+
+- manage stacks via setup
+- allow adding of images to stack
+
+
 - dmxbox style gui for most objects
 - gui for toggeling queues
 - implement chemsys style ques functionality (group+selector+blend+hold) including save/load to json

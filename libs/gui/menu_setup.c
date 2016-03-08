@@ -3,6 +3,7 @@
 #include "menu.h"
 #include "menu_setup.h"
 #include "menu_setup_devices.h"
+#include "menu_setup_stacks.h"
 //#include "menu_setup_device_classes.h"
 //#include "menu_main.h"
 //#include "dmxbox_hal.h"
@@ -33,15 +34,15 @@ static void menu_setup_redraw(void)
 	draw_text_16pt((LCD_WIDTH-text_width)>>1,9, "SETUP", 200,200,255);
 
 
-	draw_button_icon(11,45,92,1,"Models",155,0,0,0,255,0);
+	draw_button_icon(11,45,92,1,"",155,0,0,0,255,0);
 	draw_button_icon(114,45,92,1,"Devices",155,0,0,0,255,0);
-	draw_button_icon(217,45,92,1,"Scenes",155,0,0,0,255,0);
-	draw_button_icon(11,110,92,1,"Loops",155,0,0,0,255,0);
-	draw_button_icon(114,110,92,1,"Playbacks",155,0,0,0,255,0);
-	draw_button_icon(217,110,92,1,"Actions",155,0,0,0,255,0);
-	draw_button_icon(11,175,92,1,"Load",155,0,0,0,255,0);
-	draw_button_icon(114,175,92,1,"Save",155,0,0,0,255,0);
-	draw_button_icon(217,175,92,1,"General",155,0,0,0,255,0);
+	draw_button_icon(217,45,92,1,"Stacks",155,0,0,0,255,0);
+	draw_button_icon(11,110,92,1,"",155,0,0,0,255,0);
+	draw_button_icon(114,110,92,1,"",155,0,0,0,255,0);
+	draw_button_icon(217,110,92,1,"",155,0,0,0,255,0);
+	draw_button_icon(11,175,92,1,"",155,0,0,0,255,0);
+	draw_button_icon(114,175,92,1,"",155,0,0,0,255,0);
+	draw_button_icon(217,175,92,1,"",155,0,0,0,255,0);
 }
 
 
@@ -88,6 +89,12 @@ static void menu_setup_touch(unsigned int x, unsigned int y)
 		struct menu* menu_setup_devices = get_menu_setup_devices();
 		menu_setup_devices->parent=menu_setup;
 		set_current_menu(menu_setup_devices);
+	}
+	else if(field == 3)
+	{
+		struct menu* menu_setup_stacks = get_menu_setup_stacks();
+		menu_setup_stacks->parent=menu_setup;
+		set_current_menu(menu_setup_stacks);
 	}
 	else if(field == 7)
 	{
