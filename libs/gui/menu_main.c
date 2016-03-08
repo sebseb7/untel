@@ -3,6 +3,7 @@
 
 #include "menu.h"
 #include "menu_main.h"
+#include "menu_prog.h"
 #include "menu_setup.h"
 #include "menu_quectrl.h"
 //#include "menu_directdmx.h"
@@ -27,7 +28,7 @@ static void menu_main_redraw(void)
 
 		draw_button_icon(button_x(0),button_y(0),92,1,"Cue Ctrl",155,0,0,0,255,0);
 		draw_button_icon(button_x(1),button_y(0),92,1,"",55,55,55,0,0,0);
-		draw_button_icon(button_x(2),button_y(0),92,1,"",55,55,55,0,0,0);
+		draw_button_icon(button_x(2),button_y(0),92,1,"Prog",155,0,0,0,255,0);
 		draw_button_icon(button_x(0),button_y(1),92,1,"",55,55,55,0,0,0);
 		draw_button_icon(button_x(1),button_y(1),92,1,"",55,55,55,0,0,0);
 		draw_button_icon(button_x(2),button_y(1),92,1,"",55,55,55,0,0,0);
@@ -68,6 +69,12 @@ static void menu_main_touch(unsigned int x, unsigned int y)
 		struct menu* menu_quectrl = get_menu_quectrl();
 		menu_quectrl->parent=menu_main;
 		set_current_menu(menu_quectrl);
+	}
+	else if(field == 3)
+	{
+		struct menu* menu_prog = get_menu_prog();
+		menu_prog->parent=menu_main;
+		set_current_menu(menu_prog);
 	}
 	else if(field == 9)
 	{
