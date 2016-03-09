@@ -1,4 +1,11 @@
 os: linux
 language: c
 script: make
-
+addons:
+  apt:
+    packages:
+      - libsdl2-dev
+      - libportmidi-dev
+      - liblo-dev
+      - libftdi1-dev
+      - liblua-5.2-dev
