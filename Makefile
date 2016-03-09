@@ -15,7 +15,7 @@ DEPS   =$(patsubst %,.bin/%,$(SOURCES:.c=.d))
 OBJECTS=$(patsubst %,.bin/%,$(SOURCES:.c=.o)) 
 
 FLAGS= -O0 -g -I. -Ilibs -Idmx -I/usr/include/lua5.2 --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra 
-LDFLAGS= -lm -lportmidi -lftdi1 -llo -llua5.2
+LDFLAGS= -lm -lportmidi -llo -llua5.2
 
 ifeq (1,${DMX_OUT})
 LDFLAGS+= -lftdi1
