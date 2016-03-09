@@ -10,22 +10,19 @@
 #include "dmx_queue.h"
 #include "dmx_luaqueue.h"
 #include "dmx_selector.h"
-#ifdef DMX_OUT
+#if DMX_OUT==1
 #include "dmx_output.h"
 #endif
 
-#ifdef DMX_OUT
-//#include "keyboard.h"
-#endif
 #include "osc.h"
 
-#ifdef SDL_OUT
+#if SDL_OUT==1
 #include "sdl_util.h"
 #endif
 
 #define DMX_FRAMERATE 40
 
-#ifdef SDL_OUT
+#if SDL_OUT==1
 #include "pixel_hal.h"
 #include "menu.h"
 #endif
@@ -54,11 +51,11 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 //	keyboard_init(&midi_djm,"CH345 MIDI 1");
 
 	//render
-#ifdef SDL_OUT
+#if SDL_OUT==1
 	unsigned int* pixelbuffer = sdl_init(1024,600,"test",60);
 #endif
 
-#ifdef SDL_OUT
+#if SDL_OUT==1
 	menu_init();
 #endif
 
@@ -68,7 +65,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	unsigned int last_beat=getstarttime();
 	unsigned int lastsend=getstarttime();
 
-#ifdef DMX_OUT
+#if DMX_OUT==1
 	dmx_output_init();
 #endif
 	osc_init();
@@ -86,7 +83,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 //	while(looping-- > 0)
 	while(1)
 	{
-#ifdef SDL_OUT
+#if SDL_OUT==1
 		if(0==sdl_handle_events(pixelbuffer)) break;
 #endif
 //	while(keyboard_poll(&midi_djm,&e)) 
@@ -152,7 +149,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			if(device->type == DMX_DEVICE_LEDPAR6)
 			{
 				dmx_device_render_ledpar6(device);
-#ifdef SDL_OUT
+#if SDL_OUT==1
 				dmx_device_render_ledpar6_sdl(device,pixelbuffer,0,i);
 #endif
 			}
@@ -169,12 +166,12 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 //		fflush(stdout); 
 
 		osc_apply_manual(dmx_channels_get());
-#ifdef DMX_OUT
+#if DMX_OUT==1
 		dmx_output_send(dmx_channels_get());
 #endif
 		osc_update_ui(currtime);
 		
-#ifdef SDL_OUT
+#if SDL_OUT==1
 		draw_menu(pixelbuffer);
 #endif		
 		unsigned int currtime2 = getstarttime();
@@ -184,7 +181,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		lastsend = currtime2;
 	}
 
-#ifdef DMX_OUT
+#if DMX_OUT==1
 	dmx_output_deinit();
 #endif
 	osc_deinit();
@@ -204,7 +201,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		dmx_queue_del(queue);
 	}
 	dmx_devices_free();
-#ifdef SDL_OUT
+#if SDL_OUT==1
 	sdl_deinit();
 #endif
 	return 0;

@@ -1,6 +1,6 @@
 os: linux
 language: c
-script: make FTDI=0
+script: make DMX_OUT=0
 before_install:
     - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots
     - sudo apt-get update -qq
