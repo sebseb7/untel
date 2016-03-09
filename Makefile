@@ -2,12 +2,23 @@ UNAME := $(shell uname)
 
 COMPILER = gcc
 
+FTDI=1
+
 SOURCES=$(wildcard main.c queues/*.c queues/par56/*.c queues/strobe/*.c libs/*.c libs/mcugui/*.c libs/gui/*.c dmx/*.c)
 DEPS   =$(patsubst %,.bin/%,$(SOURCES:.c=.d)) 
 OBJECTS=$(patsubst %,.bin/%,$(SOURCES:.c=.o)) 
 
-FLAGS= -O0 -g -I. -Ilibs -Idmx -I/usr/include/lua5.2 --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra -L.
+FLAGS= -O0 -g -I. -Ilibs -Idmx -I/usr/include/lua5.2 --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra 
 LDFLAGS= -lm -lportmidi -lftdi1 -llo -llua5.2
+
+ifeq (1,${FTDI})
+LDFLAGS+= -lftdi1
+endif
+
+FLAGS+= -DFTDI_AVAIL=$(FTDI)
+
+FLAGS+="-I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads" 
+LDFLAGS+="-L/opt/vc/lib" 
 
 FLAGS+=`sdl2-config --cflags`
 LDFLAGS+=`sdl2-config --libs`
