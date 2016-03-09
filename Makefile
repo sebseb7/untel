@@ -10,6 +10,11 @@ SOURCES=$(wildcard main.c queues/*.c queues/par56/*.c queues/strobe/*.c libs/*.c
 ifeq (0,${DMX_OUT})
 SOURCES := $(filter-out dmx/dmx_output.c, $(SOURCES))
 endif
+ifeq (0,${SDL_OUT})
+SOURCES := $(filter-out libs/sdl_util.c, $(SOURCES))
+SOURCES := $(filter-out libs/menu.c, $(SOURCES))
+SOURCES := $(filter-out $(wildcard libs/gui/*.c libs/mcugui/*.c), $(SOURCES))
+endif
 
 DEPS   =$(patsubst %,.bin/%,$(SOURCES:.c=.d)) 
 OBJECTS=$(patsubst %,.bin/%,$(SOURCES:.c=.o)) 
