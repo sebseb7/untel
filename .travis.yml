@@ -7,5 +7,5 @@ addons:
       - libsdl2-dev
       - libportmidi-dev
       - liblo-dev
-      - libftdi1-dev
-      - liblua-5.2-dev
+      - libftdi-dev
+      - liblua5.2-dev
