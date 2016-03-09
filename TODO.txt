@@ -24,3 +24,9 @@ new plan:
 	* fog unit
 	* dimmer/switch pack
 
+
+- travis
+  *valgrind checks
+  *xvfb sdl testing - mouse clicks - and compare dmx output agains table
+  *records cpu time for mouseclicks tests and publish data somewhere (commit it into a file, so it can be displayed on a static github pages page)
+
