@@ -1,6 +1,14 @@
+#include <stdlib.h>
+
 #include "dmx_attr_colors.h"
 
-/*
+struct colornames {
+	const char* name;
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
+};
+
 static struct colornames colornameslist[] = {
 
 	{"red"    ,255,0  ,0  },
@@ -14,4 +22,20 @@ static struct colornames colornameslist[] = {
 	{"white"  ,255,255,255}
 
 };
-*/
+static unsigned int colornameslistcount =  9;
+
+
+unsigned int dmx_attr_colors_get_count(void)
+{
+	return colornameslistcount;
+}
+const char* dmx_attr_colors_get_name(unsigned int idx)
+{
+	if(idx < colornameslistcount)
+	{
+		return colornameslist[idx].name;
+	}
+	return NULL;
+}
+
+

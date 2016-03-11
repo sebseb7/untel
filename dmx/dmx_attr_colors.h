@@ -31,7 +31,7 @@ union dmx_attr_color
 };
 
 unsigned int dmx_attr_colors_get_count(void);
-char* dmx_attr_colors_get_name(unsigned int idx);
+const char* dmx_attr_colors_get_name(unsigned int idx);
 
 #endif
 

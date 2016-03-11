@@ -11,6 +11,8 @@
 
 #include "dmx_devices.h"
 
+#include "dmx_attr_colors.h"
+
 static struct menu* menu_prog = NULL;
 
 static unsigned int tab = 0;
@@ -95,6 +97,24 @@ static void menu_prog_redraw(void)
 	
 		if(subtab==1)
 		{
+			unsigned int dmx_attr_colors_get_count(void);
+			const char* dmx_attr_colors_get_name(unsigned int idx);
+			char buf[30];
+
+			for(unsigned int i = 0; i < dmx_attr_colors_get_count();i++)
+			{
+				const char * colorname = dmx_attr_colors_get_name(i);
+
+				snprintf(buf,30,"%s",colorname);
+
+				draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf,155,0,0,0,255,0);
+
+				if(buttonx == 8)
+				{
+					buttony++;
+					buttonx=0;
+				}
+			}
 		}
 	}
 
