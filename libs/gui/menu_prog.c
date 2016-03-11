@@ -116,6 +116,22 @@ static void menu_prog_redraw(void)
 				}
 			}
 		}
+		if(subtab==2)
+		{
+			unsigned int height = button_y(buttony+5)-button_y(buttony)-11;
+			draw_rect(button_x(buttonx),button_y(buttony),92,height,1,155,0,0);
+			
+			unsigned int runlength = height-54;
+
+			float fvalue = 0.95f;
+
+			unsigned int position = runlength * fvalue;
+
+
+			draw_filledRect(button_x(buttonx++)+1,button_y(buttony)+position+1,92-2,54-2,155,100,0);
+			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Clear",155,(subtab==1)?155:0,0,0,255,0);
+			
+		}
 	}
 
 }
