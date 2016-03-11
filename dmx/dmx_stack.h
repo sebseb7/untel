@@ -1,18 +1,26 @@
 #ifndef _DMX_STACK_H
 #define _DMX_STACK_H
 
-#include "dmx_devices.h"
-
-enum {
-	DMX_ATTR_COLOR,
-	DMX_ATTR_FREQ,
-	DMX_ATTR_DIM
-};
+#include "dmx_defines.h"
+#include "dmx_attr_colors.h"
 
 enum {
 	DMX_STACK_FRAME_IMAGE,
 	DMX_STACK_FRAME_WAIT,
 	DMX_STACK_FRAME_COMMAND,
+};
+
+struct dmx_attr_dim
+{
+	unsigned int type;
+	float dim;
+};
+
+union dmx_attr
+{
+	unsigned int type;
+	union dmx_attr_color color;
+	struct dmx_attr_dim dim;
 };
 
 
@@ -25,7 +33,7 @@ struct dmx_stack_frame_image
 
 	unsigned int attr_alloc;
 	unsigned int attr_count;
-	struct dmx_attr** attr_list;
+	union dmx_attr** attr_list;
 };
 
 struct dmx_stack_frame_wait

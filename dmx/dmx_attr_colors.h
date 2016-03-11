@@ -3,12 +3,6 @@
 
 #include "dmx_defines.h"
 
-enum {
-	DMX_ATTR_COLOR_NAME,
-	DMX_ATTR_COLOR_RGB,
-};
-
-
 struct dmx_attr_color_rgb
 {
 	unsigned int type;

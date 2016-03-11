@@ -3,5 +3,14 @@
 
 #define DMX_NAME_LENGTH 40
 
+enum {
+	DMX_ATTR_COLOR_NAME,
+	DMX_ATTR_COLOR_RGB,
+	DMX_ATTR_FREQ,
+	DMX_ATTR_DIM
+};
+
+
+
 
 #endif
