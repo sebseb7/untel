@@ -1,3 +1,4 @@
+#include <stdlib.h>
 
 #include "menu.h"
 #include "menu_setup.h"
@@ -9,6 +10,7 @@
 #include "mcugui/button.h"
 
 #include "dmx_stack.h"
+#include "dmx_devices.h"
 
 #include <stdio.h>
 #include <string.h>
