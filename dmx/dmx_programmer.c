@@ -90,15 +90,21 @@ void dmx_programmer_color_clear(void)
 {
 	dmx_programmer_color_isset=0;
 	if(	dmx_programmer_color_name !=NULL)
+	{
 		free(dmx_programmer_color_name);
+		dmx_programmer_color_name = NULL;
+	}
 }
 
-void dmx_programmer_color_setbyname(char* colorname)
+void dmx_programmer_color_setbyname(const char* colorname)
 {
 	dmx_programmer_color_isset=1;
 	
 	if(	dmx_programmer_color_name !=NULL)
+	{
 		free(dmx_programmer_color_name);
+		dmx_programmer_color_name = NULL;
+	}
 
 	dmx_programmer_color_name = strndup(colorname,DMX_NAME_LENGTH);
 }
@@ -110,10 +116,13 @@ void dmx_programmer_color_setbyrgb(unsigned int r, unsigned int g, unsigned int 
 	dmx_programmer_color_b=b;
 	dmx_programmer_color_isset=1;
 	if(	dmx_programmer_color_name !=NULL)
+	{
 		free(dmx_programmer_color_name);
+		dmx_programmer_color_name = NULL;
+	}
 }
 
-unsigned int dmx_programmer_color_test(char* colorname)
+unsigned int dmx_programmer_color_test(const char* colorname)
 {
 	if(dmx_programmer_color_isset)
 	{

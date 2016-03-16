@@ -10,9 +10,9 @@ void dmx_programmer_device_del(char* name);
 unsigned int dmx_programmer_device_test(char* name);
 
 void dmx_programmer_color_clear(void);
-void dmx_programmer_color_setbyname(char* colorname);
+void dmx_programmer_color_setbyname(const char* colorname);
 void dmx_programmer_color_setbyrgb(unsigned int r, unsigned int g, unsigned int b);
-unsigned int dmx_programmer_color_test(char* colorname);
+unsigned int dmx_programmer_color_test(const char* colorname);
 unsigned int dmx_programmer_color_getrgb(unsigned int *r,unsigned int *g,unsigned int *b);
 
 void dmx_programmer_dim_clear(void);
