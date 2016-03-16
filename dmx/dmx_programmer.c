@@ -35,6 +35,7 @@ void dmx_programmer_device_add(char* name)
 	if(dmx_programmer_device_allocated==0)
 	{
 		dmx_programmer_device_list = malloc(sizeof(char*)*DMX_PROGRAMMER_DEVICE_ALLOCATE_INITIAL);
+		dmx_programmer_device_allocated = DMX_PROGRAMMER_DEVICE_ALLOCATE_INITIAL;
 	}
 
 	if(dmx_programmer_device_inuse == dmx_programmer_device_allocated)
