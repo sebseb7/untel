@@ -91,7 +91,6 @@ static void menu_prog_redraw(void)
 				strncpy(classname,"<missing>",30);
 			}
 
-			//snprintf(buf2,30,"(%i) %s - %s",dmx_device->addr,classname,dmx_device->name);
 			snprintf(buf2,30,"%s",dmx_device->name);
 			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,1,i);
 			unsigned int active = dmx_programmer_device_test(dmx_device->name);
@@ -176,8 +175,6 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 	unsigned int attr3 = 0;
 	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3))
 	{
-		printf("%i %i %i\n",attr1,attr2,attr3);
-	
 		if(attr1 == 1)
 		{
 			if(attr2 == 0)
@@ -188,12 +185,6 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			if(attr2 == 1)
 			{
 				struct dmx_device* dmx_device = dmx_get_device_byidx(attr3);
-
-				if(dmx_device == NULL)
-				{
-					printf("error\n");
-				}
-
 
 				if(dmx_programmer_device_test(dmx_device->name))
 				{
