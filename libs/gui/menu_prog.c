@@ -128,9 +128,12 @@ static void menu_prog_redraw(void)
 				const char * colorname = dmx_attr_colors_get_name(i);
 
 				snprintf(buf,30,"%s",colorname);
+		
+		
+				unsigned int active = dmx_programmer_color_test(colorname);
 
 				touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,4,i,0);
-				draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf,155,0,0,0,255,0);
+				draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf,155,(active)?155:0,0,0,255,0);
 
 				if(buttonx == 8)
 				{
@@ -184,10 +187,6 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		{
 			tab = (tab !=attr2)?attr2:0;
 			set_menu_dirty();
-			if(attr2 == 1)
-			{
-				subtab=0;
-			}
 		}
 		else if(attr1 == 2)
 		{
@@ -207,6 +206,16 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				dmx_programmer_device_add(dmx_device->name);
 			}
 				
+			set_menu_dirty();
+		}
+		else if(attr1 == 4)
+		{
+			dmx_programmer_color_clear();
+			const char * colorname = dmx_attr_colors_get_name(attr2);
+			if(dmx_programmer_color_test(colorname) != 1)
+			{
+				dmx_programmer_color_setbyname(colorname);
+			}
 			set_menu_dirty();
 		}
 	}
