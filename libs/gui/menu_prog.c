@@ -10,6 +10,7 @@
 #include "mcugui/circle.h"
 
 #include "dmx_devices.h"
+#include "dmx_programmer.h"
 
 #include "dmx_attr_colors.h"
 
@@ -28,11 +29,20 @@ struct dmx_stack_frame_image* stash[4];
  *
  */
 
+#include "touch_binding.h"
+
+
+static struct touch_binding_list* touchlist = NULL;
+
+
 
 
 static void menu_prog_redraw(void)
 {
 	clearDisplay();
+	if(touchlist != NULL)
+		touch_binding_free(touchlist);
+	touchlist = touch_binding_new();
 
 	draw_filledRect(0,0,LCD_WIDTH,35,155,100,100);
 
@@ -45,8 +55,13 @@ static void menu_prog_redraw(void)
 	unsigned int buttonx = 0;
 	unsigned int buttony = 0;
 
+	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,0,0);
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Devices",155,(tab==1)?155:0,0,0,255,0);
+	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,0,0);
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Attributes",155,(tab==2)?155:0,0,0,255,0);
+	
+
+	//void touch_binding_add(struct touch_binding_list* list,unsigned int minx,unsigned int maxx,unsigned int miny,unsigned int maxy,unsigned int attr1,unsigned int attr2,unsigned int attr3);
 
 	buttony++;buttonx=0;
 
@@ -78,7 +93,9 @@ static void menu_prog_redraw(void)
 
 			//snprintf(buf2,30,"(%i) %s - %s",dmx_device->addr,classname,dmx_device->name);
 			snprintf(buf2,30,"%s",dmx_device->name);
-			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf2,155,0,0,0,255,0);
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,1,i);
+			unsigned int active = dmx_programmer_device_test(dmx_device->name);
+			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf2,155,(active)?155:0,0,0,255,0);
 			if(buttonx == 8)
 			{
 				buttony++;
@@ -90,9 +107,15 @@ static void menu_prog_redraw(void)
 
 	if(tab==2)
 	{
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,1,1);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color",155,(subtab==1)?155:0,0,0,255,0);
+		
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,1,2);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Dimmer",155,(subtab==2)?155:0,0,0,255,0);
+		
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,1,3);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Freq",155,(subtab==3)?155:0,0,0,255,0);
+		
 		buttony++;buttonx=0;
 	
 		if(subtab==1)
@@ -139,28 +162,7 @@ static void menu_prog_redraw(void)
 
 static void menu_prog_touch(unsigned int x, unsigned int y)
 {
-	uint8_t field=0;
-	if(y > 41)
-	{
-		field+=1;
-
-		if(y > 171)
-		{
-			field+=6;
-		}else if(y > 105)
-		{
-			field+=3;
-		}
-
-		if(x > 212)
-		{
-			field+=2;
-		}else if (x > 109)
-		{
-			field+=1;
-		}
-	}
-	else
+	if(y < 41)
 	{
 		if(x < 40)
 		{
@@ -168,33 +170,56 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				set_current_menu(menu_prog->parent);
 		}
 	}
-	if(field == 1)
+	
+	unsigned int attr1 = 0;
+	unsigned int attr2 = 0;
+	unsigned int attr3 = 0;
+	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3))
 	{
-		tab = (tab !=1)?1:0;
-		set_menu_dirty();
-	}
-	else if(field == 2)
-	{
-		tab = (tab !=2)?2:0;
-		subtab=0;
-		set_menu_dirty();
-	}
-	else if(tab == 2)
-	{
-		if(field == 4)
+		printf("%i %i %i\n",attr1,attr2,attr3);
+	
+		if(attr1 == 1)
 		{
-			subtab = (subtab !=1)?1:0;
-			set_menu_dirty();
+			if(attr2 == 0)
+			{
+				tab = (tab !=1)?1:0;
+				set_menu_dirty();
+			}
+			if(attr2 == 1)
+			{
+				struct dmx_device* dmx_device = dmx_get_device_byidx(attr3);
+
+				if(dmx_device == NULL)
+				{
+					printf("error\n");
+				}
+
+
+				if(dmx_programmer_device_test(dmx_device->name))
+				{
+					dmx_programmer_device_del(dmx_device->name);
+				}
+				else
+				{
+					dmx_programmer_device_add(dmx_device->name);
+				}
+				
+				set_menu_dirty();
+			}
 		}
-		else if(field == 5)
+		else if(attr1 == 2)
 		{
-			subtab = (subtab !=2)?2:0;
-			set_menu_dirty();
-		}
-		else if(field == 6)
-		{
-			subtab = (subtab !=3)?3:0;
-			set_menu_dirty();
+			if(attr2 == 0)
+			{
+				tab = (tab !=2)?2:0;
+				subtab=0;
+				set_menu_dirty();
+			}
+			else if(attr2 == 1)
+			{
+				subtab = (subtab !=attr3)?attr3:0;
+				set_menu_dirty();
+			}
 		}
 	}
 }
