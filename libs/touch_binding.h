@@ -24,7 +24,7 @@ struct touch_binding_list* touch_binding_new(void);
 void touch_binding_add(struct touch_binding_list* list,unsigned int minx,unsigned int w,unsigned int miny,unsigned int h,unsigned int attr1,unsigned int attr2,unsigned int attr3);
 void touch_binding_free(struct touch_binding_list* list);
 
-unsigned int touch_test(struct touch_binding_list* list,unsigned int x,unsigned int y,unsigned int* attr1,unsigned int* attr2,unsigned int* attr3);
+unsigned int touch_test(struct touch_binding_list* list,unsigned int x,unsigned int y,unsigned int* attr1,unsigned int* attr2,unsigned int* attr3,unsigned int* relx, unsigned int* rely);
 
 
 #endif

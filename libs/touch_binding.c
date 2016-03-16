@@ -55,7 +55,7 @@ void touch_binding_free(struct touch_binding_list* list)
 	free(list);
 }
 
-unsigned int touch_test(struct touch_binding_list* list,unsigned int x,unsigned int y,unsigned int* attr1,unsigned int* attr2,unsigned int* attr3)
+unsigned int touch_test(struct touch_binding_list* list,unsigned int x,unsigned int y,unsigned int* attr1,unsigned int* attr2,unsigned int* attr3,unsigned int* relx, unsigned int* rely)
 {
 	if(list == NULL)
 		return 0;
@@ -74,6 +74,8 @@ unsigned int touch_test(struct touch_binding_list* list,unsigned int x,unsigned 
 			*attr1 = binding->attr1;
 			*attr2 = binding->attr2;
 			*attr3 = binding->attr3;
+			*relx = x - binding->minx;
+			*rely = y - binding->miny;
 			return 1;
 		}
 		binding = binding->next;

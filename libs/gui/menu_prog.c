@@ -55,9 +55,9 @@ static void menu_prog_redraw(void)
 	unsigned int buttonx = 0;
 	unsigned int buttony = 0;
 
-	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,0,0);
+	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,1,0);
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Devices",155,(tab==1)?155:0,0,0,255,0);
-	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,0,0);
+	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,2,0);
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Attributes",155,(tab==2)?155:0,0,0,255,0);
 	
 
@@ -92,7 +92,7 @@ static void menu_prog_redraw(void)
 			}
 
 			snprintf(buf2,30,"%s",dmx_device->name);
-			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,1,i);
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,3,i,0);
 			unsigned int active = dmx_programmer_device_test(dmx_device->name);
 			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf2,155,(active)?155:0,0,0,255,0);
 			if(buttonx == 8)
@@ -106,13 +106,13 @@ static void menu_prog_redraw(void)
 
 	if(tab==2)
 	{
-		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,1,1);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,1,0);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color",155,(subtab==1)?155:0,0,0,255,0);
 		
-		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,1,2);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,2,0);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Dimmer",155,(subtab==2)?155:0,0,0,255,0);
 		
-		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,1,3);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,3,0);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Freq",155,(subtab==3)?155:0,0,0,255,0);
 		
 		buttony++;buttonx=0;
@@ -129,6 +129,7 @@ static void menu_prog_redraw(void)
 
 				snprintf(buf,30,"%s",colorname);
 
+				touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,4,i,0);
 				draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf,155,0,0,0,255,0);
 
 				if(buttonx == 8)
@@ -141,6 +142,7 @@ static void menu_prog_redraw(void)
 		if(subtab==2)
 		{
 			unsigned int height = button_y(buttony+5)-button_y(buttony)-11;
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,5,1,0);
 			draw_rect(button_x(buttonx),button_y(buttony),92,height,1,155,0,0);
 			
 			unsigned int runlength = height-54;
@@ -151,6 +153,7 @@ static void menu_prog_redraw(void)
 
 
 			draw_filledRect(button_x(buttonx++)+1,button_y(buttony)+position+1,92-2,54-2,155,100,0);
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,5,2,0);
 			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Clear",155,(subtab==1)?155:0,0,0,255,0);
 			
 		}
@@ -173,44 +176,38 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 	unsigned int attr1 = 0;
 	unsigned int attr2 = 0;
 	unsigned int attr3 = 0;
-	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3))
+	unsigned int relx = 0;
+	unsigned int rely = 0;
+	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3,&relx,&rely))
 	{
 		if(attr1 == 1)
 		{
-			if(attr2 == 0)
-			{
-				tab = (tab !=1)?1:0;
-				set_menu_dirty();
-			}
+			tab = (tab !=attr2)?attr2:0;
+			set_menu_dirty();
 			if(attr2 == 1)
 			{
-				struct dmx_device* dmx_device = dmx_get_device_byidx(attr3);
-
-				if(dmx_programmer_device_test(dmx_device->name))
-				{
-					dmx_programmer_device_del(dmx_device->name);
-				}
-				else
-				{
-					dmx_programmer_device_add(dmx_device->name);
-				}
-				
-				set_menu_dirty();
+				subtab=0;
 			}
 		}
 		else if(attr1 == 2)
 		{
-			if(attr2 == 0)
+			subtab = (subtab !=attr2)?attr2:0;
+			set_menu_dirty();
+		}
+		else if(attr1 == 3)
+		{
+			struct dmx_device* dmx_device = dmx_get_device_byidx(attr2);
+
+			if(dmx_programmer_device_test(dmx_device->name))
 			{
-				tab = (tab !=2)?2:0;
-				subtab=0;
-				set_menu_dirty();
+				dmx_programmer_device_del(dmx_device->name);
 			}
-			else if(attr2 == 1)
+			else
 			{
-				subtab = (subtab !=attr3)?attr3:0;
-				set_menu_dirty();
+				dmx_programmer_device_add(dmx_device->name);
 			}
+				
+			set_menu_dirty();
 		}
 	}
 }
