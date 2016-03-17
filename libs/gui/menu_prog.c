@@ -210,11 +210,15 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		}
 		else if(attr1 == 4)
 		{
-			dmx_programmer_color_clear();
 			const char * colorname = dmx_attr_colors_get_name(attr2);
 			if(dmx_programmer_color_test(colorname) != 1)
 			{
+				dmx_programmer_color_clear();
 				dmx_programmer_color_setbyname(colorname);
+			}
+			else
+			{
+				dmx_programmer_color_clear();
 			}
 			set_menu_dirty();
 		}
