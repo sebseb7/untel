@@ -145,17 +145,23 @@ static void menu_prog_redraw(void)
 		if(subtab==2)
 		{
 			unsigned int height = button_y(buttony+5)-button_y(buttony)-11;
+			unsigned int runlength = height-54;
 			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,5,1,0);
 			draw_rect(button_x(buttonx),button_y(buttony),92,height,1,155,0,0);
 			
-			unsigned int runlength = height-54;
 
-			float fvalue = 0.95f;
+			float fvalue = 0;
 
-			unsigned int position = runlength * fvalue;
+			if(dmx_programmer_dim_get(&fvalue))
+			{
+				unsigned int position = runlength * fvalue;
+				draw_filledRect(button_x(buttonx++)+1,button_y(buttony)+position+1,92-2,54-2,155,100,0);
+			}
+			else
+			{
+				buttonx++;
+			}
 
-
-			draw_filledRect(button_x(buttonx++)+1,button_y(buttony)+position+1,92-2,54-2,155,100,0);
 			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,5,2,0);
 			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Clear",155,(subtab==1)?155:0,0,0,255,0);
 			
@@ -219,6 +225,29 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			else
 			{
 				dmx_programmer_color_clear();
+			}
+			set_menu_dirty();
+		}
+		else if(attr1 == 5)
+		{
+			if(attr2 == 1)
+			{
+				if(rely > (54/2))
+				{
+					rely -= (54/2);
+				}
+				else
+				{
+					rely=0;
+				}
+				unsigned int height = button_y(5)-button_y(0)-11;
+				unsigned int runlength = height-54;
+
+				dmx_programmer_dim_set(rely/(float)runlength);
+			}
+			else if(attr2 == 2)
+			{
+				dmx_programmer_dim_clear();
 			}
 			set_menu_dirty();
 		}
