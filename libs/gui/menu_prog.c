@@ -10,7 +10,7 @@
 #include "mcugui/circle.h"
 
 #include "dmx_devices.h"
-#include "dmx_programmer.h"
+#include "dmx_frame.h"
 
 #include "dmx_attr_colors.h"
 
@@ -19,7 +19,7 @@ static struct menu* menu_prog = NULL;
 static unsigned int tab = 0;
 static unsigned int subtab = 0;
 
-struct dmx_stack_frame_image* stash[4];
+struct dmx_img* stash[4];
 
 /*
  *
@@ -35,6 +35,7 @@ struct dmx_stack_frame_image* stash[4];
 static struct touch_binding_list* touchlist = NULL;
 
 
+static unsigned int act = 0;
 
 
 static void menu_prog_redraw(void)
@@ -93,7 +94,7 @@ static void menu_prog_redraw(void)
 
 			snprintf(buf2,30,"%s",dmx_device->name);
 			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,3,i,0);
-			unsigned int active = dmx_programmer_device_test(dmx_device->name);
+			unsigned int active = dmx_img_device_test(stash[act],dmx_device->name);
 			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf2,155,(active)?155:0,0,0,255,0);
 			if(buttonx == 8)
 			{
@@ -130,7 +131,7 @@ static void menu_prog_redraw(void)
 				snprintf(buf,30,"%s",colorname);
 		
 		
-				unsigned int active = dmx_programmer_color_test(colorname);
+				unsigned int active = dmx_img_color_test(stash[act],colorname);
 
 				touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,4,i,0);
 				draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf,155,(active)?155:0,0,0,255,0);
@@ -152,7 +153,7 @@ static void menu_prog_redraw(void)
 
 			float fvalue = 0;
 
-			if(dmx_programmer_dim_get(&fvalue))
+			if(dmx_img_dim_get(stash[act],&fvalue))
 			{
 				unsigned int position = runlength * fvalue;
 				draw_filledRect(button_x(buttonx++)+1,button_y(buttony)+position+1,92-2,54-2,155,100,0);
@@ -203,13 +204,13 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		{
 			struct dmx_device* dmx_device = dmx_get_device_byidx(attr2);
 
-			if(dmx_programmer_device_test(dmx_device->name))
+			if(dmx_img_device_test(stash[act],dmx_device->name))
 			{
-				dmx_programmer_device_del(dmx_device->name);
+				dmx_img_device_del(stash[act],dmx_device->name);
 			}
 			else
 			{
-				dmx_programmer_device_add(dmx_device->name);
+				dmx_img_device_add(stash[act],dmx_device->name);
 			}
 				
 			set_menu_dirty();
@@ -217,14 +218,14 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		else if(attr1 == 4)
 		{
 			const char * colorname = dmx_attr_colors_get_name(attr2);
-			if(dmx_programmer_color_test(colorname) != 1)
+			if(dmx_img_color_test(stash[act],colorname) != 1)
 			{
-				dmx_programmer_color_clear();
-				dmx_programmer_color_setbyname(colorname);
+				dmx_img_color_clear(stash[act]);
+				dmx_img_color_setname(stash[act],colorname);
 			}
 			else
 			{
-				dmx_programmer_color_clear();
+				dmx_img_color_clear(stash[act]);
 			}
 			set_menu_dirty();
 		}
@@ -243,11 +244,11 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				unsigned int height = button_y(5)-button_y(0)-11;
 				unsigned int runlength = height-54;
 
-				dmx_programmer_dim_set(rely/(float)runlength);
+				dmx_img_dim_set(stash[act],rely/(float)runlength);
 			}
 			else if(attr2 == 2)
 			{
-				dmx_programmer_dim_clear();
+				dmx_img_dim_clear(stash[act]);
 			}
 			set_menu_dirty();
 		}
@@ -262,6 +263,11 @@ struct menu* get_menu_prog(void)
 		menu_prog->redraw = menu_prog_redraw;
 		menu_prog->touch = menu_prog_touch;
 		menu_prog->parent = NULL;
+
+		stash[0] = dmx_img_new();
+		stash[1] = dmx_img_new();
+		stash[2] = dmx_img_new();
+		stash[3] = dmx_img_new();
 	}
 	return menu_prog;
 }

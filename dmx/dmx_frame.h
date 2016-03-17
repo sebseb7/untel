@@ -70,6 +70,7 @@ unsigned int dmx_img_device_test(struct dmx_img* image, char* name);
 
 void dmx_img_color_clear(struct dmx_img* image);
 void dmx_img_color_setname(struct dmx_img* image, const char* colorname);
+unsigned int dmx_img_color_test(struct dmx_img* image, const char* colorname);
 void dmx_img_color_setrgb(struct dmx_img* image,unsigned int r, unsigned int g, unsigned int b);
 const char* dmx_img_color_getname(struct dmx_img* image);
 unsigned int dmx_img_color_getrgb(struct dmx_img* image,unsigned int* r,unsigned int* g, unsigned int* b);
