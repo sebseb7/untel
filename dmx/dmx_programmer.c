@@ -4,6 +4,12 @@
 
 #include "dmx_defines.h"
 #include "dmx_programmer.h"
+#include "dmx_frame.h"
+
+
+//most of this file should be moved to the frame logic
+
+struct dmx_frame_image* programmer_frame = NULL;
 
 #define DMX_PROGRAMMER_DEVICE_ALLOCATE_INITIAL 100
 
