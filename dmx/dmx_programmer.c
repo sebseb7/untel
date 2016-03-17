@@ -159,6 +159,9 @@ void dmx_programmer_dim_clear(void)
 
 void dmx_programmer_dim_set(float dim)
 {
+	if(dim < 0.0f) dim=0.0f;
+	if(dim > 1.0f) dim=1.0f;
+
 	dmx_programmer_dim = dim;
 	dmx_programmer_dim_isset = 1;
 }
