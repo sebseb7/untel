@@ -52,7 +52,7 @@ clean:
 
 dmxMidiCtrlNg: $(OBJECTS) Makefile 
 	@rm -f dmxMidiCtrlNg
-	@echo "  \033[1;36mLink   \033[0m dmxMidiCtrlNg"
+	@echo "  \033[1;36mLink   \033[0m dmxMidiCtrlNg (using ${LUA_VERSION})"
 	@$(COMPILER) $(OBJECTS) $(LDFLAGS)  -o dmxMidiCtrlNg
 
 -include $(DEPS)
