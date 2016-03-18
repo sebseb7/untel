@@ -5,6 +5,8 @@ COMPILER = gcc
 DMX_OUT=1
 SDL_OUT=1
 
+LUA_VERSION=$(shell pkg-config --list-all | grep lua | sort | cut -d \  -f 1 | tail -1)
+
 SOURCES=$(wildcard main.c queues/*.c queues/par56/*.c queues/strobe/*.c libs/*.c libs/mcugui/*.c libs/gui/*.c dmx/*.c)
 
 ifeq (0,${DMX_OUT})
@@ -18,8 +20,12 @@ endif
 DEPS   =$(patsubst %,.bin/%,$(SOURCES:.c=.d)) 
 OBJECTS=$(patsubst %,.bin/%,$(SOURCES:.c=.o)) 
 
-FLAGS= -O0 -g -I. -Ilibs -Idmx -I/usr/include/lua5.2 --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra 
-LDFLAGS= -lm -lportmidi -llo -llua5.2
+FLAGS= -O0 -g -I. -Ilibs -Idmx --std=gnu99 -Wall  -funsigned-char -Wundef -Wsign-compare  -Wstrict-prototypes  -Wextra 
+LDFLAGS= -lm -lportmidi -llo 
+
+FLAGS+=`pkg-config --cflags ${LUA_VERSION}`
+LDFLAGS+=`pkg-config --libs ${LUA_VERSION}`
+
 
 ifeq (1,${DMX_OUT})
 LDFLAGS+= -lftdi1
