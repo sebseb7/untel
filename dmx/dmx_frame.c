@@ -126,6 +126,10 @@ void dmx_img_color_setname(struct dmx_img* image,const char* colorname)
 
 void dmx_img_color_setrgb(struct dmx_img* image,unsigned int r, unsigned int g, unsigned int b)
 {
+	if(r & 0xff00) r=0xff;
+	if(g & 0xff00) g=0xff;
+	if(b & 0xff00) b=0xff;
+
 	dmx_img_color_clear(image);
 	image->is_col =  DMX_ATTR_COLOR_RGB;
 	image->r=r;
