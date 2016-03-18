@@ -2,7 +2,7 @@ UNAME := $(shell uname)
 
 COMPILER = gcc
 
-DMX_OUT=1
+DMX_OUT=0
 SDL_OUT=1
 
 LUA_VERSION=$(shell pkg-config --list-all | grep lua | sort | cut -d \  -f 1 | tail -1)
