@@ -60,6 +60,7 @@ typedef union
 
 dmx_frame* dmx_frame_new(unsigned int type);
 struct dmx_img* dmx_img_new(void);
+void dmx_img_render(struct dmx_img* image);
 
 void dmx_img_device_clear(struct dmx_img* image);
 unsigned int dmx_img_device_count(struct dmx_img* image);

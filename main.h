@@ -7,6 +7,9 @@
 
 //#define OSC_OUT 1
 //#define CONCH_OUT 1
+#include "dmx_frame.h"
+
+void set_programmer_image_list(struct dmx_img* stash);
 
 
 #endif

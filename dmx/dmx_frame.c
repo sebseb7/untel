@@ -3,6 +3,8 @@
 #include <string.h>
 
 #include "dmx_frame.h"
+#include "dmx_devices.h"
+#include "dmx_attr_colors.h"
 
 #define DMX_IMG_DEVICE_ALLOCATE_INITIAL 100
 
@@ -202,4 +204,53 @@ unsigned int dmx_img_dim_get(struct dmx_img* image,float *dim)
 	return 0;
 }
 
+void dmx_img_render(struct dmx_img* image)
+{
+	for(unsigned int i = 0;i < image->dev_count;i++)
+	{
+		for(unsigned int d = 0;d < dmx_get_device_count();d++)
+		{
+			struct dmx_device* dmx_device = dmx_get_device_byidx(d);
+
+			if(strncmp(dmx_device->name,image->dev_names[i],DMX_NAME_LENGTH)==0)
+			{
+
+				if(dmx_device->type == DMX_DEVICE_LEDPAR6)
+				{
+					struct dmx_device_ledpar6* par = dmx_device->device;	
+
+					if(image->is_col == DMX_ATTR_COLOR_RGB)
+					{
+						par->red = image->r;
+						par->green = image->g;
+						par->blue = image->b;
+					}
+					else if(image->is_col == DMX_ATTR_COLOR_NAME)
+					{
+						for(unsigned int i = 0; i < dmx_attr_colors_get_count();i++)
+						{
+							const char * colorname = dmx_attr_colors_get_name(i);
+							if(strncmp(colorname,image->color,DMX_NAME_LENGTH)==0)
+							{
+								unsigned int r=0;
+								unsigned int g=0;
+								unsigned int b=0;
+
+								dmx_attr_colors_get_rgb(i,&r,&g,&b);
+								par->red = r;
+								par->green = g;
+								par->blue = b;
+							}
+						}
+					}
+
+					if(image->is_dim)
+					{
+						par->dim = image->dim;
+					}
+				}
+			}
+		}
+	}
+}
 

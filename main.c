@@ -10,6 +10,8 @@
 #include "dmx_queue.h"
 #include "dmx_luaqueue.h"
 #include "dmx_selector.h"
+#include "param_DMX_OUT.h"
+#include "param_SDL_OUT.h"
 #if DMX_OUT==1
 #include "dmx_output.h"
 #endif
@@ -39,6 +41,13 @@ static unsigned int getstarttime(void)
 		start_time = current_time;
 	
 	return current_time-start_time;
+}
+
+static struct dmx_img* programmer_image = NULL;
+
+void set_programmer_image_list(struct dmx_img* stash)
+{
+	programmer_image = stash;
 }
 
 
@@ -137,6 +146,10 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			}
 		}
 
+		if(programmer_image != NULL)
+		{
+			dmx_img_render(programmer_image);
+		}
 
 
 		//render channels

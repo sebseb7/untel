@@ -37,5 +37,12 @@ const char* dmx_attr_colors_get_name(unsigned int idx)
 	}
 	return NULL;
 }
-
-
+void dmx_attr_colors_get_rgb(unsigned int idx,unsigned int* r,unsigned int* g,unsigned int* b)
+{
+	if(idx < colornameslistcount)
+	{
+		*r = colornameslist[idx].red;
+		*g = colornameslist[idx].green;
+		*b = colornameslist[idx].blue;
+	}
+}

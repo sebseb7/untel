@@ -26,6 +26,7 @@ union dmx_attr_color
 
 unsigned int dmx_attr_colors_get_count(void);
 const char* dmx_attr_colors_get_name(unsigned int idx);
+void dmx_attr_colors_get_rgb(unsigned int idx,unsigned int* r,unsigned int* g,unsigned int* b);
 
 #endif
 
