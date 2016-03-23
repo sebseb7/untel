@@ -36,6 +36,7 @@ struct dmx_frame_wait
 {
 	unsigned int type;
 	unsigned int milis;
+	unsigned int bpms;
 };
 
 struct dmx_frame_command
