@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "main.h"
+
 
 #include "menu.h"
 #include "mcugui/rect.h"
@@ -138,12 +140,11 @@ static void menu_prog_redraw(void)
 			
 			if(dmx_img_color_getrgb(stash[act],&r,&g,&b))
 			{	
-				unsigned int position_r = runlength * r/255.0f;
-				printf("%i %i\n",r,position_r);
+				unsigned int position_r = runlength * (1-(r/255.0f));
 				draw_filledRect(button_x(buttonx-4)+1,button_y(buttony)+position_r+1,92-2,54-2,155,50,50);
-				unsigned int position_g = runlength * g/255.0f;
+				unsigned int position_g = runlength * (1-(g/255.0f));
 				draw_filledRect(button_x(buttonx-3)+1,button_y(buttony)+position_g+1,92-2,54-2,50,155,50);
-				unsigned int position_b = runlength * b/255.0f;
+				unsigned int position_b = runlength * (1-(b/255.0f));
 				draw_filledRect(button_x(buttonx-2)+1,button_y(buttony)+position_b+1,92-2,54-2,50,50,155);
 			}
 
@@ -181,7 +182,7 @@ static void menu_prog_redraw(void)
 
 			if(dmx_img_dim_get(stash[act],&fvalue))
 			{
-				unsigned int position = runlength * fvalue;
+				unsigned int position = runlength * (1-fvalue);
 				draw_filledRect(button_x(buttonx)+1,button_y(buttony)+position+1,92-2,54-2,155,100,0);
 			}
 			buttonx++;
@@ -272,17 +273,17 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				
 			if(attr2 == 1)
 			{
-				r = rely/(float)runlength*255.0f;
+				r = 255-(rely/(float)runlength*255.0f);
 				dmx_img_color_setrgb(stash[act],r,g,b);
 			}	
 			else if(attr2 == 2)
 			{
-				g = rely/(float)runlength*255.0f;
+				g = 255-(rely/(float)runlength*255.0f);
 				dmx_img_color_setrgb(stash[act],r,g,b);
 			}	
 			else if(attr2 == 3)
 			{
-				b = rely/(float)runlength*255.0f;
+				b = 255-(rely/(float)runlength*255.0f);
 				dmx_img_color_setrgb(stash[act],r,g,b);
 			}	
 			else if(attr2 == 4)
@@ -306,7 +307,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				unsigned int height = button_y(5)-button_y(0)-11;
 				unsigned int runlength = height-54;
 
-				dmx_img_dim_set(stash[act],rely/(float)runlength);
+				dmx_img_dim_set(stash[act],1-(rely/(float)runlength));
 			}
 			else if(attr2 == 2)
 			{
@@ -330,6 +331,9 @@ struct menu* get_menu_prog(void)
 		stash[1] = dmx_img_new();
 		stash[2] = dmx_img_new();
 		stash[3] = dmx_img_new();
+
+		set_programmer_image_list(stash[0]);
+
 	}
 	return menu_prog;
 }

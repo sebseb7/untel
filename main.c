@@ -10,8 +10,6 @@
 #include "dmx_queue.h"
 #include "dmx_luaqueue.h"
 #include "dmx_selector.h"
-#include "param_DMX_OUT.h"
-#include "param_SDL_OUT.h"
 #if DMX_OUT==1
 #include "dmx_output.h"
 #endif
