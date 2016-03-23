@@ -1,6 +1,14 @@
 next steps:
 
 
+programmer:
+
+- current stack : new
+- buttons in stack-section: (play/pause) add/insert/update/loadToProg    saveStackto
+ (play blinds programmer)
+- ability to add image,effect,wait,blend,command and test all this
+
+
 new plan:
 
 - stacks
