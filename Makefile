@@ -5,7 +5,7 @@ COMPILER = gcc
 DMX_OUT=0
 SDL_OUT=1
 
-LUA_VERSION=$(shell pkg-config --list-all | grep lua | sort | cut -d \  -f 1 | tail -1)
+LUA_VERSION=$(shell pkg-config --list-all | grep lua | grep 5 | grep -v c | sort | cut -d \  -f 1 | tail -1)
 
 SOURCES=$(wildcard main.c queues/*.c queues/par56/*.c queues/strobe/*.c libs/*.c libs/mcugui/*.c libs/gui/*.c dmx/*.c)
 
