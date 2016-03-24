@@ -66,7 +66,8 @@ static void menu_quectrl_update(void)
 	for(unsigned int i =0;i< dmx_queue_get_count();i++)
 	{
 		struct dmx_queue* dmx_queue = dmx_queue_getbyidx(i);
-		draw_number_8x6(button_x(x),button_y(y),dmx_queue->active,2,0,255,255,255);
+		draw_button_icon(button_x(x),button_y(y),92,1,dmx_queue->name,155,(dmx_queue->active)?155:0,0,0,255,0);
+		//draw_number_8x6(button_x(x),button_y(y),dmx_queue->active,2,0,255,255,255);
 		x++;
 		if(x>7)
 		{

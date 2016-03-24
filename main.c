@@ -42,10 +42,15 @@ static unsigned int getstarttime(void)
 }
 
 static struct dmx_img* programmer_image = NULL;
+static struct dmx_stack* programmer_stack = NULL;
 
 void set_programmer_image_list(struct dmx_img* stash)
 {
 	programmer_image = stash;
+}
+void set_programmer_stack(struct dmx_stack* stack)
+{
+	programmer_stack = stack;
 }
 
 

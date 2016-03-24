@@ -13,6 +13,7 @@
 
 #include "dmx_devices.h"
 #include "dmx_frame.h"
+#include "dmx_stack.h"
 
 #include "dmx_attr_colors.h"
 
@@ -21,7 +22,9 @@ static struct menu* menu_prog = NULL;
 static unsigned int tab = 0;
 static unsigned int subtab = 0;
 
-struct dmx_img* stash[4];
+static struct dmx_img* stash[4];
+
+static struct dmx_stack* prog_stack;
 
 /*
  *
@@ -332,7 +335,10 @@ struct menu* get_menu_prog(void)
 		stash[2] = dmx_img_new();
 		stash[3] = dmx_img_new();
 
+		prog_stack= dmx_stack_new();
+
 		set_programmer_image_list(stash[0]);
+		set_programmer_stack(prog_stack);
 
 	}
 	return menu_prog;
