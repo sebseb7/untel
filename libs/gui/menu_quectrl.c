@@ -14,7 +14,9 @@
 #include "mcugui/button.h"
 
 #include "dmx_queue.h"
+#if LUA_CUE==1
 #include "dmx_luaqueue.h"
+#endif
 
 static struct menu* menu_quectrl = NULL;
 
@@ -45,6 +47,7 @@ static void menu_quectrl_redraw(void)
 		}
 	}
 	x=0;y++;
+#if LUA_CUE==1
 	for(unsigned int i =0;i< dmx_luaqueue_get_count();i++)
 	{
 		struct dmx_luaqueue* dmx_luaqueue = dmx_luaqueue_getbyidx(i);
@@ -56,6 +59,7 @@ static void menu_quectrl_redraw(void)
 			y++;
 		}
 	}
+#endif
 	menu_autoupdate();
 }
 
@@ -76,6 +80,7 @@ static void menu_quectrl_update(void)
 		}
 	}
 	x=0;y++;
+#if LUA_CUE==1
 	for(unsigned int i =0;i< dmx_luaqueue_get_count();i++)
 	{
 		struct dmx_luaqueue* dmx_luaqueue = dmx_luaqueue_getbyidx(i);
@@ -87,6 +92,7 @@ static void menu_quectrl_update(void)
 			y++;
 		}
 	}
+#endif
 }
 
 

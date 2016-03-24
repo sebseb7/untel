@@ -8,7 +8,9 @@
 #include "dmx_image.h"
 #include "dmx_channels.h"
 #include "dmx_queue.h"
+#if LUA_CUE==1
 #include "dmx_luaqueue.h"
+#endif
 #include "dmx_selector.h"
 #if DMX_OUT==1
 #include "dmx_output.h"
@@ -134,8 +136,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			}
 		}
 		
+#if LUA_CUE==1
 		dmx_luaqueue_process_all(currtime,bpm);
-		
+#endif		
 		//render devices (images)
 		unsigned int image_count = dmx_image_get_count();
 		for(unsigned int pri = 0;pri<3;pri++)
@@ -209,8 +212,10 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		struct dmx_selector* selector = dmx_selector_getbyidx(0);
 		dmx_selector_del(selector);
 	}
+#if LUA_CUE==1
 	dmx_luaqueue_del_all();
-	unsigned int queue_count = dmx_queue_get_count();
+#endif
+unsigned int queue_count = dmx_queue_get_count();
 	for(unsigned int i = 0;i<queue_count;i++)
 	{
 		struct dmx_queue* queue = dmx_queue_getbyidx(0);

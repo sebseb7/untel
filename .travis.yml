@@ -1,6 +1,6 @@
 os: linux
 language: c
-script: make DMX_OUT=0
+script: make DMX_OUT=0 LUA_CUE=1
 before_install:
     - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots
     - sudo apt-get update -qq
