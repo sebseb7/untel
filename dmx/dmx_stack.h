@@ -13,10 +13,12 @@ struct dmx_stack
 	unsigned int active;
 
 	unsigned int length;
+	unsigned int alloc;
 
 	union dmx_frame** frames;
 };
-	
+
+struct dmx_stack* dmx_stack_new(void);
 unsigned int dmx_stack_get_count(void);
 struct dmx_stack* dmx_stack_getbyidx(unsigned int index);
 
