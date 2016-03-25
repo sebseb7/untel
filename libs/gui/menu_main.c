@@ -2,7 +2,6 @@
 
 
 #include "menu.h"
-#include "menu_list.h"
 
 #include "menu_main.h"
 #include "menu_prog.h"
@@ -16,7 +15,6 @@
 #include "mcugui/button.h"
 
 static struct menu* menu_main = NULL;
-static struct menu_list* list1 = NULL;
 
 #include "touch_binding.h"
 
@@ -50,7 +48,6 @@ static void menu_main_redraw(void)
 	touch_binding_add(touchlist,button_x(2),92,button_y(2),54,3,0,0);
 	draw_button_icon(button_x(2),button_y(2),92,1,"Setup",155,0,0,0,255,0);
 
-	menu_draw(list1,button_x(0),button_y(3),10);
 }
 
 
@@ -95,15 +92,6 @@ struct menu* get_menu_main()
 		menu_main->parent = NULL;
 	}
 
-	if(list1 == NULL)
-	{
-		list1 = menu_list_new();
-
-		menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label1",0,0),-1);
-		menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label2",0,0),-1);
-		menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label3",0,0),-1);
-
-	}
 	return menu_main;
 }
 

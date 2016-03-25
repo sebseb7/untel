@@ -26,6 +26,8 @@ static struct dmx_img* stash[4];
 
 static struct dmx_stack* prog_stack;
 
+static struct menu_list* list1 = NULL;
+
 /*
  *
  * one of the 4 stashes is the "current" one
@@ -35,6 +37,7 @@ static struct dmx_stack* prog_stack;
  */
 
 #include "touch_binding.h"
+#include "menu_list.h"
 
 
 static struct touch_binding_list* touchlist = NULL;
@@ -65,7 +68,7 @@ static void menu_prog_redraw(void)
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Devices",155,(tab==1)?155:0,0,0,255,0);
 	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,2,0);
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Attributes",155,(tab==2)?155:0,0,0,255,0);
-	
+
 
 	//void touch_binding_add(struct touch_binding_list* list,unsigned int minx,unsigned int maxx,unsigned int miny,unsigned int maxy,unsigned int attr1,unsigned int attr2,unsigned int attr3);
 
@@ -113,20 +116,50 @@ static void menu_prog_redraw(void)
 	if(tab==2)
 	{
 		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,1,0);
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color",155,(subtab==1)?155:0,0,0,255,0);
-		
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Colorname",155,(subtab==1)?155:0,0,0,255,0);
+
 		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,2,0);
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Dimmer",155,(subtab==2)?155:0,0,0,255,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color RGB",155,(subtab==2)?155:0,0,0,255,0);
 		
 		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,3,0);
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Freq",155,(subtab==3)?155:0,0,0,255,0);
-		
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Dimmer",155,(subtab==3)?155:0,0,0,255,0);
+
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,2,4,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Freq",155,(subtab==4)?155:0,0,0,255,0);
+
 		buttony++;buttonx=0;
-			
+
 		unsigned int height = button_y(5)-button_y(0)-11;
 		unsigned int runlength = height-54;
-	
+
 		if(subtab==1)
+		{
+			unsigned int dmx_attr_colors_get_count(void);
+			const char* dmx_attr_colors_get_name(unsigned int idx);
+			char buf[30];
+
+			unsigned int initial_buttonx = buttonx;
+
+			for(unsigned int i = 0; i < dmx_attr_colors_get_count();i++)
+			{
+				const char * colorname = dmx_attr_colors_get_name(i);
+
+				snprintf(buf,30,"%s",colorname);
+
+
+				unsigned int active = dmx_img_color_test(stash[act],colorname);
+
+				touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,4,i,0);
+				draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf,155,(active)?155:0,0,0,255,0);
+
+				if(buttonx == 5)
+				{
+					buttony++;
+					buttonx=initial_buttonx;
+				}
+			}
+		}
+		if(subtab==2)
 		{
 			unsigned int r=0;
 			unsigned int g=0;
@@ -140,7 +173,7 @@ static void menu_prog_redraw(void)
 			draw_rect(button_x(buttonx++),button_y(buttony),92,height,1,155,0,0);
 			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,5,4,0);
 			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Clear",155,0,0,0,255,0);
-			
+
 			if(dmx_img_color_getrgb(stash[act],&r,&g,&b))
 			{	
 				unsigned int position_r = runlength * (1-(r/255.0f));
@@ -150,33 +183,9 @@ static void menu_prog_redraw(void)
 				unsigned int position_b = runlength * (1-(b/255.0f));
 				draw_filledRect(button_x(buttonx-2)+1,button_y(buttony)+position_b+1,92-2,54-2,50,50,155);
 			}
-
-			unsigned int dmx_attr_colors_get_count(void);
-			const char* dmx_attr_colors_get_name(unsigned int idx);
-			char buf[30];
-
-			unsigned int initial_buttonx = buttonx;
-
-			for(unsigned int i = 0; i < dmx_attr_colors_get_count();i++)
-			{
-				const char * colorname = dmx_attr_colors_get_name(i);
-
-				snprintf(buf,30,"%s",colorname);
-		
-		
-				unsigned int active = dmx_img_color_test(stash[act],colorname);
-
-				touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,4,i,0);
-				draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf,155,(active)?155:0,0,0,255,0);
-
-				if(buttonx == 8)
-				{
-					buttony++;
-					buttonx=initial_buttonx;
-				}
-			}
 		}
-		if(subtab==2)
+
+		if(subtab==3)
 		{
 			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,6,1,0);
 			draw_rect(button_x(buttonx),button_y(buttony),92,height,1,155,0,0);
@@ -192,9 +201,12 @@ static void menu_prog_redraw(void)
 
 			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,6,2,0);
 			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Clear",155,0,0,0,255,0);
-			
+
 		}
 	}
+
+	touch_binding_add(touchlist,button_x(5),297,button_y(1),183,7,0,0);
+	menu_list_draw(list1,button_x(5),button_y(1),10);
 
 }
 
@@ -209,7 +221,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				set_current_menu(menu_prog->parent);
 		}
 	}
-	
+
 	unsigned int attr1 = 0;
 	unsigned int attr2 = 0;
 	unsigned int attr3 = 0;
@@ -239,7 +251,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			{
 				dmx_img_device_add(stash[act],dmx_device->name);
 			}
-				
+
 			set_menu_dirty();
 		}
 		else if(attr1 == 4)
@@ -262,18 +274,18 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			unsigned int g=0;
 			unsigned int b=0;
 			dmx_img_color_getrgb(stash[act],&r,&g,&b);
-				
-				if(rely > (54/2))
-				{
-					rely -= (54/2);
-				}
-				else
-				{
-					rely=0;
-				}
-				unsigned int height = button_y(5)-button_y(0)-11;
-				unsigned int runlength = height-54;
-				
+
+			if(rely > (54/2))
+			{
+				rely -= (54/2);
+			}
+			else
+			{
+				rely=0;
+			}
+			unsigned int height = button_y(5)-button_y(0)-11;
+			unsigned int runlength = height-54;
+
 			if(attr2 == 1)
 			{
 				r = 255-(rely/(float)runlength*255.0f);
@@ -318,6 +330,11 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			}
 			set_menu_dirty();
 		}
+		else if(attr1 == 7)
+		{
+			if(menu_list_touch(list1,relx,rely)==0)
+				set_menu_dirty();
+		}
 	}
 }
 
@@ -340,6 +357,13 @@ struct menu* get_menu_prog(void)
 		set_programmer_image_list(stash[0]);
 		set_programmer_stack(prog_stack);
 
+		if(list1 == NULL)
+		{
+			list1 = menu_list_new();
+
+			menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label1",0,0),-1);
+
+		}
 	}
 	return menu_prog;
 }
