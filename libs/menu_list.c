@@ -38,7 +38,6 @@ void menu_list_free(struct menu_list* menu)
 
 void menu_list_entry_free(struct menu_list_entry* entry)
 {
-	free(entry->label);
 	free(entry);
 }
 
