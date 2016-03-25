@@ -18,84 +18,70 @@
 static struct menu* menu_main = NULL;
 static struct menu_list* list1 = NULL;
 
+#include "touch_binding.h"
+
+
+static struct touch_binding_list* touchlist = NULL;
+
 static void menu_main_redraw(void)
 {
-		clearDisplay();
-		//clear_buttons();
+	clearDisplay();
+	//clear_buttons();
+	if(touchlist != NULL)
+		touch_binding_free(touchlist);
+	touchlist = touch_binding_new();
 
-		draw_filledRect(0,0,LCD_WIDTH,35,155,100,100);
+	draw_filledRect(0,0,LCD_WIDTH,35,155,100,100);
 
-		uint16_t text_width =  get_text_width_16pt("DMX BOX");
-		draw_text_16pt((LCD_WIDTH-text_width)>>1,9, "DMX BOX", 200,200,255);
+	uint16_t text_width =  get_text_width_16pt("DMX BOX");
+	draw_text_16pt((LCD_WIDTH-text_width)>>1,9, "DMX BOX", 200,200,255);
 
 
-		draw_button_icon(button_x(0),button_y(0),92,1,"Cue Ctrl",155,0,0,0,255,0);
-		draw_button_icon(button_x(1),button_y(0),92,1,"",55,55,55,0,0,0);
-		draw_button_icon(button_x(2),button_y(0),92,1,"Prog",155,0,0,0,255,0);
-		draw_button_icon(button_x(0),button_y(1),92,1,"",55,55,55,0,0,0);
-		draw_button_icon(button_x(1),button_y(1),92,1,"",55,55,55,0,0,0);
-		draw_button_icon(button_x(2),button_y(1),92,1,"",55,55,55,0,0,0);
-		draw_button_icon(button_x(0),button_y(2),92,1,"Direct DMX",155,0,0,0,255,0);
-		draw_button_icon(button_x(1),button_y(2),92,1,"",55,55,55,0,0,0);
-		draw_button_icon(button_x(2),button_y(2),92,1,"Setup",155,0,0,0,255,0);
+	touch_binding_add(touchlist,button_x(0),92,button_y(0),54,1,0,0);
+	draw_button_icon(button_x(0),button_y(0),92,1,"Cue Ctrl",155,0,0,0,255,0);
+	draw_button_icon(button_x(1),button_y(0),92,1,"",55,55,55,0,0,0);
+	touch_binding_add(touchlist,button_x(2),92,button_y(0),54,2,0,0);
+	draw_button_icon(button_x(2),button_y(0),92,1,"Prog",155,0,0,0,255,0);
+	draw_button_icon(button_x(0),button_y(1),92,1,"",55,55,55,0,0,0);
+	draw_button_icon(button_x(1),button_y(1),92,1,"",55,55,55,0,0,0);
+	draw_button_icon(button_x(2),button_y(1),92,1,"",55,55,55,0,0,0);
+	draw_button_icon(button_x(0),button_y(2),92,1,"Direct DMX",155,0,0,0,255,0);
+	draw_button_icon(button_x(1),button_y(2),92,1,"",55,55,55,0,0,0);
+	touch_binding_add(touchlist,button_x(2),92,button_y(2),54,3,0,0);
+	draw_button_icon(button_x(2),button_y(2),92,1,"Setup",155,0,0,0,255,0);
 
-		menu_draw(list1,button_x(0),button_y(3),10);
+	menu_draw(list1,button_x(0),button_y(3),10);
 }
 
 
 static void menu_main_touch(unsigned int x, unsigned int y)
 {
-
-//	printf("%i %i \n",x,y);
-
-	uint8_t field=0;
-	if(y > 41)
+	unsigned int attr1 = 0;
+	unsigned int attr2 = 0;
+	unsigned int attr3 = 0;
+	unsigned int relx = 0;
+	unsigned int rely = 0;
+	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3,&relx,&rely))
 	{
-		field+=1;
 
-		if(y > 171)
+		if(attr1 == 1)
 		{
-			field+=6;
-		}else if(y > 105)
-		{
-			field+=3;
+			struct menu* menu_quectrl = get_menu_quectrl();
+			menu_quectrl->parent=menu_main;
+			set_current_menu(menu_quectrl);
 		}
-
-		if(x > 212)
+		else if(attr1 == 2)
 		{
-			field+=2;
-		}else if (x > 109)
-		{
-			field+=1;
+			struct menu* menu_prog = get_menu_prog();
+			menu_prog->parent=menu_main;
+			set_current_menu(menu_prog);
 		}
-	}
-	if(field == 1)
-	{
-		struct menu* menu_quectrl = get_menu_quectrl();
-		menu_quectrl->parent=menu_main;
-		set_current_menu(menu_quectrl);
-	}
-	else if(field == 3)
-	{
-		struct menu* menu_prog = get_menu_prog();
-		menu_prog->parent=menu_main;
-		set_current_menu(menu_prog);
-	}
-	else if(field == 9)
-	{
-		struct menu* menu_setup = get_menu_setup();
-		menu_setup->parent=menu_main;
-		set_current_menu(menu_setup);
-	}
-	else if(field == 7)
-	{
-		//redraw=1;
-		//			set_current_execution(menu_directdmx);
-	}
-	else if(field == 8)
-	{
-		//redraw=1;
-		//			invoke_numeric_keyboard("test",0);
+		else if(attr1 == 3)
+		{
+			struct menu* menu_setup = get_menu_setup();
+			menu_setup->parent=menu_main;
+			set_current_menu(menu_setup);
+		}
 	}
 }
 
