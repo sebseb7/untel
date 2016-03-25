@@ -63,14 +63,16 @@ static void menu_prog_redraw(void)
 	unsigned int buttonx = 0;
 	unsigned int buttony = 0;
 
+	unsigned int devicecount = dmx_img_device_count(stash[act]);
+
 	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,1,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Devices",155,(tab==1)?155:0,0,0,255,0);
+	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Devices",155,(tab==1)?155:0,0,(devicecount>0)?255:0,255,0);
 	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,2,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color Name",155,(tab==2)?155:0,0,0,255,0);
+	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color Name",155,(tab==2)?155:0,0,(dmx_img_iscolname(stash[act]))?255:0,255,0);
 	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,3,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color RGB",155,(tab==3)?155:0,0,0,255,0);
+	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color RGB",155,(tab==3)?155:0,0,(dmx_img_iscolrgb(stash[act]))?255:0,255,0);
 	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,4,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Dimmer",155,(tab==4)?155:0,0,0,255,0);
+	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Dimmer",155,(tab==4)?155:0,0,(dmx_img_isdim(stash[act]))?255:0,255,0);
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Frequency",55,(tab==5)?55:0,0,0,55,0);
 	buttony++;buttonx=0;
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Position",55,(tab==6)?55:0,0,0,55,0);
@@ -78,7 +80,23 @@ static void menu_prog_redraw(void)
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Rotation",55,(tab==8)?55:0,0,0,55,0);
 	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Special",55,(tab==9)?55:0,0,0,55,0);
 
-	buttony++;buttonx=0;
+
+	unsigned int validimg=0;
+	if(
+		(devicecount>0)&&
+		(
+			dmx_img_isdim(stash[act])||
+			dmx_img_iscolname(stash[act])||
+			dmx_img_iscolrgb(stash[act])
+		)
+	)
+	{
+		validimg=1;
+	}
+	draw_button_icon(button_x(7),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
+
+	buttony=2;buttonx=0;
+
 
 	if(tab==1)
 	{

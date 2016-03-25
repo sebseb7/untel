@@ -118,6 +118,10 @@ unsigned int dmx_img_device_test(struct dmx_img* image,char* name)
 	}
 	return 0;
 }
+unsigned int dmx_img_device_count(struct dmx_img* image)
+{
+	return image->dev_count;
+}
 
 void dmx_img_color_setname(struct dmx_img* image,const char* colorname)
 {
@@ -199,6 +203,30 @@ unsigned int dmx_img_dim_get(struct dmx_img* image,float *dim)
 	if(image->is_dim)
 	{
 		*dim = image->dim;
+		return 1;
+	}
+	return 0;
+}
+unsigned int dmx_img_isdim(struct dmx_img* image)
+{
+	if(image->is_dim)
+	{
+		return 1;
+	}
+	return 0;
+}
+unsigned int dmx_img_iscolname(struct dmx_img* image)
+{
+	if(image->is_col == DMX_ATTR_COLOR_NAME)
+	{
+		return 1;
+	}
+	return 0;
+}
+unsigned int dmx_img_iscolrgb(struct dmx_img* image)
+{
+	if(image->is_col == DMX_ATTR_COLOR_RGB)
+	{
 		return 1;
 	}
 	return 0;

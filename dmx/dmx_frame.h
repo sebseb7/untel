@@ -81,5 +81,8 @@ void dmx_img_dim_clear(struct dmx_img* image);
 void dmx_img_dim_set(struct dmx_img* image,float dim);
 unsigned int dmx_img_dim_get(struct dmx_img* image,float *dim);
 
+unsigned int dmx_img_isdim(struct dmx_img* image);
+unsigned int dmx_img_iscolname(struct dmx_img* image);
+unsigned int dmx_img_iscolrgb(struct dmx_img* image);
 
 #endif
