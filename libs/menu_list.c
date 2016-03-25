@@ -111,13 +111,11 @@ void menu_list_draw(struct menu_list* menu,unsigned int x,unsigned int y,unsigne
 	menu->touchlist = touch_binding_new();
 
 	touch_binding_add(menu->touchlist,245,52,0,42,1,0,0);
-	touch_binding_add(menu->touchlist,245,52,47,42,2,0,0);
-	touch_binding_add(menu->touchlist,245,52,94,42,3,0,0);
 	touch_binding_add(menu->touchlist,245,52,141,42,4,0,0);
 
 	draw_button_h(x+245,y,52,42,"^",155,0,0,0,255,0);
-	draw_button_h(x+245,y+47,52,42,"Edit",155,0,0,0,255,0);
-	draw_button_h(x+245,y+94,52,42,"Save",155,0,0,0,255,0);
+	//draw_button_h(x+245,y+47,52,42,"Edit",155,0,0,0,255,0);
+	//draw_button_h(x+245,y+94,52,42,"Save",155,0,0,0,255,0);
 	draw_button_h(x+245,y+141,52,42,"v",155,0,0,0,255,0);
 
 }

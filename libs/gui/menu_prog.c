@@ -92,11 +92,16 @@ static void menu_prog_redraw(void)
 	)
 	{
 		validimg=1;
-		touch_binding_add(touchlist,button_x(7),92,button_y(0),54,2,0,0);
+		touch_binding_add(touchlist,button_x(5),92,button_y(0),54,2,0,0);
 	}
-	draw_button_icon(button_x(7),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
+	draw_button_icon(button_x(5),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
+	draw_button_icon(button_x(5),button_y(1),92,1,"Replace",55,0,0,0,55,0);
+	draw_button_icon(button_x(6),button_y(0),92,1,"Delete",55,0,0,0,55,0);
+	draw_button_icon(button_x(6),button_y(1),92,1,"Load",55,0,0,0,55,0);
+	draw_button_icon(button_x(7),button_y(0),92,1,"Loop",55,0,0,0,55,0);
+	draw_button_icon(button_x(7),button_y(1),92,1,"Store",55,0,0,0,55,0);
 
-	buttony=2;buttonx=0;
+	buttony=3;buttonx=0;
 
 
 	if(tab==1)
@@ -220,8 +225,8 @@ static void menu_prog_redraw(void)
 	
 	if(list1 != NULL)
 	{
-		touch_binding_add(touchlist,button_x(5),297,button_y(2),183,7,0,0);
-		menu_list_draw(list1,button_x(5),button_y(2),10);
+		touch_binding_add(touchlist,button_x(5),297,button_y(3),183,7,0,0);
+		menu_list_draw(list1,button_x(5),button_y(3),10);
 	}
 
 }
