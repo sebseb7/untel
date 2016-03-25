@@ -62,6 +62,7 @@ typedef union
 dmx_frame* dmx_frame_new(unsigned int type);
 struct dmx_img* dmx_img_new(void);
 struct dmx_img* dmx_img_clone(struct dmx_img* image);
+void dmx_img_free(struct dmx_img* image);
 
 void dmx_img_render(struct dmx_img* image);
 

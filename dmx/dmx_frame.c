@@ -98,6 +98,22 @@ struct dmx_img* dmx_img_clone(struct dmx_img* image)
 
 	return newimage;
 }
+void dmx_img_free(struct dmx_img* image)
+{
+	if(image->is_col == DMX_ATTR_COLOR_NAME)
+	{
+		free(image->color);
+	}
+	if(image->dev_names != NULL)
+	{
+		for(unsigned int i = 0;i<image->dev_count;i++)
+		{
+			free(image->dev_names[i]);
+		}
+		free(image->dev_names);
+	}
+	free(image);
+}
 
 void dmx_img_device_add(struct dmx_img* image,char* name)
 {
