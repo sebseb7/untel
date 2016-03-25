@@ -92,6 +92,7 @@ static void menu_prog_redraw(void)
 	)
 	{
 		validimg=1;
+		touch_binding_add(touchlist,button_x(7),92,button_y(0),54,2,0,0);
 	}
 	draw_button_icon(button_x(7),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
 
@@ -215,8 +216,19 @@ static void menu_prog_redraw(void)
 
 	}
 
-	touch_binding_add(touchlist,button_x(5),297,button_y(1),183,7,0,0);
-	menu_list_draw(list1,button_x(5),button_y(1),10);
+	touch_binding_add(touchlist,button_x(5),297,button_y(2),183,7,0,0);
+		
+	
+	if(list1 != NULL)
+	{
+		menu_list_free(list1);
+	}
+	list1 = menu_list_new();
+	for(unsigned int i=0;i < dmx_stack_frame_count(prog_stack);i++)
+	{
+		menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label1",0,0),-1);
+	}
+	menu_list_draw(list1,button_x(5),button_y(2),10);
 
 }
 
@@ -246,6 +258,9 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		}
 		else if(attr1 == 2)
 		{
+			struct dmx_img* img = dmx_img_clone(stash[act]);
+			dmx_stack_add_imgframe(prog_stack,img);
+			set_menu_dirty();
 		}
 		else if(attr1 == 3)
 		{
@@ -364,14 +379,6 @@ struct menu* get_menu_prog(void)
 
 		set_programmer_image_list(stash[0]);
 		set_programmer_stack(prog_stack);
-
-		if(list1 == NULL)
-		{
-			list1 = menu_list_new();
-
-			menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label1",0,0),-1);
-
-		}
 	}
 	return menu_prog;
 }
