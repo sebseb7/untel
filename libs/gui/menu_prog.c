@@ -371,6 +371,8 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			if(selected >= 0)
 			{
 				dmx_frame* frame = prog_stack->frames[selected];
+				
+				printf("%i %i %i %i\n",selected,prog_stack->length,frame->type,frame->image.image);
 
 				if(frame->type == DMX_FRAME_IMAGE)
 				{

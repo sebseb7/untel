@@ -47,13 +47,13 @@ void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img)
 		printf("stf2\n");
 		exit(EXIT_FAILURE);
 	}
-	stack->length++;
 
 	dmx_frame* frame = malloc(sizeof(dmx_frame));
 	frame->type=DMX_FRAME_IMAGE;
 	frame->image.image=img;
 
 	stack->frames[stack->length]=frame;
+	stack->length++;
 }
 unsigned int dmx_stack_frame_count(struct dmx_stack* stack)
 {
