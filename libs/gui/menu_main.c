@@ -39,7 +39,7 @@ static void menu_main_redraw(void)
 		draw_button_icon(button_x(1),button_y(2),92,1,"",55,55,55,0,0,0);
 		draw_button_icon(button_x(2),button_y(2),92,1,"Setup",155,0,0,0,255,0);
 
-		menu_draw(list1,button_x(3),button_y(3),10);
+		menu_draw(list1,button_x(0),button_y(3),10);
 }
 
 
@@ -114,6 +114,8 @@ struct menu* get_menu_main()
 		list1 = menu_list_new();
 
 		menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label1",0,0),-1);
+		menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label2",0,0),-1);
+		menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label3",0,0),-1);
 
 	}
 	return menu_main;

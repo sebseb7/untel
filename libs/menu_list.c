@@ -4,41 +4,8 @@
 #include "pixel_hal.h"
 #include "menu_list.h"
 #include "mcugui/button.h"
-
-/*
-static void draw_background(uint8_t drawrow,uint8_t row)
-{
-	if(row == active_row)
-	{
-		draw_filledRect(6,45+(drawrow*18),200,14,155,100,100);
-	}
-	else
-	{
-		draw_filledRect(6,45+(drawrow*18),200,14,60,60,60);
-	}
-}
-
-static void draw_lineitem(char* name,char* value)
-{
-	if((current_lineitem < scroll_offset+10)&&(current_lineitem>=scroll_offset))
-	{
-		draw_background(current_lineitem-scroll_offset,current_lineitem);
-		draw_text_8x6(10,45+(current_lineitem-scroll_offset)*18,name,255,255,0);
-		draw_text_8x6(80,45+(current_lineitem-scroll_offset)*18,value,255,0,255);
-	}
-	current_lineitem++;
-}
-static void draw_scrollbar(void)
-{
-	if(current_lineitem>10)
-	{
-		draw_filledRect(230,45,10,176,50,50,50);
-		float perline = 176.0/(float)current_lineitem;
-		draw_filledRect(230,45+(scroll_offset*perline),10,perline*10.0,50,150,50);
-
-	}
-}
-*/
+#include "mcugui/rect.h"
+#include "mcugui/text.h"
 
 struct menu_list* menu_list_new(void)
 {
@@ -47,7 +14,7 @@ struct menu_list* menu_list_new(void)
 	menu_list->selected=0;
 	menu_list->first = NULL;
 	menu_list->last  = NULL;
-	
+
 	return menu_list;
 }
 
@@ -84,21 +51,37 @@ void menu_draw(struct menu_list* menu,unsigned int x,unsigned int y,unsigned int
 {
 	struct menu_list_entry* current = menu->first;
 
+	if(size > 10) size = 10;
+
+	unsigned int pos=0;
+
 	while(current != NULL)
 	{
+		if(menu->selected == pos)
+		{
+			draw_filledRect(x,y+(pos*18),226,14,155,100,100);
+		}
+		else
+		{
+			draw_filledRect(x,y+(pos*18),226,14,60,60,60);
+		}
+		draw_text_8x6(x+4,y+(pos*18),current->label,255,255,0);
 
 		current = current->next;
+		pos++;
 	}
 
+	if(pos > 0)
+	{
+		draw_filledRect(x+230,y,10,176,50,50,50);
+		float perline = 176.0/(float)pos;
+		draw_filledRect(x+230,y+(perline),10,perline*10.0,50,150,50);
+	}
 
-
-
-//	draw_scrollbar();
-
-	draw_button_h(x+100,y+45,52,42,"^",155,0,0,0,255,0);
-	draw_button_h(x+100,y+92,52,42,"Edit",155,0,0,0,255,0);
-	draw_button_h(x+100,y+139,52,42,"Save",155,0,0,0,255,0);
-	draw_button_h(x+100,y+186,52,42,"v",155,0,0,0,255,0);
+	draw_button_h(x+245,y,52,42,"^",155,0,0,0,255,0);
+	draw_button_h(x+245,y+47,52,42,"Edit",155,0,0,0,255,0);
+	draw_button_h(x+245,y+94,52,42,"Save",155,0,0,0,255,0);
+	draw_button_h(x+245,y+141,52,42,"v",155,0,0,0,255,0);
 
 }
 
