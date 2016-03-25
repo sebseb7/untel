@@ -263,7 +263,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			unsigned int selected = 0;
 			if(list1 != NULL)
 			{
-				selected = list1->selected;
+				selected = list1->selected+1;
 				menu_list_free(list1);
 			}
 			list1 = menu_list_new();
@@ -367,8 +367,19 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		}
 		else if(attr1 == 7)
 		{
-			if(menu_list_touch(list1,relx,rely)==0)
+			signed int selected = menu_list_touch(list1,relx,rely);
+			if(selected >= 0)
+			{
+				dmx_frame* frame = prog_stack->frames[selected];
+
+				if(frame->type == DMX_FRAME_IMAGE)
+				{
+					dmx_img_free(stash[act]);
+					stash[act]=dmx_img_clone(frame->image.image);
+				}
+				
 				set_menu_dirty();
+			}
 		}
 	}
 }
