@@ -43,3 +43,9 @@ void menu_list_add_entry(struct menu_list* menu, struct menu_list_entry* entry, 
 	}
 }
 
+void menu_draw(struct menu_list* menu,unsigned int x,unsigned int y,unsigned int size)
+{
+
+
+}
+

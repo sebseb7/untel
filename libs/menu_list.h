@@ -1,5 +1,5 @@
-#ifndef _MENU_H
-#define _MENU_H
+#ifndef _MENU_LIST_H
+#define _MENU_LIST_H
 
 #include "dmx_defines.h"
 
@@ -32,5 +32,6 @@ struct menu_list* menu_list_new(void);
 struct menu_list_entry* menu_list_entry_new(unsigned int type,const char* label,unsigned int value1,unsigned int value2);
 void menu_list_add_entry(struct menu_list* menu, struct menu_list_entry* entry, signed int position);
 
+void menu_draw(struct menu_list* menu,unsigned int x,unsigned int y,unsigned int size);
 
 #endif
