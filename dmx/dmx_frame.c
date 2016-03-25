@@ -66,6 +66,38 @@ struct dmx_img* dmx_img_new(void)
 
 	return image;
 }
+struct dmx_img* dmx_img_clone(struct dmx_img* image)
+{
+	struct dmx_img* newimage = malloc(sizeof(struct dmx_img));
+
+	newimage->dev_alloc=image->dev_alloc;
+	newimage->dev_count=image->dev_count;
+	if(image->dev_names != NULL)
+	{
+		newimage->dev_names = malloc(sizeof(char*)*image->dev_alloc);
+		for(unsigned int i = 0;i<image->dev_count;i++)
+		{
+			newimage->dev_names[i]=strndup(image->dev_names[i],DMX_NAME_LENGTH);
+		}
+	}
+
+	newimage->is_dim=image->is_dim;
+	newimage->is_col=image->is_col;
+	newimage->dim=image->dim;
+	newimage->r=image->r;
+	newimage->g=image->g;
+	newimage->b=image->b;
+	
+	if(image->is_col == DMX_ATTR_COLOR_NAME)
+	{
+		newimage->color = strndup(image->color,DMX_NAME_LENGTH);
+	}
+	{
+		newimage->color=NULL;
+	}
+
+	return newimage;
+}
 
 void dmx_img_device_add(struct dmx_img* image,char* name)
 {
