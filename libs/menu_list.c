@@ -20,6 +20,28 @@ struct menu_list* menu_list_new(void)
 	return menu_list;
 }
 
+void menu_list_free(struct menu_list* menu)
+{
+	if(menu->touchlist != NULL)
+		touch_binding_free(menu->touchlist);
+	
+	struct menu_list_entry* current = menu->first;
+	
+	while(current != NULL)
+	{
+		struct menu_list_entry* next = current->next;
+		menu_list_entry_free(current);
+		current=next;
+	}
+	free(menu);
+}
+
+void menu_list_entry_free(struct menu_list_entry* entry)
+{
+	free(entry->label);
+	free(entry);
+}
+
 struct menu_list_entry* menu_list_entry_new(unsigned int type,const char* label,unsigned int value1,unsigned int value2)
 {
 	struct menu_list_entry* menu_list_entry = malloc(sizeof(struct menu_list_entry));
