@@ -216,19 +216,13 @@ static void menu_prog_redraw(void)
 
 	}
 
-	touch_binding_add(touchlist,button_x(5),297,button_y(2),183,7,0,0);
 		
 	
 	if(list1 != NULL)
 	{
-		menu_list_free(list1);
+		touch_binding_add(touchlist,button_x(5),297,button_y(2),183,7,0,0);
+		menu_list_draw(list1,button_x(5),button_y(2),10);
 	}
-	list1 = menu_list_new();
-	for(unsigned int i=0;i < dmx_stack_frame_count(prog_stack);i++)
-	{
-		menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label1",0,0),-1);
-	}
-	menu_list_draw(list1,button_x(5),button_y(2),10);
 
 }
 
@@ -260,6 +254,19 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		{
 			struct dmx_img* img = dmx_img_clone(stash[act]);
 			dmx_stack_add_imgframe(prog_stack,img);
+		
+			unsigned int selected = 0;
+			if(list1 != NULL)
+			{
+				selected = list1->selected;
+				menu_list_free(list1);
+			}
+			list1 = menu_list_new();
+			for(unsigned int i=0;i < dmx_stack_frame_count(prog_stack);i++)
+			{
+				menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label1",0,0),-1);
+			}
+			list1->selected=selected;
 			set_menu_dirty();
 		}
 		else if(attr1 == 3)
