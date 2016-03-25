@@ -10,7 +10,7 @@
 
 static struct dmx_stack** dmx_stack_list;
 
-static unsigned int dmx_stack_allocated=0;
+//static unsigned int dmx_stack_allocated=0;
 static unsigned int dmx_stack_inuse=0;
 
 struct dmx_stack* dmx_stack_new(void)
@@ -22,7 +22,7 @@ struct dmx_stack* dmx_stack_new(void)
 	stack->active=0;
 	stack->length=0;
 	stack->alloc=DMX_STACK_FRAMES_ALLOCATE_INITIAL;
-	stack->frames=malloc(sizeof(union dmx_frame*)*DMX_STACK_FRAMES_ALLOCATE_INITIAL);
+	stack->frames=malloc(sizeof(dmx_frame*)*DMX_STACK_FRAMES_ALLOCATE_INITIAL);
 
 	return stack;
 }
@@ -38,5 +38,25 @@ struct dmx_stack* dmx_stack_getbyidx(unsigned int index)
 		return dmx_stack_list[index];
 	}
 	return NULL;
+}
+
+void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img)
+{
+	if(stack->length == stack->alloc)
+	{
+		printf("stf2\n");
+		exit(EXIT_FAILURE);
+	}
+	stack->length++;
+
+	dmx_frame* frame = malloc(sizeof(dmx_frame));
+	frame->type=DMX_FRAME_IMAGE;
+	frame->image.image=img;
+
+	stack->frames[stack->length]=frame;
+}
+unsigned int dmx_stack_frame_count(struct dmx_stack* stack)
+{
+	return stack->length;
 }
 
