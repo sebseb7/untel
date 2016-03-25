@@ -99,6 +99,9 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 
+#if LUA_CUE==1
 	dmx_queue_add("LED-SCENE-004",init,deinit,tick);
-
+#else
+	dmx_queue_activate(dmx_queue_add("LED-SCENE-004",init,deinit,tick));
+#endif
 }
