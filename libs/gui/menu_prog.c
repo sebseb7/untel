@@ -263,13 +263,32 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			unsigned int selected = 0;
 			if(list1 != NULL)
 			{
-				selected = list1->selected+1;
+				selected = list1->length;
 				menu_list_free(list1);
 			}
 			list1 = menu_list_new();
 			for(unsigned int i=0;i < dmx_stack_frame_count(prog_stack);i++)
 			{
-				menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,"label1",0,0),-1);
+				dmx_frame* frame = dmx_stack_frame_getbyidx(prog_stack,i);
+
+				char* label = malloc(sizeof(char)*DMX_NAME_LENGTH);
+
+				if(frame->type == DMX_FRAME_IMAGE)
+				{
+					struct dmx_img* image = frame->image.image;
+					snprintf(label,DMX_NAME_LENGTH,"IMG %i %c %s %s",
+						image->dev_count,
+						(image->is_dim)?'D':'-',
+						(image->is_col==DMX_ATTR_COLOR_NAME)?"CN":"--",
+						(image->is_col==DMX_ATTR_COLOR_RGB)?"CRGB":"----");
+				}
+				else
+				{
+					snprintf(label,DMX_NAME_LENGTH,"-");
+				}
+
+				menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,label,0,0),-1);
+				free(label);
 			}
 			list1->selected=selected;
 			set_menu_dirty();

@@ -60,3 +60,12 @@ unsigned int dmx_stack_frame_count(struct dmx_stack* stack)
 	return stack->length;
 }
 
+dmx_frame* dmx_stack_frame_getbyidx(struct dmx_stack* stack,unsigned int idx)
+{
+	if(idx < stack->length)
+	{
+		return stack->frames[idx];
+	}
+	return NULL;
+}
+
