@@ -211,6 +211,23 @@ static void dmx_set_render(unsigned int type,char* name,struct dmx_set* set)
 			set->code();
 		}
 	}
+	else if(type == DMX_DEVICE_STROBE)
+	{
+		struct dmx_device_strobe* strobe = dmx_get_device(DMX_DEVICE_STROBE, name)->device;
+	
+		if(set->attr_type==ATTR_TYPE_DIM)
+		{
+			strobe->dim=set->dim;
+		}
+		else if(set->attr_type==ATTR_TYPE_FREQ)
+		{
+			strobe->freq=set->freq;
+		}
+		else if(set->attr_type==ATTR_TYPE_CODE)
+		{
+			set->code();
+		}
+	}
 
 }
 
@@ -242,6 +259,14 @@ struct dmx_set* dmx_set_new_dim(float dim)
 	struct dmx_set* set1 = malloc(sizeof(struct dmx_set));
 	set1->attr_type=ATTR_TYPE_DIM;
 	set1->dim=dim;
+
+	return set1;
+}
+struct dmx_set* dmx_set_new_freq(float freq)
+{
+	struct dmx_set* set1 = malloc(sizeof(struct dmx_set));
+	set1->attr_type=ATTR_TYPE_FREQ;
+	set1->freq=freq;
 
 	return set1;
 }
