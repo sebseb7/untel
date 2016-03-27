@@ -10,6 +10,7 @@
 
 static struct dmx_image* image1;
 static struct dmx_set* set1;
+static struct dmx_set* set2;
 
 static void init(void)
 {
@@ -17,8 +18,10 @@ static void init(void)
 		
 	image1 = dmx_image_new(0);
 	dmx_image_add_device(image1,DMX_DEVICE_STROBE,"strobe-1");
-	set1 = dmx_set_new_dim(0.0f);
+	set1 = dmx_set_new_dim(1.0f);
+	set2 = dmx_set_new_freq(0.5f);
 	dmx_image_attach_set(image1,set1);
+	dmx_image_attach_set(image1,set2);
 	dmx_image_show(image1);
 
 }
@@ -28,6 +31,7 @@ static void deinit(void)
 {
 	dmx_image_del(image1);
 	free(set1);
+	free(set2);
 	step=0;
 }
 
