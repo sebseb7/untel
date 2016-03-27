@@ -95,7 +95,7 @@ void dmx_devices_clear(void)
 		{
 			struct dmx_device_strobe* strobe = dmx_device_list[i].device;
 			strobe->dim = 0.0f;
-			strobe->dim = 0.0f;
+			strobe->freq = 0.0f;
 		}
 	}
 }
@@ -216,7 +216,7 @@ void dmx_device_render_strobe(struct dmx_device* device)
 	unsigned char freq=0;
 	unsigned char dim=0;
 
-	dim = 255*strobe->dim;
+	dim = led_gamma(255*strobe->dim);
 	freq = 255*strobe->freq;
 	
 	dmx_channel_set(device->addr,freq);
@@ -260,18 +260,19 @@ void dmx_device_render_strobe_sdl(struct dmx_device* device,unsigned int* pixelb
 
 	unsigned int red = 255*strobe->dim;
 	unsigned int green = 255*strobe->dim;
-	unsigned int blue = 255*strobe->dim;
+	unsigned int blue = 255*strobe->freq;
 
 	unsigned int color = (red<<16)+(green<<8)+blue;
 
-	if(pixelbuffer[((row*30)*1024)+(col*30)] != color)
+	if(pixelbuffer[(1024*550)+((row*ZOOM)*1024)+(col*ZOOM)] != color)
 	{
-		for(unsigned int i=0;i<30;i++)
+		for(unsigned int i=0;i<ZOOM;i++)
 		{
-			for(unsigned int j=0;j<30;j++) 
+			for(unsigned int j=0;j<ZOOM;j++) 
 			{
-				pixelbuffer[(((row*30)+j)*1024)+(col*30)+i] = color;
+				pixelbuffer[(1024*550)+(((row*ZOOM)+j)*1024)+(col*ZOOM)+i] = color;
 			}
 		}
 	}
+
 }
