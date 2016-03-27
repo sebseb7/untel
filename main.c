@@ -172,6 +172,13 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 				dmx_device_render_ledpar6_sdl(device,pixelbuffer,0,i);
 #endif
 			}
+			else if(device->type == DMX_DEVICE_STROBE)
+			{
+				dmx_device_render_strobe(device);
+#if SDL_OUT==1
+				dmx_device_render_strobe_sdl(device,pixelbuffer,0,i);
+#endif
+			}
 		}
 			
 
