@@ -17,6 +17,8 @@ static void constructor(void) {
 
 	struct dmx_luaqueue* luaqueue2 = dmx_luaqueue_add("lua-strobe");
 
+	dmx_luaqueue_addstep(luaqueue2,"queue_on(\"STROBE-SCENE-002\")",9*10000,0,0,0);
+	dmx_luaqueue_addstep(luaqueue2,"queue_off(\"STROBE-SCENE-002\")",9*10000,0,0,0);
 	dmx_luaqueue_addstep(luaqueue2,"queue_on(\"STROBE-SCENE-001\")",5*10000,0,0,0);
 	dmx_luaqueue_addstep(luaqueue2,"queue_off(\"STROBE-SCENE-001\")",25*10000,0,0,0);
 
