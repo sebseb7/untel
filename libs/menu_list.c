@@ -144,7 +144,7 @@ signed int menu_list_touch(struct menu_list* menu,unsigned int x,unsigned int y)
 						menu->offset--;
 					}
 				}
-				return 0;
+				return menu->selected;
 			}
 			else if(attr1 == 4)
 			{
@@ -159,7 +159,7 @@ signed int menu_list_touch(struct menu_list* menu,unsigned int x,unsigned int y)
 						menu->offset++;
 					}
 				}
-				return 0;
+				return menu->selected;
 			}
 		}
 	}

@@ -87,11 +87,12 @@ struct dmx_img* dmx_img_clone(struct dmx_img* image)
 	newimage->r=image->r;
 	newimage->g=image->g;
 	newimage->b=image->b;
-	
+
 	if(image->is_col == DMX_ATTR_COLOR_NAME)
 	{
 		newimage->color = strndup(image->color,DMX_NAME_LENGTH);
 	}
+	else
 	{
 		newimage->color=NULL;
 	}
