@@ -7,7 +7,7 @@ programmer:
 - buttons in stack-section: (play/pause) add/insert/update/loadToProg    saveStackto
  (play blinds programmer)
 - ability to add image,effect,wait,blend,command and test all this
-
+- visualize channel out put , as pixeles 
 
 new plan:
 
