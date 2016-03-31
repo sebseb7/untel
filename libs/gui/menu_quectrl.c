@@ -135,6 +135,7 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 				dmx_queue_activate(dmx_queue);
 			}
 		}
+#if LUA_CUE==1
 		else if(attr1 == 2)
 		{
 			struct dmx_luaqueue* dmx_queue = dmx_luaqueue_getbyidx(attr2);
@@ -147,6 +148,7 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 				dmx_luaqueue_activate(dmx_queue);
 			}
 		}
+#endif
 	}
 
 }
