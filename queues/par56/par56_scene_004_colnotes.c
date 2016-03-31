@@ -49,11 +49,15 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 
 	step++;
 
-	if((step%5) == 1)
+	if((step%3) == 1)
 	{
 		unsigned int lamp=10;
 		while(lamp > 3)
 			lamp = rand()&0xf;
+
+		if(sets[lamp]->dim>0.1f)
+			return 100;
+			
 
 		switch(rand()%8)
 		{

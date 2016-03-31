@@ -49,16 +49,21 @@ static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 	if(step < 30)
 	{
 		if((step&1) == 0)
+		{
 			set1->dim = 0.0f;
-		if((step&1) == 1)
+			return 150+((30-step)*30);
+		}
+		else
+		{
 			set1->dim = (step/30.0f)*1.0f;
-		return 500;
+			return 200;
+		}
 	}
 	else
 	{
 		set1->dim=0.0f;
 		step=0;
-		return 10000;
+		return 4000;
 	}
 }
 
