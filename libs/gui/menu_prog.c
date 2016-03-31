@@ -44,6 +44,7 @@ static struct touch_binding_list* touchlist = NULL;
 
 static unsigned int act = 0;
 
+static const unsigned int listsize = 15;
 
 static void menu_prog_redraw(void)
 {
@@ -226,7 +227,7 @@ static void menu_prog_redraw(void)
 	if(list1 != NULL)
 	{
 		touch_binding_add(touchlist,button_x(5),297,button_y(3),183,7,0,0);
-		menu_list_draw(list1,button_x(5),button_y(3),10);
+		menu_list_draw(list1,button_x(5),button_y(3),listsize);
 	}
 
 }
@@ -290,7 +291,14 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,label,0,0),-1);
 				free(label);
 			}
+			unsigned int offset = 0;
+			if(selected > (listsize-1))
+			{
+				offset = selected-(listsize-1);
+				selected = selected - offset;
+			}
 			list1->selected=selected;
+			list1->offset=offset;
 			set_menu_dirty();
 		}
 		else if(attr1 == 3)

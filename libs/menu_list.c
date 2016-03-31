@@ -100,8 +100,8 @@ void menu_list_draw(struct menu_list* menu,unsigned int x,unsigned int y,unsigne
 
 	if(pos > 0)
 	{
-		draw_filledRect(x+230,y,10,176,50,50,50);
-		float perline = 176.0/(float)menu->length;
+		draw_filledRect(x+230,y,10,size*18-4,50,50,50);
+		float perline = (size*18-4)/(float)menu->length;
 		if(menu->length > (size-1))
 			draw_filledRect(x+230,y+(menu->offset*perline),10,perline*size,50,150,50);
 	}
@@ -110,13 +110,13 @@ void menu_list_draw(struct menu_list* menu,unsigned int x,unsigned int y,unsigne
 		touch_binding_free(menu->touchlist);
 	menu->touchlist = touch_binding_new();
 
-	touch_binding_add(menu->touchlist,245,52,0,42,1,0,0);
-	touch_binding_add(menu->touchlist,245,52,141,42,4,0,0);
+	touch_binding_add(menu->touchlist,245,52,0,42,1,0,size);
+	touch_binding_add(menu->touchlist,245,52,(size*18-4)-42,42,4,0,size);
 
 	draw_button_h(x+245,y,52,42,"^",155,0,0,0,255,0);
 	//draw_button_h(x+245,y+47,52,42,"Edit",155,0,0,0,255,0);
 	//draw_button_h(x+245,y+94,52,42,"Save",155,0,0,0,255,0);
-	draw_button_h(x+245,y+141,52,42,"v",155,0,0,0,255,0);
+	draw_button_h(x+245,y+((size*18-4)-42),52,42,"v",155,0,0,0,255,0);
 
 }
 
@@ -150,7 +150,7 @@ signed int menu_list_touch(struct menu_list* menu,unsigned int x,unsigned int y)
 			{
 				if((menu->selected + menu->offset) < (menu->length -1))
 				{
-					if(menu->selected < 9)
+					if(menu->selected < (attr3-1))
 					{
 						menu->selected++;
 					}
