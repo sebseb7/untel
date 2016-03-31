@@ -252,6 +252,23 @@ static void dmx_set_render_blend(unsigned int type,char* name,struct dmx_set* se
 			set->code();
 		}
 	}
+	else if(type == DMX_DEVICE_STROBE)
+	{
+		struct dmx_device_strobe* ledpar = dmx_get_device(DMX_DEVICE_STROBE, name)->device;
+	
+		if(set->attr_type==ATTR_TYPE_DIM)
+		{
+			ledpar->dim= ((set->dim*pct)/100.0f)+((ledpar->dim*(100-pct)/100.0f));
+		}
+		else if(set->attr_type==ATTR_TYPE_FREQ)
+		{
+			ledpar->freq=((set->freq*pct)/100.0f)+((ledpar->freq*(100-pct)/100.0f));
+		}
+		else if(set->attr_type==ATTR_TYPE_CODE)
+		{
+			set->code();
+		}
+	}
 
 }
 struct dmx_set* dmx_set_new_dim(float dim)
