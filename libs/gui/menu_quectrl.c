@@ -20,10 +20,16 @@
 
 static struct menu* menu_quectrl = NULL;
 
+#include "touch_binding.h"
+static struct touch_binding_list* touchlist = NULL;
+
 static void menu_quectrl_redraw(void)
 {
 	clearDisplay();
 	//clear_buttons();
+	if(touchlist != NULL)
+		touch_binding_free(touchlist);
+	touchlist = touch_binding_new();
 
 	draw_filledRect(0,0,LCD_WIDTH,35,155,100,100);
 
@@ -38,6 +44,7 @@ static void menu_quectrl_redraw(void)
 	for(unsigned int i =0;i< dmx_queue_get_count();i++)
 	{
 		struct dmx_queue* dmx_queue = dmx_queue_getbyidx(i);
+		touch_binding_add(touchlist,button_x(x),92,button_y(y),54,1,i,0);
 		draw_button_icon(button_x(x),button_y(y),92,1,dmx_queue->name,155,0,0,0,255,0);
 		x++;
 		if(x>7)
@@ -51,6 +58,7 @@ static void menu_quectrl_redraw(void)
 	for(unsigned int i =0;i< dmx_luaqueue_get_count();i++)
 	{
 		struct dmx_luaqueue* dmx_luaqueue = dmx_luaqueue_getbyidx(i);
+		touch_binding_add(touchlist,button_x(x),92,button_y(y),54,2,i,0);
 		draw_button_icon(button_x(x),button_y(y),92,1,dmx_luaqueue->name,155,0,0,0,255,0);
 		x++;
 		if(x>7)
@@ -84,7 +92,8 @@ static void menu_quectrl_update(void)
 	for(unsigned int i =0;i< dmx_luaqueue_get_count();i++)
 	{
 		struct dmx_luaqueue* dmx_luaqueue = dmx_luaqueue_getbyidx(i);
-		draw_number_8x6(button_x(x),button_y(y),dmx_luaqueue->active_cnt,2,0,255,255,255);
+		draw_button_icon(button_x(x),button_y(y),92,1,dmx_luaqueue->name,155,(dmx_luaqueue->active_cnt)?155:0,0,0,255,0);
+		//draw_number_8x6(button_x(x),button_y(y),dmx_luaqueue->active_cnt,2,0,255,255,255);
 		x++;
 		if(x>7)
 		{
@@ -104,6 +113,39 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 		{
 			if(menu_quectrl->parent != NULL)
 				set_current_menu(menu_quectrl->parent);
+		}
+	}
+	
+	unsigned int attr1 = 0;
+	unsigned int attr2 = 0;
+	unsigned int attr3 = 0;
+	unsigned int relx = 0;
+	unsigned int rely = 0;
+	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3,&relx,&rely))
+	{
+		if(attr1 == 1)
+		{
+			struct dmx_queue* dmx_queue = dmx_queue_getbyidx(attr2);
+			if(dmx_queue->active)
+			{
+				dmx_queue_deactivate(dmx_queue);
+			}
+			else
+			{
+				dmx_queue_activate(dmx_queue);
+			}
+		}
+		else if(attr1 == 2)
+		{
+			struct dmx_luaqueue* dmx_queue = dmx_luaqueue_getbyidx(attr2);
+			if(dmx_queue->active_cnt)
+			{
+				dmx_luaqueue_deactivate(dmx_queue);
+			}
+			else
+			{
+				dmx_luaqueue_activate(dmx_queue);
+			}
 		}
 	}
 
