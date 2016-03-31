@@ -10,7 +10,6 @@
 
 static struct dmx_image* image1;
 static struct dmx_set* set1;
-static struct dmx_set* set2;
 
 static void init(void)
 {
@@ -18,10 +17,9 @@ static void init(void)
 		
 	image1 = dmx_image_new(0);
 	dmx_image_add_device(image1,DMX_DEVICE_STROBE,"strobe-1");
-	set1 = dmx_set_new_dim(1.0f);
-	set2 = dmx_set_new_freq(1.0f);
+	dmx_image_set_selector(image1,"LP DIM","low");
+	set1 = dmx_set_new_freq(1.0f);
 	dmx_image_attach_set(image1,set1);
-	dmx_image_attach_set(image1,set2);
 	dmx_image_show(image1);
 
 }
@@ -31,22 +29,29 @@ static void deinit(void)
 {
 	dmx_image_del(image1);
 	free(set1);
-	free(set2);
 	step=0;
 }
 
 
 static unsigned int tick(__attribute__((__unused__)) unsigned int time)
 {
-	set1->dim=((step*2)%255)/255.0f;
-	step++;
 
-	return 100;
+	step++;
+	if((step&1)==1)
+	{
+		dmx_image_blend_selector(image1,"LP DIM","on",10000);
+	}
+	else
+	{
+		dmx_image_blend_selector(image1,"LP DIM","off",10000);
+	}
+
+	return 10000;
 }
 
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 static void constructor(void) {
 
-	dmx_queue_add("STROBE-SCENE-002",init,deinit,tick);
+	dmx_queue_add("STROBE-SCENE-004",init,deinit,tick);
 
 }
