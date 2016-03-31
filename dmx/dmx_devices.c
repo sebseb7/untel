@@ -216,7 +216,8 @@ void dmx_device_render_strobe(struct dmx_device* device)
 	unsigned char freq=0;
 	unsigned char dim=0;
 
-	dim = led_gamma(255*strobe->dim);
+	//dim = led_gamma(255*strobe->dim);
+	dim = 255*strobe->dim;
 	freq = 255*strobe->freq;
 	
 	dmx_channel_set(device->addr,freq);
