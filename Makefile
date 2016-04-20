@@ -26,8 +26,8 @@ LDFLAGS= -lm -lportmidi -llo
 
 ifeq (1,${LUA_CUE})
 LUA_VERSION=$(shell pkg-config --list-all | grep lua | grep 5 | grep -v c | sort | cut -d \  -f 1 | tail -1)
-FLAGS+=`pkg-config --cflags ${LUA_VERSION}`
-LDFLAGS+=`pkg-config --libs ${LUA_VERSION}`
+FLAGS+=$(shell pkg-config --cflags ${LUA_VERSION})
+LDFLAGS+=$(shell pkg-config --libs ${LUA_VERSION})
 else
 SOURCES := $(filter-out $(wildcard dmx/dmx_luaqueue.c queues/lua_queues.c), $(SOURCES))
 LUA_VERSION="no lua"
@@ -39,8 +39,8 @@ LDFLAGS+= -lftdi1
 endif
 
 ifeq (1,${SDL_OUT})
-FLAGS+=`sdl2-config --cflags`
-LDFLAGS+=`sdl2-config --libs`
+FLAGS+=$(shell sdl2-config --cflags)
+LDFLAGS+=$(shell sdl2-config --libs)
 endif
 
 FLAGS+= -DDMX_OUT=$(DMX_OUT) -DSDL_OUT=$(SDL_OUT) -DLUA_CUE=$(LUA_CUE)
