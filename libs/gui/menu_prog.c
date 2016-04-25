@@ -226,7 +226,7 @@ static void menu_prog_redraw(void)
 	
 	if(list1 != NULL)
 	{
-		touch_binding_add(touchlist,button_x(5),297,button_y(3),183,7,0,0);
+		touch_binding_add(touchlist,button_x(5),297,button_y(3),listsize*18-4,7,0,0);
 		menu_list_draw(list1,button_x(5),button_y(3),listsize);
 	}
 
