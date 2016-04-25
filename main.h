@@ -10,7 +10,7 @@
 #include "dmx_frame.h"
 #include "dmx_stack.h"
 
-void set_programmer_image_list(struct dmx_img* stash);
+void set_programmer_image_list(struct dmx_img** stash);
 void set_programmer_stack(struct dmx_stack* stash);
 
 

@@ -43,12 +43,12 @@ static unsigned int getstarttime(void)
 	return current_time-start_time;
 }
 
-static struct dmx_img* programmer_image = NULL;
+static struct dmx_img** programmer_images = NULL;
 static struct dmx_stack* programmer_stack = NULL;
 
-void set_programmer_image_list(struct dmx_img* stash)
+void set_programmer_image_list(struct dmx_img** stash)
 {
-	programmer_image = stash;
+	programmer_images = stash;
 }
 void set_programmer_stack(struct dmx_stack* stack)
 {
@@ -152,9 +152,9 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			}
 		}
 
-		if(programmer_image != NULL)
+		if(programmer_images != NULL)
 		{
-			dmx_img_render(programmer_image);
+			dmx_img_render(programmer_images[0]);
 		}
 
 

@@ -427,7 +427,7 @@ struct menu* get_menu_prog(void)
 
 		prog_stack= dmx_stack_new();
 
-		set_programmer_image_list(stash[0]);
+		set_programmer_image_list(&stash[0]);
 		set_programmer_stack(prog_stack);
 	}
 	return menu_prog;
