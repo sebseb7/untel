@@ -55,6 +55,26 @@ void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img)
 	stack->frames[stack->length]=frame;
 	stack->length++;
 }
+void dmx_stack_del_imgframe(struct dmx_stack* stack,unsigned int idx)
+{
+	if(idx >= stack->length)
+		return;
+
+	dmx_frame* frame = stack->frames[idx];
+				
+	if(frame->type == DMX_FRAME_IMAGE)
+	{
+		dmx_img_free(frame->image.image);
+	}
+	free(frame);
+
+	if(idx < stack->length)
+	{
+		stack->frames[idx]=stack->frames[stack->length];
+	}
+
+	stack->length--;
+}
 unsigned int dmx_stack_frame_count(struct dmx_stack* stack)
 {
 	return stack->length;

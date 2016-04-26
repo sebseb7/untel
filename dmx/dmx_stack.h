@@ -23,6 +23,7 @@ unsigned int dmx_stack_get_count(void);
 struct dmx_stack* dmx_stack_getbyidx(unsigned int index);
 
 void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img);
+void dmx_stack_del_imgframe(struct dmx_stack* stack,unsigned int idx);
 unsigned int dmx_stack_frame_count(struct dmx_stack* stack);			
 
 dmx_frame* dmx_stack_frame_getbyidx(struct dmx_stack* stack,unsigned int idx);
