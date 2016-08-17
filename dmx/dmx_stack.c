@@ -62,16 +62,17 @@ void dmx_stack_del_imgframe(struct dmx_stack* stack,unsigned int idx)
 
 	dmx_frame* frame = stack->frames[idx];
 				
+	for (unsigned int c = idx ; c < stack->length - 1 ; c++ )
+	{
+		stack->frames[c] = stack->frames[c+1];
+	}
+	stack->frames[stack->length]=NULL;
+
 	if(frame->type == DMX_FRAME_IMAGE)
 	{
 		dmx_img_free(frame->image.image);
 	}
 	free(frame);
-
-	if(idx < stack->length)
-	{
-		stack->frames[idx]=stack->frames[stack->length];
-	}
 
 	stack->length--;
 }
