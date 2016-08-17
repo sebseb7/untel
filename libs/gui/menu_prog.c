@@ -308,6 +308,17 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			list1->offset=offset;
 			set_menu_dirty();
 		}
+		else if(attr1 == 8) // replace selected list entry 
+		{
+			if((list1 != NULL)&&(list1->length>0))
+			{
+				signed int selected = menu_list_get_selected(list1);
+				
+				//todo: implement it
+
+				set_menu_dirty();
+			}
+		}
 		else if(attr1 == 9) // delete selected list entry 
 		{
 			if((list1 != NULL)&&(list1->length>0))
