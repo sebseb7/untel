@@ -83,16 +83,26 @@ void menu_list_del_entry_by_idx(struct menu_list* menu, signed int position)
 			menu->last=menu->first;
 		
 		menu->length--;
+			
+		if(menu->offset > 0)
+		{
+			menu->offset--;
+		}
+		else if(menu->selected >= menu->length)
+		{
+			menu->selected--;
+		}
+
 		return;
 	}
 
-	signed int count = 0;
+	unsigned int count = 0;
 	struct menu_list_entry* current = menu->first;
 	while(current != NULL)
 	{
 		count++;
 
-		if(count==position)
+		if(count==(unsigned int)position)
 		{
 			struct menu_list_entry* next = current->next;
 			if(next != NULL)
@@ -106,11 +116,14 @@ void menu_list_del_entry_by_idx(struct menu_list* menu, signed int position)
 			}
 			menu->length--;
 
-			if(menu->selected >= (unsigned int)position)
-				menu->selected--;
-
-			if(menu->offset >= (unsigned int)position)
+			if(menu->offset > 0)
+			{
 				menu->offset--;
+			}
+			else if(menu->selected > 0)
+			{
+				menu->selected--;
+			}
 
 			return;
 		}

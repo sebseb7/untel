@@ -96,6 +96,8 @@ static void menu_prog_redraw(void)
 		touch_binding_add(touchlist,button_x(5),92,button_y(0),54,2,0,0);
 		if((list1 != NULL)&&(list1->length>0))
 		{
+			//printf("len:%i sel:%i off:%i\n",list1->length,list1->selected,list1->offset);
+
 			touch_binding_add(touchlist,button_x(5),92,button_y(1),54,8,0,0);
 			touch_binding_add(touchlist,button_x(6),92,button_y(0),54,9,0,0);
 		}
