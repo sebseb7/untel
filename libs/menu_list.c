@@ -105,9 +105,9 @@ void menu_list_del_entry_by_idx(struct menu_list* menu, signed int position)
 				menu->last = current;
 			}
 			menu->length--;
-			if(menu->selected > (unsigned int)position)
+			if(menu->selected >= (unsigned int)position)
 				menu->selected--;
-			if(menu->offset > (unsigned int)position)
+			if(menu->offset >= (unsigned int)position)
 				menu->offset--;
 			return;
 		}
