@@ -70,6 +70,23 @@ void menu_list_add_entry(struct menu_list* menu, struct menu_list_entry* entry, 
 	}
 }
 
+void menu_list_del_entry_by_idx(struct menu_list* menu, signed int position)
+{
+	if(position==0)
+	{
+
+
+
+	}
+
+
+	struct menu_list_entry* current = menu->first;
+	while(current != NULL)
+	{
+		current = current->next;
+	}
+}
+
 void menu_list_draw(struct menu_list* menu,unsigned int x,unsigned int y,unsigned int size)
 {
 	struct menu_list_entry* current = menu->first;
@@ -162,6 +179,15 @@ signed int menu_list_touch(struct menu_list* menu,unsigned int x,unsigned int y)
 				return menu->selected;
 			}
 		}
+	}
+	return -1;
+}
+
+signed int menu_list_get_selected(struct menu_list* menu)
+{
+	if(menu != NULL)
+	{
+		return menu->selected + menu->offset;
 	}
 	return -1;
 }

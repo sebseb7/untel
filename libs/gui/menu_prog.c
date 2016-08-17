@@ -94,10 +94,12 @@ static void menu_prog_redraw(void)
 	{
 		validimg=1;
 		touch_binding_add(touchlist,button_x(5),92,button_y(0),54,2,0,0);
+		touch_binding_add(touchlist,button_x(5),92,button_y(1),54,8,0,0);
+		touch_binding_add(touchlist,button_x(6),92,button_y(0),54,9,0,0);
 	}
 	draw_button_icon(button_x(5),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
-	draw_button_icon(button_x(5),button_y(1),92,1,"Replace",55,0,0,0,55,0);
-	draw_button_icon(button_x(6),button_y(0),92,1,"Delete",55,0,0,0,55,0);
+	draw_button_icon(button_x(5),button_y(1),92,1,"Replace",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
+	draw_button_icon(button_x(6),button_y(0),92,1,"Delete",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
 	draw_button_icon(button_x(6),button_y(1),92,1,"Load",55,0,0,0,55,0);
 	draw_button_icon(button_x(7),button_y(0),92,1,"Loop",55,0,0,0,55,0);
 	draw_button_icon(button_x(7),button_y(1),92,1,"Store",55,0,0,0,55,0);
@@ -300,6 +302,12 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			list1->selected=selected;
 			list1->offset=offset;
 			set_menu_dirty();
+		}
+		else if(attr1 == 9)
+		{
+			signed int selected = menu_list_get_selected(list1);
+			dmx_stack_del_imgframe(prog_stack,selected);
+			menu_list_del_entry_by_idx(list1, selected);
 		}
 		else if(attr1 == 3)
 		{
