@@ -74,15 +74,39 @@ void menu_list_del_entry_by_idx(struct menu_list* menu, signed int position)
 {
 	if(position==0)
 	{
+		struct menu_list_entry* first = menu->first;
 
+		menu->first = first->next;
+		free(first);
 
-
+		if(menu->length == 1)
+			menu->last=menu->first;
+		
+		menu->length--;
+		return;
 	}
 
-
+	signed int count = 0;
 	struct menu_list_entry* current = menu->first;
 	while(current != NULL)
 	{
+		count++;
+
+		if(count==position)
+		{
+			struct menu_list_entry* next = current->next;
+			if(next != NULL)
+			{
+				current->next = next->next;
+			}
+			else
+			{
+				current->next = NULL;
+				menu->last = current;
+			}
+			menu->length--;
+			return;
+		}
 		current = current->next;
 	}
 }
