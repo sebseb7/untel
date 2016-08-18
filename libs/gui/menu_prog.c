@@ -43,6 +43,8 @@ static struct touch_binding_list* touchlist = NULL;
 
 
 static unsigned int act = 0;
+static unsigned int act_frame_type = DMX_FRAME_IMAGE;
+static unsigned int act_attribute = 0;
 
 static const unsigned int listsize = 15;
 
@@ -66,20 +68,48 @@ static void menu_prog_redraw(void)
 
 	unsigned int devicecount = dmx_img_device_count(stash[act]);
 
+	char *frame_str;
+	if(act_frame_type == DMX_FRAME_IMAGE)
+	{
+		frame_str = "Image";
+	}
+	else
+	{
+		frame_str = "<>";
+	}
+	char *attr_str;
+	if(act_attribute == DMX_ATTR_COLOR_NAME)
+	{
+		attr_str = "Color Name";
+	}	
+	else if(act_attribute == DMX_ATTR_COLOR_RGB)
+	{
+		attr_str = "Color RGB";
+	}	
+	else if(act_attribute == DMX_ATTR_DIM)
+	{
+		attr_str = "Dimmer";
+	}	
+	else
+	{
+		attr_str = "<>";
+	}	
+
+
+
+
 	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,1,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Devices",155,(tab==1)?155:0,0,(devicecount>0)?255:0,255,0);
-	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,2,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color Name",155,(tab==2)?155:0,0,(dmx_img_iscolname(stash[act]))?255:0,255,0);
-	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,3,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color RGB",155,(tab==3)?155:0,0,(dmx_img_iscolrgb(stash[act]))?255:0,255,0);
-	touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,4,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Dimmer",155,(tab==4)?155:0,0,(dmx_img_isdim(stash[act]))?255:0,255,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Frequency",55,(tab==5)?55:0,0,0,55,0);
-	buttony++;buttonx=0;
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Position",55,(tab==6)?55:0,0,0,55,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Gobo",55,(tab==7)?55:0,0,0,55,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Rotation",55,(tab==8)?55:0,0,0,55,0);
-	draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Special",55,(tab==9)?55:0,0,0,55,0);
+	draw_button_icon2(button_x(buttonx++),button_y(buttony),92,1,"Frame",frame_str,155,(tab==1)?155:0,0,0,255,0,255,255,0);
+
+	if(act_frame_type == DMX_FRAME_IMAGE)
+	{
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,2,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Devices",       155,(tab==2)?155:0,0,(devicecount>0)?255:0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,3,0);
+		draw_button_icon2(button_x(buttonx++),button_y(buttony),92,1,"Attribute",attr_str,155,(tab==3)?155:0,0,(act_attribute)?255:0,255,0,255,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,4,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Value",         155,(tab==4)?155:0,0,(act_attribute)?155:0,255,0);
+	}
 
 
 	unsigned int validimg=0;
@@ -109,10 +139,13 @@ static void menu_prog_redraw(void)
 	draw_button_icon(button_x(7),button_y(0),92,1,"Loop",55,0,0,0,55,0);
 	draw_button_icon(button_x(7),button_y(1),92,1,"Store",55,0,0,0,55,0);
 
-	buttony=3;buttonx=0;
-
+	buttony=2;buttonx=0;
 
 	if(tab==1)
+	{
+	}
+
+	if(tab==2)
 	{
 		char buf[30];
 		char buf2[30];
@@ -149,84 +182,103 @@ static void menu_prog_redraw(void)
 			}
 		}
 	}
-
-
-	if(tab==2)
-	{
-		unsigned int dmx_attr_colors_get_count(void);
-		const char* dmx_attr_colors_get_name(unsigned int idx);
-		char buf[30];
-
-		unsigned int initial_buttonx = buttonx;
-
-		for(unsigned int i = 0; i < dmx_attr_colors_get_count();i++)
-		{
-			const char * colorname = dmx_attr_colors_get_name(i);
-
-			snprintf(buf,30,"%s",colorname);
-
-
-			unsigned int active = dmx_img_color_test(stash[act],colorname);
-
-			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,4,i,0);
-			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf,155,(active)?155:0,0,0,255,0);
-
-			if(buttonx == 5)
-			{
-				buttony++;
-				buttonx=initial_buttonx;
-			}
-		}
-	}
 	if(tab==3)
 	{
-		unsigned int height = button_y(5)-button_y(0)-11;
-		unsigned int runlength = height-54;
-
-		unsigned int r=0;
-		unsigned int g=0;
-		unsigned int b=0;
-
-		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,5,1,0);
-		draw_rect(button_x(buttonx++),button_y(buttony),92,height,1,155,0,0);
-		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,5,2,0);
-		draw_rect(button_x(buttonx++),button_y(buttony),92,height,1,155,0,0);
-		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,5,3,0);
-		draw_rect(button_x(buttonx++),button_y(buttony),92,height,1,155,0,0);
-		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,5,4,0);
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Clear",155,0,0,0,255,0);
-
-		if(dmx_img_color_getrgb(stash[act],&r,&g,&b))
-		{	
-			unsigned int position_r = runlength * (1-(r/255.0f));
-			draw_filledRect(button_x(buttonx-4)+1,button_y(buttony)+position_r+1,92-2,54-2,155,50,50);
-			unsigned int position_g = runlength * (1-(g/255.0f));
-			draw_filledRect(button_x(buttonx-3)+1,button_y(buttony)+position_g+1,92-2,54-2,50,155,50);
-			unsigned int position_b = runlength * (1-(b/255.0f));
-			draw_filledRect(button_x(buttonx-2)+1,button_y(buttony)+position_b+1,92-2,54-2,50,50,155);
-		}
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,10,DMX_ATTR_COLOR_NAME,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color Name",155,(act_attribute==DMX_ATTR_COLOR_NAME)?155:0,0,(dmx_img_iscolname(stash[act]))?255:0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,10,DMX_ATTR_COLOR_RGB,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color RGB",155,(act_attribute==DMX_ATTR_COLOR_RGB)?155:0,0,(dmx_img_iscolrgb(stash[act]))?255:0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,10,DMX_ATTR_DIM,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Dimmer",155,(act_attribute==DMX_ATTR_DIM)?155:0,0,(dmx_img_isdim(stash[act]))?255:0,255,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Frequency",55,(act_attribute==100)?55:0,0,0,55,0);
+		buttony++;buttonx=0;
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Position",55,(act_attribute==100)?55:0,0,0,55,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Gobo",55,(act_attribute==100)?55:0,0,0,55,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Rotation",55,(act_attribute==100)?55:0,0,0,55,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Special",55,(act_attribute==100)?55:0,0,0,55,0);
 	}
 
 	if(tab==4)
 	{
-		unsigned int height = button_y(5)-button_y(0)-11;
-		unsigned int runlength = height-54;
-		
-		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,6,1,0);
-		draw_rect(button_x(buttonx),button_y(buttony),92,height,1,155,0,0);
 
-		float fvalue = 0;
-
-		if(dmx_img_dim_get(stash[act],&fvalue))
+		if(act_attribute == DMX_ATTR_COLOR_NAME)
 		{
-			unsigned int position = runlength * (1-fvalue);
-			draw_filledRect(button_x(buttonx)+1,button_y(buttony)+position+1,92-2,54-2,155,100,0);
+
+			unsigned int dmx_attr_colors_get_count(void);
+			const char* dmx_attr_colors_get_name(unsigned int idx);
+			char buf[30];
+
+			unsigned int initial_buttonx = buttonx;
+
+			for(unsigned int i = 0; i < dmx_attr_colors_get_count();i++)
+			{
+				const char * colorname = dmx_attr_colors_get_name(i);
+
+				snprintf(buf,30,"%s",colorname);
+
+
+				unsigned int active = dmx_img_color_test(stash[act],colorname);
+
+				touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,4,i,0);
+				draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,buf,155,(active)?155:0,0,0,255,0);
+
+				if(buttonx == 5)
+				{
+					buttony++;
+					buttonx=initial_buttonx;
+				}
+			}
 		}
-		buttonx++;
+		if(act_attribute == DMX_ATTR_COLOR_RGB)
+		{
+			unsigned int height = button_y(5)-button_y(0)-11;
+			unsigned int runlength = height-54;
 
-		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,6,2,0);
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Clear",155,0,0,0,255,0);
+			unsigned int r=0;
+			unsigned int g=0;
+			unsigned int b=0;
 
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,5,1,0);
+			draw_rect(button_x(buttonx++),button_y(buttony),92,height,1,155,0,0);
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,5,2,0);
+			draw_rect(button_x(buttonx++),button_y(buttony),92,height,1,155,0,0);
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,5,3,0);
+			draw_rect(button_x(buttonx++),button_y(buttony),92,height,1,155,0,0);
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,5,4,0);
+			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Clear",155,0,0,0,255,0);
+
+			if(dmx_img_color_getrgb(stash[act],&r,&g,&b))
+			{	
+				unsigned int position_r = runlength * (1-(r/255.0f));
+				draw_filledRect(button_x(buttonx-4)+1,button_y(buttony)+position_r+1,92-2,54-2,155,50,50);
+				unsigned int position_g = runlength * (1-(g/255.0f));
+				draw_filledRect(button_x(buttonx-3)+1,button_y(buttony)+position_g+1,92-2,54-2,50,155,50);
+				unsigned int position_b = runlength * (1-(b/255.0f));
+				draw_filledRect(button_x(buttonx-2)+1,button_y(buttony)+position_b+1,92-2,54-2,50,50,155);
+			}
+		}
+
+		if(act_attribute == DMX_ATTR_DIM)
+		{
+			unsigned int height = button_y(5)-button_y(0)-11;
+			unsigned int runlength = height-54;
+			
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,6,1,0);
+			draw_rect(button_x(buttonx),button_y(buttony),92,height,1,155,0,0);
+
+			float fvalue = 0;
+
+			if(dmx_img_dim_get(stash[act],&fvalue))
+			{
+				unsigned int position = runlength * (1-fvalue);
+				draw_filledRect(button_x(buttonx)+1,button_y(buttony)+position+1,92-2,54-2,155,100,0);
+			}
+			buttonx++;
+
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,6,2,0);
+			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Clear",155,0,0,0,255,0);
+
+		}
 	}
 
 		
@@ -308,11 +360,23 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			list1->offset=offset;
 			set_menu_dirty();
 		}
+		else if(attr1 == 10) // set active attribute
+		{
+			if(act_attribute == attr2)
+			{
+				act_attribute = 0;
+			}
+			else
+			{
+				act_attribute = attr2;
+			}
+			set_menu_dirty();
+		}
 		else if(attr1 == 8) // replace selected list entry 
 		{
 			if((list1 != NULL)&&(list1->length>0))
 			{
-				signed int selected = menu_list_get_selected(list1);
+				//signed int selected = menu_list_get_selected(list1);
 				
 				//todo: implement it
 
