@@ -57,27 +57,34 @@ void getLedXY(uint16_t x, uint16_t y, uint8_t* red,uint8_t* green, uint8_t* blue
 static struct menu* current_menu;
 
 static unsigned int dirty = 1;
+static unsigned int menuauto = 0;
 
 void menu_autoupdate()
 {
-	dirty = 2;
+	menuauto = 1;
 };
+
+struct menu* get_current_menu(void)
+{
+	return current_menu;
+}
 
 void set_current_menu(struct menu* new_menu)
 {
 	current_menu = new_menu;
 	dirty = 1;
+	menuauto = 0;
 }
 void set_menu_dirty(void)
 {
-	if(dirty == 0)
-		dirty = 1;
+	dirty = 1;
 }
 
 void menu_init()
 {
 	current_menu = get_menu_main();
 	dirty = 1;
+	menuauto = 0;
 }
 void draw_menu(unsigned int* pixelbuffer)
 {
@@ -89,18 +96,17 @@ void draw_menu(unsigned int* pixelbuffer)
 		current_menu->touch(x,y);
 	}
 
-	if(dirty)
+	if(dirty || menuauto)
 	{
 		current_pixelbuffer=pixelbuffer;
-		if(dirty==2)
+		if(menuauto==1)
 			if(current_menu->update != NULL)
 				current_menu->update();
 		if(dirty==1)
 			if(current_menu->redraw != NULL)
 				current_menu->redraw();
 		current_pixelbuffer=NULL;
-		if(dirty==1)
-			dirty = 0;
+		dirty = 0;
 	}
 }
 		
