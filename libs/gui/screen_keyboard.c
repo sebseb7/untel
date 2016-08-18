@@ -40,8 +40,9 @@ static char current_title[30];
 static struct menu* screen_keyboard(void);
 static struct menu* screen_keyboard_numeric(void);
 
+static void (*(char*)) stored_callback;
 
-void invoke_keyboard(char* desc, char* initial)
+void invoke_keyboard(char* desc,char* initial,void (*callback(char*)))
 {
 	snprintf(buffer,30,"%s",initial);
 	buffer_length=strlen(buffer);
@@ -50,6 +51,7 @@ void invoke_keyboard(char* desc, char* initial)
 	set_current_menu(screen_keyboard());
 	menu_autoupdate();
 	strcpy(current_title,desc);
+	stored_callback=callback;
 }
 
 void invoke_numeric_keyboard(char* desc, uint32_t initial)

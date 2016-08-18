@@ -6,6 +6,7 @@
 
 
 #include "menu.h"
+#include "screen_keyboard.h"
 #include "mcugui/rect.h"
 #include "mcugui/text.h"
 #include "mcugui/button.h"
@@ -130,6 +131,7 @@ static void menu_prog_redraw(void)
 
 			touch_binding_add(touchlist,button_x(5),92,button_y(1),54,8,0,0);
 			touch_binding_add(touchlist,button_x(6),92,button_y(0),54,9,0,0);
+			touch_binding_add(touchlist,button_x(7),92,button_y(1),54,11,0,0);
 		}
 	}
 	draw_button_icon(button_x(5),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
@@ -137,7 +139,7 @@ static void menu_prog_redraw(void)
 	draw_button_icon(button_x(6),button_y(0),92,1,"Delete",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
 	draw_button_icon(button_x(6),button_y(1),92,1,"Load",55,0,0,0,55,0);
 	draw_button_icon(button_x(7),button_y(0),92,1,"Loop",55,0,0,0,55,0);
-	draw_button_icon(button_x(7),button_y(1),92,1,"Store",55,0,0,0,55,0);
+	draw_button_icon(button_x(7),button_y(1),92,1,"Store",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
 
 	buttony=2;buttonx=0;
 
@@ -291,6 +293,10 @@ static void menu_prog_redraw(void)
 
 }
 
+static void return_from_store(char * name)
+{
+}
+
 
 static void menu_prog_touch(unsigned int x, unsigned int y)
 {
@@ -359,6 +365,10 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			list1->selected=selected;
 			list1->offset=offset;
 			set_menu_dirty();
+		}
+		else if(attr1 == 11) // store
+		{
+			invoke_keyboard("Store Programmer List",prog_stack->name,&return_from_store);
 		}
 		else if(attr1 == 10) // set active attribute
 		{
