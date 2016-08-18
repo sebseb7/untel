@@ -33,12 +33,12 @@ static uint8_t blink = 0;
 static char buffer[MAXLENGTH+1];
 static uint8_t buffer_length=0;
 
-struct menu* current_menu;
+static struct menu* current_menu;
 
 static char current_title[30];
 
-struct menu* screen_keyboard(void);
-struct menu* screen_keyboard_numeric(void);
+static struct menu* screen_keyboard(void);
+static struct menu* screen_keyboard_numeric(void);
 
 
 void invoke_keyboard(char* desc, char* initial)
@@ -284,7 +284,7 @@ static void screen_keyboard_touch(unsigned int x, unsigned int y)
 
 }
 
-struct menu* screen_keyboard(void)
+static struct menu* screen_keyboard(void)
 {
 	if(menu_keyboard == NULL)
 	{
@@ -484,7 +484,7 @@ static void screen_keyboard_numeric_touch(unsigned int x, unsigned int y)
 
 }
 
-struct menu* screen_keyboard_numeric(void)
+static struct menu* screen_keyboard_numeric(void)
 {
 	if(menu_keyboard_numeric == NULL)
 	{
