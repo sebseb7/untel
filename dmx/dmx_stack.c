@@ -181,6 +181,7 @@ void dmx_stack_load_from_disc(void)
 		printf("stack:\n");
 
 		unsigned int name_length = SDL_ReadU8(file);
+		if(name_length > (DMX_NAME_LENGTH-1)) name_length=DMX_NAME_LENGTH-1;
 		unsigned int xy = SDL_RWread(file, stack->name, 1, name_length+1);
 		printf("namelen: %i\n",xy);
 		stack->active=0;
@@ -211,6 +212,7 @@ void dmx_stack_load_from_disc(void)
 					unsigned int dev_name_length = SDL_ReadU8(file);
 					printf("devnl: %i\n",dev_name_length);
 					char input[DMX_NAME_LENGTH];
+					if(dev_name_length > (DMX_NAME_LENGTH-1)) dev_name_length=DMX_NAME_LENGTH-1;
 					SDL_RWread(file, input, 1, dev_name_length+1);
 					dmx_img_device_add(image, input);
 				}
@@ -221,6 +223,7 @@ void dmx_stack_load_from_disc(void)
 				unsigned int float_length = SDL_ReadU8(file);
 				printf("float nl: %i\n",float_length);
 				char floatinput[50];
+				if(float_length > 49) float_length=49;
 				SDL_RWread(file, floatinput, 1, float_length+1);
 				
 				image->dim = atof(floatinput);
