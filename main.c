@@ -83,7 +83,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 #if DMX_OUT==1
 	dmx_output_init();
 #endif
-	osc_init();
+//	osc_init();
 	
 	//printf("plot '-' using (\\$1):(\\$2)\n");
 #ifdef CONCH_OUT
@@ -97,7 +97,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	
 //	while(looping-- > 0)
 
-	dmx_device_load_from_disc();
+	//dmx_device_load_from_disc();
 	dmx_stack_load_from_disc();
 
 

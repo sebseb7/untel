@@ -106,6 +106,7 @@ void dmx_stack_store_to_disc(char * file_name)
 	SDL_WriteBE32(file,dmx_stack_inuse);
 	for(unsigned int i=0;i<dmx_stack_inuse;i++)
 	{
+		SDL_WriteU8(file,strlen(dmx_stack_list[i]->name));
 		SDL_RWwrite(file,dmx_stack_list[i]->name,1,1+strlen(dmx_stack_list[i]->name));
 		SDL_WriteBE32(file,dmx_stack_list[i]->length);
 	
@@ -119,6 +120,7 @@ void dmx_stack_store_to_disc(char * file_name)
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->dev_count);
 				for(unsigned int x=0;x<dmx_stack_list[i]->frames[c]->image.image->dev_count;x++)
 				{
+					SDL_WriteU8(file,strlen(dmx_stack_list[i]->frames[c]->image.image->dev_names[x]));
 					SDL_RWwrite(file,dmx_stack_list[i]->frames[c]->image.image->dev_names[x],1,1+strlen(dmx_stack_list[i]->frames[c]->image.image->dev_names[x]));
 				}
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->is_dim);
@@ -127,12 +129,14 @@ void dmx_stack_store_to_disc(char * file_name)
 				char output[50];
 				snprintf(output, 50, "%f", dmx_stack_list[i]->frames[c]->image.image->dim);
 				
+				SDL_WriteU8(file,strlen(output));
 				SDL_RWwrite(file,output,1,1+strlen(output));
 
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->r);
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->g);
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->b);
 				
+				SDL_WriteU8(file,strlen(dmx_stack_list[i]->frames[c]->image.image->color));
 				SDL_RWwrite(file,dmx_stack_list[i]->frames[c]->image.image->color,1,1+strlen(dmx_stack_list[i]->frames[c]->image.image->color));
 
 			}
@@ -162,23 +166,85 @@ void dmx_stack_load_from_disc(void)
 
 	if(file == NULL)
 		return;
-	
+
+
 	unsigned int stacks = SDL_ReadBE32(file);
+
+
+	printf("stacks: %i\n",stacks);
 
 	for(unsigned int x = 0; x < stacks;x++)
 	{
 		struct dmx_stack* stack = malloc(sizeof(struct dmx_stack));
+	
+		printf("stack:\n");
 
-		strcpy(stack->name,"");
+		unsigned int name_length = SDL_ReadU8(file);
+		unsigned int xy = SDL_RWread(file, stack->name, 1, name_length+1);
+		printf("namelen: %i\n",xy);
 		stack->active=0;
 		stack->length=0;
-		stack->alloc=DMX_STACK_FRAMES_ALLOCATE_INITIAL;
-		stack->frames=malloc(sizeof(dmx_frame*)*DMX_STACK_FRAMES_ALLOCATE_INITIAL);
+
+		stack->alloc=SDL_ReadBE32(file);
+		stack->frames=malloc(sizeof(dmx_frame*)*stack->alloc);
+		
+		printf("alloc: %i\n",stack->alloc);
+
+		for(unsigned int c=0;c<stack->alloc;c++)
+		{
+			unsigned int frame_type = SDL_ReadBE32(file);
+		
+			printf("ft: %i\n",frame_type);
+			
+			if(frame_type == DMX_FRAME_IMAGE)
+			{
+
+				struct dmx_img* image = dmx_img_new();
+		
+				unsigned int dev_count = SDL_ReadBE32(file);
+		
+				printf("dev: %i\n",dev_count);
+
+				for(unsigned int x = 0;x<dev_count;x++)
+				{
+					unsigned int dev_name_length = SDL_ReadU8(file);
+					printf("devnl: %i\n",dev_name_length);
+					char input[DMX_NAME_LENGTH];
+					SDL_RWread(file, input, 1, dev_name_length+1);
+					dmx_img_device_add(image, input);
+				}
+
+				image->is_dim = SDL_ReadBE32(file);
+				image->is_col = SDL_ReadBE32(file);
+
+				unsigned int float_length = SDL_ReadU8(file);
+				printf("float nl: %i\n",float_length);
+				char floatinput[50];
+				SDL_RWread(file, floatinput, 1, float_length+1);
+				
+				image->dim = atof(floatinput);
+				
+				printf("dim: %f\n",image->dim);
+				
+				image->r = SDL_ReadBE32(file);
+				image->g = SDL_ReadBE32(file);
+				image->b = SDL_ReadBE32(file);
+
+				unsigned int col_name_length = SDL_ReadU8(file);
+				printf("color nl: %i\n",col_name_length);
+				SDL_RWread(file, image->color, 1, col_name_length+1);
+
+				dmx_stack_add_imgframe(stack,image);
+
+			}
+			else
+			{
+				printf("cannot load frame\n");
+			}
+		}
 
 		dmx_stack_store(stack);
 	}
-
-
 	
 	SDL_RWclose(file);
 	dmx_stack_store_to_disc("stack_regress");
