@@ -299,6 +299,7 @@ static void return_from_store(char * name)
 {
 	strncpy(prog_stack->name,name,DMX_NAME_LENGTH);
 	dmx_stack_store(prog_stack);
+	dmx_stack_store_to_disc("stack");
 }
 
 

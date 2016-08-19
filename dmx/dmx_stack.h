@@ -23,7 +23,8 @@ struct dmx_stack* dmx_stack_getbyidx(unsigned int index);
 struct dmx_stack* dmx_stack_getbyname(char* name);
 struct dmx_stack* dmx_stack_clone(struct dmx_stack*);
 void dmx_stack_store(struct dmx_stack*);
-void dmx_stack_store_to_disc(void);
+void dmx_stack_store_to_disc(char * filename);
+//void dmx_stack_store_to_disc(void);
 void dmx_stack_load_from_disc(void);
 
 void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img);

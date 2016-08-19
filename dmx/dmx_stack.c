@@ -71,7 +71,6 @@ void dmx_stack_store(struct dmx_stack* stack)
 			
 		
 			dmx_stack_list[i]=dmx_stack_clone(stack);
-			dmx_stack_store_to_disc();
 			return;
 		}
 	}
@@ -91,13 +90,11 @@ void dmx_stack_store(struct dmx_stack* stack)
 	dmx_stack_list[dmx_stack_inuse]=dmx_stack_clone(stack);
 	dmx_stack_inuse++;
 
-	dmx_stack_store_to_disc();
-
 }
 
-void dmx_stack_store_to_disc(void)
+void dmx_stack_store_to_disc(char * file_name)
 {
-	char *file_name = "stack";
+//	char *file_name = "stack";
 	char *base_path = SDL_GetPrefPath("net.exse", "untel");
 	char *file_path = calloc((strlen(base_path)+strlen(file_name)),sizeof(char));
 	strcat(file_path,base_path);
@@ -167,8 +164,24 @@ void dmx_stack_load_from_disc(void)
 		return;
 	
 	unsigned int stacks = SDL_ReadBE32(file);
+
+	for(unsigned int x = 0; x < stacks;x++)
+	{
+		struct dmx_stack* stack = malloc(sizeof(struct dmx_stack));
+
+		strcpy(stack->name,"");
+		stack->active=0;
+		stack->length=0;
+		stack->alloc=DMX_STACK_FRAMES_ALLOCATE_INITIAL;
+		stack->frames=malloc(sizeof(dmx_frame*)*DMX_STACK_FRAMES_ALLOCATE_INITIAL);
+
+		dmx_stack_store(stack);
+	}
+
+
 	
 	SDL_RWclose(file);
+	dmx_stack_store_to_disc("stack_regress");
 }
 
 struct dmx_stack* dmx_stack_clone(struct dmx_stack* old_stack)
