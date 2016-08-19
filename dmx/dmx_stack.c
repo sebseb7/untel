@@ -161,6 +161,7 @@ void dmx_stack_load_from_disc(void)
 	strcat(file_path,base_path);
 	strcat(file_path,file_name);
 	free(base_path);	
+	printf("file: %s\n",file_path);
 	SDL_RWops *file = SDL_RWFromFile(file_path, "r");
 	free(file_path);
 
