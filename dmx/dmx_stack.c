@@ -187,7 +187,7 @@ void dmx_stack_load_from_disc(void)
 		stack->active=0;
 		stack->length=0;
 
-		stack->alloc=SDL_ReadBE32(file);
+		stack->alloc=SDL_ReadBE32(file);// if we define a limit later, enforce it here
 		stack->frames=malloc(sizeof(dmx_frame*)*stack->alloc);
 		
 		printf("alloc: %i\n",stack->alloc);
@@ -205,7 +205,7 @@ void dmx_stack_load_from_disc(void)
 		
 				unsigned int dev_count = SDL_ReadBE32(file);
 		
-				printf("dev: %i\n",dev_count);
+				printf("dev: %i\n",dev_count);// if we define a limit later, enforce it here
 
 				for(unsigned int x = 0;x<dev_count;x++)
 				{
@@ -217,8 +217,8 @@ void dmx_stack_load_from_disc(void)
 					dmx_img_device_add(image, input);
 				}
 
-				image->is_dim = SDL_ReadBE32(file);
-				image->is_col = SDL_ReadBE32(file);
+				image->is_dim = SDL_ReadBE32(file);//todo: sanity check
+				image->is_col = SDL_ReadBE32(file);//todo: sanity check
 
 				unsigned int float_length = SDL_ReadU8(file);
 				printf("float nl: %i\n",float_length);
@@ -246,7 +246,19 @@ void dmx_stack_load_from_disc(void)
 			}
 			else
 			{
-				printf("cannot load frame\n");
+				printf("BROKEN: cannot load frame\n");
+				SDL_RWclose(file);
+				for (unsigned int c = 0 ; c < stack->length; c++ )
+				{
+					if(stack->frames[c]->type == DMX_FRAME_IMAGE)
+					{
+						dmx_img_free(stack->frames[c]->image.image);
+					}
+					free(stack->frames[c]);
+				}
+				free(stack->frames);
+				free(stack);
+				return;
 			}
 		}
 
