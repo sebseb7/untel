@@ -233,7 +233,10 @@ void dmx_stack_load_from_disc(void)
 
 				unsigned int col_name_length = SDL_ReadU8(file);
 				printf("color nl: %i\n",col_name_length);
-				SDL_RWread(file, image->color, 1, col_name_length+1);
+				char tmp_colorname[DMX_NAME_LENGTH];
+				if(col_name_length > (DMX_NAME_LENGTH-1)) col_name_length=DMX_NAME_LENGTH-1;
+				SDL_RWread(file, tmp_colorname, 1, col_name_length+1);
+				image->color = strndup(tmp_colorname,DMX_NAME_LENGTH);
 
 				dmx_stack_add_imgframe(stack,image);
 
