@@ -96,7 +96,7 @@ void dmx_stack_store_to_disc(char * file_name)
 {
 //	char *file_name = "stack";
 	char *base_path = SDL_GetPrefPath("net.exse", "untel");
-	char *file_path = calloc((strlen(base_path)+strlen(file_name)),sizeof(char));
+	char *file_path = calloc((strlen(base_path)+strlen(file_name)+1),sizeof(char));
 	strcat(file_path,base_path);
 	strcat(file_path,file_name);
 	free(base_path);	
@@ -157,7 +157,7 @@ void dmx_stack_load_from_disc(void)
 {
 	char *file_name = "stack";
 	char *base_path = SDL_GetPrefPath("net.exse", "untel");
-	char *file_path = calloc((strlen(base_path)+strlen(file_name)),sizeof(char));
+	char *file_path = calloc((strlen(base_path)+strlen(file_name)+1),sizeof(char));
 	strcat(file_path,base_path);
 	strcat(file_path,file_name);
 	free(base_path);	
