@@ -4,6 +4,8 @@
 
 #include "main.h"
 
+#include "screen_keyboard.h"
+			//char* name = get_keyboard_buffer();
 
 #include "menu.h"
 #include "screen_keyboard.h"
@@ -295,6 +297,8 @@ static void menu_prog_redraw(void)
 
 static void return_from_store(char * name)
 {
+	strncpy(prog_stack->name,name,DMX_NAME_LENGTH);
+	dmx_stack_store(prog_stack);
 }
 
 
@@ -368,7 +372,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		}
 		else if(attr1 == 11) // store
 		{
-			invoke_keyboard("Store Programmer List",prog_stack->name,&return_from_store);
+			invoke_keyboard("Store Programmer List",prog_stack->name,return_from_store);
 		}
 		else if(attr1 == 10) // set active attribute
 		{
@@ -379,6 +383,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			else
 			{
 				act_attribute = attr2;
+				tab=4;
 			}
 			set_menu_dirty();
 		}

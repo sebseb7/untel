@@ -4,13 +4,15 @@
 
 #include "dmx_stack.h"
 
+#include "SDL.h"
+
 #define DMX_STACK_FRAMES_ALLOCATE_INITIAL 100
 #define DMX_STACK_ALLOCATE_INITIAL 100
 #define DMX_STACK_ALLOCATE_STEP 10
 
 static struct dmx_stack** dmx_stack_list;
 
-//static unsigned int dmx_stack_allocated=0;
+static unsigned int dmx_stack_allocated=0;
 static unsigned int dmx_stack_inuse=0;
 
 struct dmx_stack* dmx_stack_new(void)
@@ -39,6 +41,98 @@ struct dmx_stack* dmx_stack_getbyidx(unsigned int index)
 	}
 	return NULL;
 }
+struct dmx_stack* dmx_stack_getbyname(char* name)
+{	
+	for(unsigned int i=0;i<dmx_stack_inuse;i++)
+	{
+		if(0==strncmp(dmx_stack_list[i]->name,name,DMX_NAME_LENGTH))
+		{
+			return dmx_stack_list[i];
+		}
+	}
+	return NULL;
+}
+void dmx_stack_store(struct dmx_stack* stack)
+{
+
+	for(unsigned int i=0;i<dmx_stack_inuse;i++)
+	{
+		if(0==strncmp(dmx_stack_list[i]->name,stack->name,DMX_NAME_LENGTH))
+		{
+			for (unsigned int c = 0 ; c < dmx_stack_list[i]->length - 1 ; c++ )
+			{
+				if(dmx_stack_list[i]->frames[c]->type == DMX_FRAME_IMAGE)
+				{
+					dmx_img_free(dmx_stack_list[i]->frames[c]->image.image);
+				}
+				free(dmx_stack_list[i]->frames[c]);
+			}
+			free(dmx_stack_list[i]->frames);
+			free(dmx_stack_list[i]);
+			
+		
+			dmx_stack_list[i]=dmx_stack_clone(stack);
+			dmx_stack_store_to_disc();
+			return;
+		}
+	}
+
+	if(0==dmx_stack_allocated)
+	{
+		dmx_stack_list = malloc(sizeof(*dmx_stack_list)*DMX_STACK_ALLOCATE_INITIAL);
+		dmx_stack_allocated=DMX_STACK_ALLOCATE_INITIAL;
+	}
+	
+	if(dmx_stack_inuse == dmx_stack_allocated)
+	{
+		printf("stf21\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	dmx_stack_list[dmx_stack_inuse]=dmx_stack_clone(stack);
+	dmx_stack_inuse++;
+
+	dmx_stack_store_to_disc();
+
+}
+
+void dmx_stack_store_to_disc(void)
+{
+	char *file_name = "stack";
+	char *base_path = SDL_GetPrefPath("net.exse", "untel");
+	char *file_path = calloc((strlen(base_path)+strlen(file_name)),sizeof(char));
+	strcat(file_path,base_path);
+	strcat(file_path,file_name);
+	free(base_path);	
+	SDL_RWops *file = SDL_RWFromFile(file_path, "w");
+	free(file_path);
+
+	SDL_RWwrite(file, &dmx_stack_inuse, 1, 1);
+	for(unsigned int i=0;i<dmx_stack_inuse;i++)
+	{
+		SDL_RWwrite(file,dmx_stack_list[i]->name,1,1+strlen(dmx_stack_list[i]->name));
+		SDL_RWwrite(file,&(dmx_stack_list[i]->length),1,1);
+	}
+
+
+	SDL_RWclose(file);
+}
+
+struct dmx_stack* dmx_stack_clone(struct dmx_stack* old_stack)
+{
+	struct dmx_stack* stack = malloc(sizeof(struct dmx_stack));
+
+	strcpy(stack->category,old_stack->category);
+	strcpy(stack->name,old_stack->name);
+	stack->active=old_stack->active;
+	stack->length=old_stack->length;
+	stack->alloc=old_stack->length;
+	stack->frames=malloc(sizeof(dmx_frame*)*old_stack->length);
+
+	return stack;
+
+}
+
 
 void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img)
 {

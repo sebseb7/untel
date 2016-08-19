@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void invoke_keyboard(char*,char*,void (*callback(char*)));
+void invoke_keyboard(char*,char*,void (*)(char*));
 char* get_keyboard_buffer(void);
 
 

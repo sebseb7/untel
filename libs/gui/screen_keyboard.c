@@ -40,9 +40,9 @@ static char current_title[30];
 static struct menu* screen_keyboard(void);
 static struct menu* screen_keyboard_numeric(void);
 
-static void (*(char*)) stored_callback;
+static void (*stored_callback)(char*)=NULL;
 
-void invoke_keyboard(char* desc,char* initial,void (*callback(char*)))
+void invoke_keyboard(char* desc,char* initial,void (*callback)(char*))
 {
 	snprintf(buffer,30,"%s",initial);
 	buffer_length=strlen(buffer);
@@ -158,7 +158,6 @@ static void screen_keyboard_touch(unsigned int x, unsigned int y)
 	{
 		if(x < 40)
 		{
-			set_menu_dirty();
 			set_current_menu(current_menu);
 			buffer[0]=0;
 		}
@@ -254,6 +253,10 @@ static void screen_keyboard_touch(unsigned int x, unsigned int y)
 	}else if(keychar == 13)
 	{
 		set_current_menu(current_menu);
+		if(stored_callback != NULL)
+		{
+			stored_callback(buffer);
+		}
 	}else if(keychar == 127)
 	{
 		if((cursor_pos > 0) && (buffer_length > 0))
