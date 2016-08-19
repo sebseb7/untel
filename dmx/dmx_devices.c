@@ -277,3 +277,12 @@ void dmx_device_render_strobe_sdl(struct dmx_device* device,unsigned int* pixelb
 	}
 
 }
+
+void dmx_device_store_to_disc(void)
+{
+}
+
+void dmx_device_load_from_disc(void)
+{
+}
+

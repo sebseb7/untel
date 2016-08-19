@@ -5,6 +5,7 @@
 
 #include "main.h"
 #include "dmx_devices.h"
+#include "dmx_stack.h"
 #include "dmx_image.h"
 #include "dmx_channels.h"
 #include "dmx_queue.h"
@@ -95,6 +96,12 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 //	KeyboardEvent e;
 	
 //	while(looping-- > 0)
+
+	dmx_device_load_from_disc();
+	dmx_stack_load_from_disc();
+
+
+
 	while(1)
 	{
 #if SDL_OUT==1

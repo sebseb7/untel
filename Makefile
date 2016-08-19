@@ -76,7 +76,7 @@ dmxMidiCtrlNg: $(OBJECTS) Makefile
 
 gource:
 	git log --reverse --pretty=format:"%at|%B" > git.log
-	gource --caption-file git.log -a 1 --caption-duration 3 --caption-size 10 -max-files 99999 -disable-progress -stop-at-end  -user-scale 1 -highlight-all-users .
+	gource --seconds-per-day 4 --caption-file git.log -a 1 --caption-duration 7 --caption-size 13 -max-files 99999 -disable-progress -stop-at-end  -user-scale 1 -highlight-all-users .
 	rm git.log
 
 .PHONY : clean all gource plot

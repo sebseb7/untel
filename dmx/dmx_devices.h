@@ -70,6 +70,8 @@ void dmx_device_render_fog(struct dmx_device* device);
 void dmx_device_render_ledpar6_sdl(struct dmx_device* device,unsigned int* pixelbuffer,unsigned int row, unsigned int col);
 void dmx_device_render_strobe_sdl(struct dmx_device* device,unsigned int* pixelbuffer,unsigned int row, unsigned int col);
 
+void dmx_device_store_to_disc(void);
+void dmx_device_load_from_disc(void);
 
 
 #endif

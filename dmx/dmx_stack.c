@@ -152,6 +152,25 @@ void dmx_stack_store_to_disc(void)
 	SDL_RWclose(file);
 }
 
+void dmx_stack_load_from_disc(void)
+{
+	char *file_name = "stack";
+	char *base_path = SDL_GetPrefPath("net.exse", "untel");
+	char *file_path = calloc((strlen(base_path)+strlen(file_name)),sizeof(char));
+	strcat(file_path,base_path);
+	strcat(file_path,file_name);
+	free(base_path);	
+	SDL_RWops *file = SDL_RWFromFile(file_path, "r");
+	free(file_path);
+
+	if(file == NULL)
+		return;
+	
+	unsigned int stacks = SDL_ReadBE32(file);
+	
+	SDL_RWclose(file);
+}
+
 struct dmx_stack* dmx_stack_clone(struct dmx_stack* old_stack)
 {
 	struct dmx_stack* stack = malloc(sizeof(struct dmx_stack));
