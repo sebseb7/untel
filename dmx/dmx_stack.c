@@ -106,11 +106,45 @@ void dmx_stack_store_to_disc(void)
 	SDL_RWops *file = SDL_RWFromFile(file_path, "w");
 	free(file_path);
 
-	SDL_RWwrite(file, &dmx_stack_inuse, 1, 1);
+	SDL_WriteBE32(file,dmx_stack_inuse);
 	for(unsigned int i=0;i<dmx_stack_inuse;i++)
 	{
 		SDL_RWwrite(file,dmx_stack_list[i]->name,1,1+strlen(dmx_stack_list[i]->name));
-		SDL_RWwrite(file,&(dmx_stack_list[i]->length),1,1);
+		SDL_WriteBE32(file,dmx_stack_list[i]->length);
+	
+		for(unsigned int c=0;c<dmx_stack_list[i]->length;c++)
+		{
+			SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->type);
+			
+			if(dmx_stack_list[i]->frames[c]->type == DMX_FRAME_IMAGE)
+			{
+			
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->dev_count);
+				for(unsigned int x=0;x<dmx_stack_list[i]->frames[c]->image.image->dev_count;x++)
+				{
+					SDL_RWwrite(file,dmx_stack_list[i]->frames[c]->image.image->dev_names[x],1,1+strlen(dmx_stack_list[i]->frames[c]->image.image->dev_names[x]));
+				}
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->is_dim);
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->is_col);
+
+				char output[50];
+				snprintf(output, 50, "%f", dmx_stack_list[i]->frames[c]->image.image->dim);
+				
+				SDL_RWwrite(file,output,1,1+strlen(output));
+
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->r);
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->g);
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->b);
+				
+				SDL_RWwrite(file,dmx_stack_list[i]->frames[c]->image.image->color,1,1+strlen(dmx_stack_list[i]->frames[c]->image.image->color));
+
+			}
+			else
+			{
+				printf("cannot save frame\n");
+			}
+
+		}
 	}
 
 	//frames need to be stored as well
