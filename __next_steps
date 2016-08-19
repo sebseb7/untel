@@ -1,0 +1,7 @@
+save/load devices
+waitframe
+testloop in programmer
+show stacks on a buttonpage
+
+run any stack called "boot" initially
+command frames (startloop stoploop oneshot)
