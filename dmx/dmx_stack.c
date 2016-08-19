@@ -19,7 +19,6 @@ struct dmx_stack* dmx_stack_new(void)
 {
 	struct dmx_stack* stack = malloc(sizeof(struct dmx_stack));
 
-	strcpy(stack->category,"");
 	strcpy(stack->name,"");
 	stack->active=0;
 	stack->length=0;
@@ -114,6 +113,7 @@ void dmx_stack_store_to_disc(void)
 		SDL_RWwrite(file,&(dmx_stack_list[i]->length),1,1);
 	}
 
+	//frames need to be stored as well
 
 	SDL_RWclose(file);
 }
@@ -122,15 +122,25 @@ struct dmx_stack* dmx_stack_clone(struct dmx_stack* old_stack)
 {
 	struct dmx_stack* stack = malloc(sizeof(struct dmx_stack));
 
-	strcpy(stack->category,old_stack->category);
 	strcpy(stack->name,old_stack->name);
 	stack->active=old_stack->active;
 	stack->length=old_stack->length;
 	stack->alloc=old_stack->length;
 	stack->frames=malloc(sizeof(dmx_frame*)*old_stack->length);
+	
+	for (unsigned int c = 0 ; c < stack->length; c++ )
+	{
+		dmx_frame* frame = malloc(sizeof(dmx_frame));
+		memcpy(frame, old_stack->frames[c], sizeof(dmx_frame));
+	
+		if(frame->type == DMX_FRAME_IMAGE)
+		{
+			frame->image.image = dmx_img_clone(old_stack->frames[c]->image.image);
+		}
+		stack->frames[c]=frame;
+	}
 
 	return stack;
-
 }
 
 

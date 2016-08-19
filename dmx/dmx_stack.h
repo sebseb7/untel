@@ -7,7 +7,6 @@
 
 struct dmx_stack 
 {
-	char category[DMX_NAME_LENGTH];
 	char name[DMX_NAME_LENGTH];
 
 	unsigned int active;
