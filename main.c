@@ -46,6 +46,7 @@ static unsigned int getstarttime(void)
 
 static struct dmx_img** programmer_images = NULL;
 static struct dmx_stack* programmer_stack = NULL;
+static unsigned int programmer_loop = 0;
 
 void set_programmer_image_list(struct dmx_img** stash)
 {
@@ -54,6 +55,10 @@ void set_programmer_image_list(struct dmx_img** stash)
 void set_programmer_stack(struct dmx_stack* stack)
 {
 	programmer_stack = stack;
+}
+void set_programmer_loop(unsigned int loop)
+{
+	programmer_loop = loop;
 }
 
 
@@ -159,7 +164,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 			}
 		}
 
-		if(programmer_images != NULL)
+		if((programmer_images != NULL)&&(programmer_loop==0))
 		{
 			dmx_img_render(programmer_images[0]);
 		}
@@ -217,7 +222,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 #if DMX_OUT==1
 	dmx_output_deinit();
 #endif
-	osc_deinit();
+//	osc_deinit();
 
 
 	unsigned int selector_count = dmx_selector_get_count();
