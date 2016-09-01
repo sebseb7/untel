@@ -140,6 +140,13 @@ void dmx_stack_store_to_disc(char * file_name)
 				SDL_RWwrite(file,dmx_stack_list[i]->frames[c]->image.image->color,1,1+strlen(dmx_stack_list[i]->frames[c]->image.image->color));
 
 			}
+			else if(dmx_stack_list[i]->frames[c]->type == DMX_FRAME_WAIT)
+			{
+			
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.milis);
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.bpms);
+
+			}
 			else
 			{
 				printf("cannot save frame\n");
@@ -244,6 +251,22 @@ void dmx_stack_load_from_disc(void)
 				dmx_stack_add_imgframe(stack,image);
 
 			}
+			else if(frame_type == DMX_FRAME_WAIT)
+			{
+
+				unsigned int milis = SDL_ReadBE32(file);
+				unsigned int bpms = SDL_ReadBE32(file);
+	
+				if(milis>0)
+				{
+					dmx_stack_add_waitframe(stack,0,milis);
+				}
+				else
+				{
+					dmx_stack_add_waitframe(stack,1,bpms);
+				}
+
+			}
 			else
 			{
 				printf("BROKEN: cannot load frame\n");
@@ -294,6 +317,30 @@ struct dmx_stack* dmx_stack_clone(struct dmx_stack* old_stack)
 	return stack;
 }
 
+void dmx_stack_add_waitframe(struct dmx_stack* stack,unsigned int type,unsigned int value)
+{
+	if(stack->length == stack->alloc)
+	{
+		printf("stf2\n");
+		exit(EXIT_FAILURE);
+	}
+
+	dmx_frame* frame = malloc(sizeof(dmx_frame));
+	frame->type=DMX_FRAME_WAIT;
+	if(type==0)
+	{
+		frame->wait.milis=value;
+		frame->wait.bpms=0;
+	}
+	else
+	{
+		frame->wait.milis=0;
+		frame->wait.bpms=value;
+	}
+
+	stack->frames[stack->length]=frame;
+	stack->length++;
+}
 
 void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img)
 {

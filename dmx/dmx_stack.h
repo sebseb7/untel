@@ -31,6 +31,8 @@ void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img);
 void dmx_stack_del_imgframe(struct dmx_stack* stack,unsigned int idx);
 unsigned int dmx_stack_frame_count(struct dmx_stack* stack);			
 
+void dmx_stack_add_waitframe(struct dmx_stack* stack,unsigned int type,unsigned int value);
+
 dmx_frame* dmx_stack_frame_getbyidx(struct dmx_stack* stack,unsigned int idx);
 
 #endif

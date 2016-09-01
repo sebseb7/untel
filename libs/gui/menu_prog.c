@@ -48,6 +48,8 @@ static struct touch_binding_list* touchlist = NULL;
 static unsigned int act = 0;
 static unsigned int act_frame_type = DMX_FRAME_IMAGE;
 static unsigned int act_attribute = 0;
+static unsigned int act_wait_type = 0;
+static unsigned int act_wait_value = 0;
 
 static const unsigned int listsize = 15;
 
@@ -75,6 +77,10 @@ static void menu_prog_redraw(void)
 	if(act_frame_type == DMX_FRAME_IMAGE)
 	{
 		frame_str = "Image";
+	}
+	else if(act_frame_type == DMX_FRAME_WAIT)
+	{
+		frame_str = "Wait";
 	}
 	else
 	{
@@ -113,31 +119,42 @@ static void menu_prog_redraw(void)
 		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,4,0);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Value",         155,(tab==4)?155:0,0,(act_attribute)?155:0,255,0);
 	}
+	else if(act_frame_type == DMX_FRAME_WAIT)
+	{
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,1,5,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Value",         155,(tab==5)?155:0,0,255,255,0);
+	}
 
 
 	unsigned int validimg=0;
 	if(
-		(devicecount>0)&&
 		(
-			dmx_img_isdim(stash[act])||
-			dmx_img_iscolname(stash[act])||
-			dmx_img_iscolrgb(stash[act])
-		)
-	)
+			(act_frame_type == DMX_FRAME_IMAGE)&&
+			(devicecount>0)&&
+			(
+				dmx_img_isdim(stash[act])||
+				dmx_img_iscolname(stash[act])||
+				dmx_img_iscolrgb(stash[act])
+			)
+		)||(
+			(act_frame_type == DMX_FRAME_WAIT)&&(act_wait_value > 0)
+		))
 	{
 		validimg=1;
-		touch_binding_add(touchlist,button_x(5),92,button_y(0),54,2,0,0);
+		touch_binding_add(touchlist,button_x(5),92,button_y(0),54,2,0,0);//add
 		if((list1 != NULL)&&(list1->length>0))
 		{
-			//printf("len:%i sel:%i off:%i\n",list1->length,list1->selected,list1->offset);
-
-			touch_binding_add(touchlist,button_x(5),92,button_y(1),54,8,0,0);
-			touch_binding_add(touchlist,button_x(6),92,button_y(0),54,9,0,0);
-			touch_binding_add(touchlist,button_x(7),92,button_y(1),54,11,0,0);
+			touch_binding_add(touchlist,button_x(5),92,button_y(1),54,8,0,0);//replace
 		}
 	}
+	if((list1 != NULL)&&(list1->length>0))
+	{
+		touch_binding_add(touchlist,button_x(6),92,button_y(0),54,9,0,0);//delete
+		touch_binding_add(touchlist,button_x(7),92,button_y(1),54,11,0,0);//store
+	}
+
 	draw_button_icon(button_x(5),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
-	draw_button_icon(button_x(5),button_y(1),92,1,"Replace",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
+	draw_button_icon(button_x(5),button_y(1),92,1,"Replace",((validimg)&&(list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((validimg)&&(list1 != NULL)&&(list1->length>0))?255:55,0);
 	draw_button_icon(button_x(6),button_y(0),92,1,"Delete",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
 	draw_button_icon(button_x(6),button_y(1),92,1,"Load",55,0,0,0,55,0);
 	draw_button_icon(button_x(7),button_y(0),92,1,"Loop",55,0,0,0,55,0);
@@ -147,9 +164,12 @@ static void menu_prog_redraw(void)
 
 	if(tab==1)
 	{
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,12,DMX_FRAME_IMAGE,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Image",155,(act_frame_type == DMX_FRAME_IMAGE)?155:0,0,55,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,12,DMX_FRAME_WAIT,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Wait",155,(act_frame_type == DMX_FRAME_WAIT)?155:0,0,55,255,0);
 	}
-
-	if(tab==2)
+	else if(tab==2)
 	{
 		char buf[30];
 		char buf2[30];
@@ -186,7 +206,7 @@ static void menu_prog_redraw(void)
 			}
 		}
 	}
-	if(tab==3)
+	else if(tab==3)
 	{
 		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,10,DMX_ATTR_COLOR_NAME,0);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Color Name",155,(act_attribute==DMX_ATTR_COLOR_NAME)?155:0,0,(dmx_img_iscolname(stash[act]))?255:0,255,0);
@@ -201,8 +221,7 @@ static void menu_prog_redraw(void)
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Rotation",55,(act_attribute==100)?55:0,0,0,55,0);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Special",55,(act_attribute==100)?55:0,0,0,55,0);
 	}
-
-	if(tab==4)
+	else if(tab==4)
 	{
 
 		if(act_attribute == DMX_ATTR_COLOR_NAME)
@@ -284,6 +303,42 @@ static void menu_prog_redraw(void)
 
 		}
 	}
+	else if(tab==5)
+	{
+		draw_number_8x6(button_x(buttonx++)+20,button_y(buttony)+20, act_wait_value, 7, '_', 255,255,255);
+		buttony++;buttonx=0;
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,7);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"7",155,0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,8);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"8",155,0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,9);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"9",155,0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,3,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Millisecond",155,(act_wait_type==0)?155:0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,2,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"<--",155,0,0,0,255,0);
+		buttony++;buttonx=0;
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,4);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"4",155,0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,5);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"5",155,0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,6);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"6",155,0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,3,1);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Milliibeats",155,(act_wait_type==1)?155:0,0,0,255,0);
+		buttony++;buttonx=0;
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,1);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"1",155,0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,2);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"2",155,0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,3);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"3",155,0,0,0,255,0);
+		buttony++;buttonx=0;
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"0",155,0,0,0,255,0);
+		buttony++;buttonx=0;
+	}
+
 
 		
 	
@@ -328,9 +383,17 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		}
 		else if(attr1 == 2)
 		{
-			struct dmx_img* img = dmx_img_clone(stash[act]);
-			dmx_stack_add_imgframe(prog_stack,img);
+			if(act_frame_type == DMX_FRAME_IMAGE)
+			{
+				struct dmx_img* img = dmx_img_clone(stash[act]);
+				dmx_stack_add_imgframe(prog_stack,img);
 		
+			}
+			else if(act_frame_type == DMX_FRAME_WAIT)
+			{
+				dmx_stack_add_waitframe(prog_stack,act_wait_type,act_wait_value);
+			}
+
 			unsigned int selected = 0;
 			if(list1 != NULL)
 			{
@@ -353,14 +416,27 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 						(image->is_col==DMX_ATTR_COLOR_NAME)?"CN":"--",
 						(image->is_col==DMX_ATTR_COLOR_RGB)?"CRGB":"----");
 				}
+				else if(frame->type == DMX_FRAME_WAIT)
+				{
+					if(frame->wait.milis>0)
+					{
+						snprintf(label,DMX_NAME_LENGTH,"WAIT %i ms",frame->wait.milis);
+					}
+					else
+					{
+						snprintf(label,DMX_NAME_LENGTH,"WAIT %i mbpm",frame->wait.bpms);
+					}
+				}
 				else
 				{
-					snprintf(label,DMX_NAME_LENGTH,"-");
+					snprintf(label,DMX_NAME_LENGTH,"?");
 				}
 
 				menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,label,0,0),-1);
 				free(label);
 			}
+
+
 			unsigned int offset = 0;
 			if(selected > (listsize-1))
 			{
@@ -374,6 +450,33 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		else if(attr1 == 11) // store
 		{
 			invoke_keyboard("Store Programmer List",prog_stack->name,return_from_store);
+		}
+		else if(attr1 == 12) // set frame type
+		{
+			act_frame_type = attr2;
+			if(act_frame_type==DMX_FRAME_WAIT)
+			{
+				tab=5;
+			}
+			set_menu_dirty();
+		}
+		else if(attr1 == 13) // set wait value
+		{
+			if((attr2 == 1)&&(act_wait_value < 1000000))
+			{
+				act_wait_value*=10;
+				act_wait_value+=attr3;
+			}
+			else if((attr2 == 2)&&(act_wait_value > 0))
+			{
+				act_wait_value-=act_wait_value%10;
+				act_wait_value/=10;
+			}
+			else if(attr2 == 3)
+			{
+				act_wait_type=attr3;
+			}
+			set_menu_dirty();
 		}
 		else if(attr1 == 10) // set active attribute
 		{
@@ -509,8 +612,31 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				
 				if(frame->type == DMX_FRAME_IMAGE)
 				{
+					act_frame_type = DMX_FRAME_IMAGE;
+					if(tab==5)
+					{
+						tab=3;
+					}
+
 					dmx_img_free(stash[act]);
 					stash[act]=dmx_img_clone(frame->image.image);
+				}
+				else if(frame->type == DMX_FRAME_WAIT)
+				{
+					act_frame_type = DMX_FRAME_WAIT;
+					tab=5;
+					
+					if(frame->wait.milis>0)
+					{
+						act_wait_type=0;
+						act_wait_value=frame->wait.milis;
+					}
+					else
+					{
+						act_wait_type=1;
+						act_wait_value=frame->wait.bpms;
+					}
+
 				}
 				
 				set_menu_dirty();
