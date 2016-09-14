@@ -1,7 +1,8 @@
 save/load devices
 waitframe
 testloop in programmer
+(add at current position / replace / move up / move down)
 show stacks on a buttonpage
-
+priority???
 run any stack called "boot" initially
 command frames (startloop stoploop oneshot)
