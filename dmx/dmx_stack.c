@@ -392,3 +392,54 @@ dmx_frame* dmx_stack_frame_getbyidx(struct dmx_stack* stack,unsigned int idx)
 	return NULL;
 }
 
+void dmx_stack_step(struct dmx_stack* stack)
+{
+	if(stack == NULL)
+		return;
+
+	if(stack->length == 0)
+		return;
+
+	if(stack->active == 0)
+		return;
+	
+	if(stack->active > stack->length)
+	{
+		stack->active = 1;
+	}
+
+	unsigned int done = 0;
+
+	do
+	{
+		dmx_frame* active_frame = stack->frames[(stack->active)-1];
+
+		if(active_frame->type == DMX_FRAME_IMAGE)
+		{
+			//do the render
+		}
+		else if(active_frame->type == DMX_FRAME_WAIT)
+		{
+			//check wait done
+			done=1;
+		}
+		else if(active_frame->type == DMX_FRAME_COMMAND)
+		{
+		}
+
+
+		if(stack->active == stack->length)
+		{
+			done=1;
+		}
+		else
+		{
+			//only advance if wait done
+			stack->active++;
+		}
+	
+	}
+	while(done==0);
+
+}
+
