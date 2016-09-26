@@ -4,6 +4,8 @@
 
 #include "dmx_stack.h"
 
+#include "main.h"
+
 #include "SDL.h"
 
 #define DMX_STACK_FRAMES_ALLOCATE_INITIAL 100
@@ -410,34 +412,38 @@ void dmx_stack_process(struct dmx_stack* stack)
 
 	unsigned int done = 0;
 
+	unsigned long long curr = getmilis();
+
+	unsigned int curr_active = stack->active;
+
 	do
 	{
-		dmx_frame* active_frame = stack->frames[(stack->active)-1];
+		dmx_frame* active_frame = stack->frames[(curr_active)-1];
 
 		if(active_frame->type == DMX_FRAME_IMAGE)
 		{
 			dmx_img_render(active_frame->image.image);
+			curr_active++;
 		}
 		else if(active_frame->type == DMX_FRAME_WAIT)
 		{
-			//check wait done
+			if( (curr - stack->lastframetime) > active_frame->wait.milis )
+			{
+				curr_active++;
+				stack->active = curr_active;
+				stack->lastframetime = curr;
+			}
 			done=1;
 		}
 		else if(active_frame->type == DMX_FRAME_COMMAND)
 		{
 		}
 
-
-		if(stack->active == stack->length)
+		if(curr_active > stack->length)
 		{
 			done=1;
 		}
-		else
-		{
-			//only advance if wait done
-			stack->active++;
-		}
-	
+
 	}
 	while(done==0);
 

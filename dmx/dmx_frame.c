@@ -33,6 +33,7 @@ dmx_frame* dmx_frame_new(unsigned int type)
 	else if(type == DMX_FRAME_WAIT)
 	{
 		frame->wait.milis = 0;
+		frame->wait.bpms = 0;
 	}
 	else if(type == DMX_FRAME_COMMAND)
 	{

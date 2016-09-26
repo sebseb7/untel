@@ -43,6 +43,12 @@ static unsigned int getstarttime(void)
 	
 	return current_time-start_time;
 }
+unsigned long long getmilis(void)
+{
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
+	return tv.tv_sec*(unsigned long long)1000+(tv.tv_usec / 1000);
+}
 
 static struct dmx_img** programmer_images = NULL;
 static struct dmx_stack* programmer_stack = NULL;

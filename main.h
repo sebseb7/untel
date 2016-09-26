@@ -13,6 +13,7 @@
 void set_programmer_image_list(struct dmx_img** stash);
 void set_programmer_stack(struct dmx_stack* stash);
 void set_programmer_loop(unsigned int loop);
+unsigned long long getmilis(void);
 
 
 #endif

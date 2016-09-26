@@ -10,7 +10,7 @@ struct dmx_stack
 	char name[DMX_NAME_LENGTH];
 
 	unsigned int active;
-	unsigned int lastframetime;
+	unsigned long long lastframetime;
 
 	unsigned int length;
 	unsigned int alloc;
