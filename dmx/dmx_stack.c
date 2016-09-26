@@ -392,7 +392,7 @@ dmx_frame* dmx_stack_frame_getbyidx(struct dmx_stack* stack,unsigned int idx)
 	return NULL;
 }
 
-void dmx_stack_step(struct dmx_stack* stack)
+void dmx_stack_process(struct dmx_stack* stack)
 {
 	if(stack == NULL)
 		return;
@@ -416,7 +416,7 @@ void dmx_stack_step(struct dmx_stack* stack)
 
 		if(active_frame->type == DMX_FRAME_IMAGE)
 		{
-			//do the render
+			dmx_img_render(active_frame->image.image);
 		}
 		else if(active_frame->type == DMX_FRAME_WAIT)
 		{

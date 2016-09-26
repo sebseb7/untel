@@ -168,6 +168,10 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 		{
 			dmx_img_render(programmer_images[0]);
 		}
+		if((programmer_stack != NULL)&&(programmer_loop==1))
+		{
+			dmx_stack_process(programmer_stack);
+		}
 
 
 		//render channels

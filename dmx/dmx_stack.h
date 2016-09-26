@@ -36,6 +36,6 @@ void dmx_stack_add_waitframe(struct dmx_stack* stack,unsigned int type,unsigned 
 
 dmx_frame* dmx_stack_frame_getbyidx(struct dmx_stack* stack,unsigned int idx);
 
-void dmx_stack_step(struct dmx_stack*);
+void dmx_stack_process(struct dmx_stack*);
 
 #endif

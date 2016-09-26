@@ -51,6 +51,8 @@ static unsigned int act_attribute = 0;
 static unsigned int act_wait_type = 0;
 static unsigned int act_wait_value = 0;
 
+static unsigned int loop_enable = 0;
+
 static const unsigned int listsize = 15;
 
 static void menu_prog_redraw(void)
@@ -104,6 +106,11 @@ static void menu_prog_redraw(void)
 		attr_str = "<>";
 	}	
 
+	if((loop_enable==1)&&((list1 == NULL)||(list1->length==0)))
+	{
+		loop_enable=0;
+		set_programmer_loop(0);
+	}
 
 
 
@@ -151,13 +158,21 @@ static void menu_prog_redraw(void)
 	{
 		touch_binding_add(touchlist,button_x(6),92,button_y(0),54,9,0,0);//delete
 		touch_binding_add(touchlist,button_x(7),92,button_y(1),54,11,0,0);//store
+		touch_binding_add(touchlist,button_x(7),92,button_y(0),54,14,0,0);//loop
 	}
 
 	draw_button_icon(button_x(5),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
 	draw_button_icon(button_x(5),button_y(1),92,1,"Replace",((validimg)&&(list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((validimg)&&(list1 != NULL)&&(list1->length>0))?255:55,0);
 	draw_button_icon(button_x(6),button_y(0),92,1,"Delete",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
 	draw_button_icon(button_x(6),button_y(1),92,1,"Load",55,0,0,0,55,0);
-	draw_button_icon(button_x(7),button_y(0),92,1,"Loop",55,0,0,0,55,0);
+	if((list1 != NULL)&&(list1->length>0))
+	{
+		draw_button_icon(button_x(7),button_y(0),92,1,"Loop",155,(loop_enable==1)?155:0,0,(loop_enable==1)?255:0,255,0);
+	}
+	else
+	{
+		draw_button_icon(button_x(7),button_y(0),92,1,"Loop",55,0,0,0,55,0);
+	}
 	draw_button_icon(button_x(7),button_y(1),92,1,"Store",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
 
 	buttony=2;buttonx=0;
@@ -498,6 +513,24 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				//signed int selected = menu_list_get_selected(list1);
 				
 				//todo: implement it
+
+				set_menu_dirty();
+			}
+		}
+		else if(attr1 == 14) // preview loop
+		{
+			if((list1 != NULL)&&(list1->length>0))
+			{
+				if(loop_enable==0)
+				{
+					loop_enable=1;
+					set_programmer_loop(1);
+				}
+				else
+				{
+					loop_enable=0;
+					set_programmer_loop(0);
+				}
 
 				set_menu_dirty();
 			}
