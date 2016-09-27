@@ -5,7 +5,6 @@
 #include "main.h"
 
 #include "screen_keyboard.h"
-			//char* name = get_keyboard_buffer();
 
 #include "menu.h"
 #include "screen_keyboard.h"
@@ -24,7 +23,7 @@ static struct menu* menu_prog = NULL;
 
 static unsigned int tab = 0;
 
-static struct dmx_img* stash[4];
+static struct dmx_img* stash[4] = {NULL,NULL,NULL,NULL};
 
 static struct dmx_stack* prog_stack = NULL;
 
@@ -135,17 +134,17 @@ static void menu_prog_redraw(void)
 
 	unsigned int validimg=0;
 	if(
-		(
-			(act_frame_type == DMX_FRAME_IMAGE)&&
-			(devicecount>0)&&
 			(
-				dmx_img_isdim(stash[act])||
-				dmx_img_iscolname(stash[act])||
-				dmx_img_iscolrgb(stash[act])
-			)
-		)||(
-			(act_frame_type == DMX_FRAME_WAIT)&&(act_wait_value > 0)
-		))
+			 (act_frame_type == DMX_FRAME_IMAGE)&&
+			 (devicecount>0)&&
+			 (
+			  dmx_img_isdim(stash[act])||
+			  dmx_img_iscolname(stash[act])||
+			  dmx_img_iscolrgb(stash[act])
+			 )
+			)||(
+				(act_frame_type == DMX_FRAME_WAIT)&&(act_wait_value > 0)
+			   ))
 	{
 		validimg=1;
 		touch_binding_add(touchlist,button_x(5),92,button_y(0),54,2,0,0);//add
@@ -299,7 +298,7 @@ static void menu_prog_redraw(void)
 		{
 			unsigned int height = button_y(5)-button_y(0)-11;
 			unsigned int runlength = height-54;
-			
+
 			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),height,6,1,0);
 			draw_rect(button_x(buttonx),button_y(buttony),92,height,1,155,0,0);
 
@@ -317,7 +316,7 @@ static void menu_prog_redraw(void)
 
 		}
 	}
-	else if(tab==5)
+	else if(tab==5) //wait
 	{
 		draw_number_8x6(button_x(buttonx++)+20,button_y(buttony)+20, act_wait_value, 7, '_', 255,255,255);
 		buttony++;buttonx=0;
@@ -354,8 +353,8 @@ static void menu_prog_redraw(void)
 	}
 
 
-		
-	
+
+
 	if(list1 != NULL)
 	{
 		touch_binding_add(touchlist,button_x(5),297,button_y(3),listsize*18-4,7,0,0);
@@ -374,59 +373,96 @@ static void return_from_store(char * name)
 
 static void update_list(void)
 {
-			unsigned int selected = 0;
-			if(list1 != NULL)
+	unsigned int selected = 0;
+	if(list1 != NULL)
+	{
+		selected = list1->length;
+		menu_list_free(list1);
+	}
+	list1 = menu_list_new();
+	for(unsigned int i=0;i < dmx_stack_frame_count(prog_stack);i++)
+	{
+		dmx_frame* frame = dmx_stack_frame_getbyidx(prog_stack,i);
+
+		char* label = malloc(sizeof(char)*DMX_NAME_LENGTH);
+
+		if(frame->type == DMX_FRAME_IMAGE)
+		{
+			struct dmx_img* image = frame->image.image;
+			snprintf(label,DMX_NAME_LENGTH,"IMG %i %c %s %s",
+					image->dev_count,
+					(image->is_dim)?'D':'-',
+					(image->is_col==DMX_ATTR_COLOR_NAME)?"CN":"--",
+					(image->is_col==DMX_ATTR_COLOR_RGB)?"CRGB":"----");
+		}
+		else if(frame->type == DMX_FRAME_WAIT)
+		{
+			if(frame->wait.milis>0)
 			{
-				selected = list1->length;
-				menu_list_free(list1);
+				snprintf(label,DMX_NAME_LENGTH,"WAIT %i ms",frame->wait.milis);
 			}
-			list1 = menu_list_new();
-			for(unsigned int i=0;i < dmx_stack_frame_count(prog_stack);i++)
+			else
 			{
-				dmx_frame* frame = dmx_stack_frame_getbyidx(prog_stack,i);
-
-				char* label = malloc(sizeof(char)*DMX_NAME_LENGTH);
-
-				if(frame->type == DMX_FRAME_IMAGE)
-				{
-					struct dmx_img* image = frame->image.image;
-					snprintf(label,DMX_NAME_LENGTH,"IMG %i %c %s %s",
-						image->dev_count,
-						(image->is_dim)?'D':'-',
-						(image->is_col==DMX_ATTR_COLOR_NAME)?"CN":"--",
-						(image->is_col==DMX_ATTR_COLOR_RGB)?"CRGB":"----");
-				}
-				else if(frame->type == DMX_FRAME_WAIT)
-				{
-					if(frame->wait.milis>0)
-					{
-						snprintf(label,DMX_NAME_LENGTH,"WAIT %i ms",frame->wait.milis);
-					}
-					else
-					{
-						snprintf(label,DMX_NAME_LENGTH,"WAIT %i mbpm",frame->wait.bpms);
-					}
-				}
-				else
-				{
-					snprintf(label,DMX_NAME_LENGTH,"?");
-				}
-
-				menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,label,0,0),-1);
-				free(label);
+				snprintf(label,DMX_NAME_LENGTH,"WAIT %i mbpm",frame->wait.bpms);
 			}
+		}
+		else
+		{
+			snprintf(label,DMX_NAME_LENGTH,"?");
+		}
+
+		menu_list_add_entry(list1, menu_list_entry_new(MENU_LIST_ENTRY_LABEL,label,0,0),-1);
+		free(label);
+	}
 
 
-			unsigned int offset = 0;
-			if(selected > (listsize-1))
-			{
-				offset = selected-(listsize-1);
-				selected = selected - offset;
-			}
-			list1->selected=selected;
-			list1->offset=offset;
+	unsigned int offset = 0;
+	if(selected > (listsize-1))
+	{
+		offset = selected-(listsize-1);
+		selected = selected - offset;
+	}
+	list1->selected=selected;
+	list1->offset=offset;
 }
 
+static void update_keypad(unsigned int selected)
+{
+	dmx_frame* frame = prog_stack->frames[selected];
+
+	printf("aa %i\n",frame->type);
+	
+	if(frame->type == DMX_FRAME_IMAGE)
+	{
+		act_frame_type = DMX_FRAME_IMAGE;
+		if(tab==5)
+		{
+			tab=3;
+		}
+
+		if(stash[act] != NULL)
+			dmx_img_free(stash[act]);
+
+		stash[act]=dmx_img_clone(frame->image.image);
+	}
+	else if(frame->type == DMX_FRAME_WAIT)
+	{
+		act_frame_type = DMX_FRAME_WAIT;
+		tab=5;
+
+		if(frame->wait.milis>0)
+		{
+			act_wait_type=0;
+			act_wait_value=frame->wait.milis;
+		}
+		else
+		{
+			act_wait_type=1;
+			act_wait_value=frame->wait.bpms;
+		}
+
+	}
+}
 
 static void menu_prog_touch(unsigned int x, unsigned int y)
 {
@@ -451,13 +487,13 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			tab = (tab !=attr2)?attr2:0;
 			set_menu_dirty();
 		}
-		else if(attr1 == 2)
+		else if(attr1 == 2)//add
 		{
 			if(act_frame_type == DMX_FRAME_IMAGE)
 			{
 				struct dmx_img* img = dmx_img_clone(stash[act]);
 				dmx_stack_add_imgframe(prog_stack,img);
-		
+
 			}
 			else if(act_frame_type == DMX_FRAME_WAIT)
 			{
@@ -516,7 +552,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			if((list1 != NULL)&&(list1->length>0))
 			{
 				//signed int selected = menu_list_get_selected(list1);
-				
+
 				//todo: implement it
 
 				set_menu_dirty();
@@ -646,37 +682,8 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			signed int selected = menu_list_touch(list1,relx,rely);
 			if(selected >= 0)
 			{
-				dmx_frame* frame = prog_stack->frames[selected];
-				
-				if(frame->type == DMX_FRAME_IMAGE)
-				{
-					act_frame_type = DMX_FRAME_IMAGE;
-					if(tab==5)
-					{
-						tab=3;
-					}
+				update_keypad(selected);
 
-					dmx_img_free(stash[act]);
-					stash[act]=dmx_img_clone(frame->image.image);
-				}
-				else if(frame->type == DMX_FRAME_WAIT)
-				{
-					act_frame_type = DMX_FRAME_WAIT;
-					tab=5;
-					
-					if(frame->wait.milis>0)
-					{
-						act_wait_type=0;
-						act_wait_value=frame->wait.milis;
-					}
-					else
-					{
-						act_wait_type=1;
-						act_wait_value=frame->wait.bpms;
-					}
-
-				}
-				
 				set_menu_dirty();
 			}
 		}
@@ -695,9 +702,9 @@ void menu_prog_load_stack(struct dmx_stack* stack)
 	prog_stack->active=1;
 	set_programmer_stack(prog_stack);
 	printf("loaded %s %d\n",stack->name,stack->length);
-			
+
 	update_list();
-	
+	update_keypad(0);
 	set_menu_dirty();
 }
 
