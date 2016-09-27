@@ -1,7 +1,9 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 
 #include "menu.h"
+#include "menu_prog.h"
 #include "menu_main.h"
 #include "menu_quectrl.h"
 #include "menu_setup.h"
@@ -23,6 +25,8 @@ static struct menu* menu_quectrl = NULL;
 
 #include "touch_binding.h"
 static struct touch_binding_list* touchlist = NULL;
+
+static unsigned int mode = 0;
 
 static void menu_quectrl_redraw(void)
 {
@@ -68,8 +72,15 @@ static void menu_quectrl_redraw(void)
 			y++;
 		}
 	}
+	if(dmx_luaqueue_get_count())
+	{
+		x=0;
+		y++;
+	}
 #endif
 			
+	touch_binding_add(touchlist,button_x(x),92,button_y(y),54,4,1,0);
+	draw_button_icon(button_x(x),button_y(y),92,1,"Load",155,(mode==1)?155:0,0,0,255,0);
 	x=0;
 	y++;
 	
@@ -183,15 +194,40 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 #endif
 		else if(attr1 == 3)
 		{
-			struct dmx_stack* stack = dmx_stack_getbyidx(attr2);
-			if(stack->active == 0 )
+			if(mode == 1)//load
 			{
-				stack->active = 1;
+				struct dmx_stack* stack = dmx_stack_getbyidx(attr2);
+				menu_prog_load_stack(stack);
+				printf("laod %s\n",stack->name);
+
+				struct menu* menu_prog = get_menu_prog();
+				menu_prog->parent=menu_quectrl;
+				set_current_menu(menu_prog);
+			}
+			else//toggle
+			{
+				struct dmx_stack* stack = dmx_stack_getbyidx(attr2);
+				if(stack->active == 0 )
+				{
+					stack->active = 1;
+				}
+				else
+				{
+					stack->active = 0;
+				}
+			}
+		}
+		else if(attr1 == 4)
+		{
+			if(mode == attr2)
+			{
+				mode = 0;
 			}
 			else
 			{
-				stack->active = 0;
+				mode = attr2;
 			}
+			set_menu_dirty();
 		}
 	}
 

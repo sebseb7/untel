@@ -26,7 +26,7 @@ static unsigned int tab = 0;
 
 static struct dmx_img* stash[4];
 
-static struct dmx_stack* prog_stack;
+static struct dmx_stack* prog_stack = NULL;
 
 static struct menu_list* list1 = NULL;
 
@@ -164,7 +164,6 @@ static void menu_prog_redraw(void)
 	draw_button_icon(button_x(5),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
 	draw_button_icon(button_x(5),button_y(1),92,1,"Replace",((validimg)&&(list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((validimg)&&(list1 != NULL)&&(list1->length>0))?255:55,0);
 	draw_button_icon(button_x(6),button_y(0),92,1,"Delete",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
-	draw_button_icon(button_x(6),button_y(1),92,1,"Load",55,0,0,0,55,0);
 	if((list1 != NULL)&&(list1->length>0))
 	{
 		draw_button_icon(button_x(7),button_y(0),92,1,"Loop",155,(loop_enable==1)?155:0,0,(loop_enable==1)?255:0,255,0);
@@ -373,42 +372,8 @@ static void return_from_store(char * name)
 }
 
 
-static void menu_prog_touch(unsigned int x, unsigned int y)
+static void update_list()
 {
-	if(y < 41)
-	{
-		if(x < 40)
-		{
-			if(menu_prog->parent != NULL)
-				set_current_menu(menu_prog->parent);
-		}
-	}
-
-	unsigned int attr1 = 0;
-	unsigned int attr2 = 0;
-	unsigned int attr3 = 0;
-	unsigned int relx = 0;
-	unsigned int rely = 0;
-	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3,&relx,&rely))
-	{
-		if(attr1 == 1)
-		{
-			tab = (tab !=attr2)?attr2:0;
-			set_menu_dirty();
-		}
-		else if(attr1 == 2)
-		{
-			if(act_frame_type == DMX_FRAME_IMAGE)
-			{
-				struct dmx_img* img = dmx_img_clone(stash[act]);
-				dmx_stack_add_imgframe(prog_stack,img);
-		
-			}
-			else if(act_frame_type == DMX_FRAME_WAIT)
-			{
-				dmx_stack_add_waitframe(prog_stack,act_wait_type,act_wait_value);
-			}
-
 			unsigned int selected = 0;
 			if(list1 != NULL)
 			{
@@ -460,6 +425,46 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			}
 			list1->selected=selected;
 			list1->offset=offset;
+}
+
+
+static void menu_prog_touch(unsigned int x, unsigned int y)
+{
+	if(y < 41)
+	{
+		if(x < 40)
+		{
+			if(menu_prog->parent != NULL)
+				set_current_menu(menu_prog->parent);
+		}
+	}
+
+	unsigned int attr1 = 0;
+	unsigned int attr2 = 0;
+	unsigned int attr3 = 0;
+	unsigned int relx = 0;
+	unsigned int rely = 0;
+	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3,&relx,&rely))
+	{
+		if(attr1 == 1)
+		{
+			tab = (tab !=attr2)?attr2:0;
+			set_menu_dirty();
+		}
+		else if(attr1 == 2)
+		{
+			if(act_frame_type == DMX_FRAME_IMAGE)
+			{
+				struct dmx_img* img = dmx_img_clone(stash[act]);
+				dmx_stack_add_imgframe(prog_stack,img);
+		
+			}
+			else if(act_frame_type == DMX_FRAME_WAIT)
+			{
+				dmx_stack_add_waitframe(prog_stack,act_wait_type,act_wait_value);
+			}
+
+			update_list();
 			set_menu_dirty();
 		}
 		else if(attr1 == 11) // store
@@ -678,6 +683,24 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 	}
 }
 
+void menu_prog_load_stack(struct dmx_stack* stack)
+{
+	if(prog_stack != NULL)
+	{
+		set_programmer_stack(NULL);
+		dmx_stack_free(prog_stack);
+	}
+
+	prog_stack=dmx_stack_clone(stack);
+	prog_stack->active=1;
+	set_programmer_stack(prog_stack);
+	printf("loaded %s %d\n",stack->name,stack->length);
+			
+	update_list();
+	
+	set_menu_dirty();
+}
+
 struct menu* get_menu_prog(void)
 {
 	if(menu_prog == NULL)
@@ -691,11 +714,13 @@ struct menu* get_menu_prog(void)
 		stash[1] = dmx_img_new();
 		stash[2] = dmx_img_new();
 		stash[3] = dmx_img_new();
-
+		set_programmer_image_list(&stash[0]);
+	}
+	if(prog_stack == NULL)
+	{
 		prog_stack= dmx_stack_new();
 
 		prog_stack->active=1;
-		set_programmer_image_list(&stash[0]);
 		set_programmer_stack(prog_stack);
 	}
 	return menu_prog;
