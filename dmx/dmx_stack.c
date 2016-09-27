@@ -65,6 +65,13 @@ void dmx_stack_free(struct dmx_stack* stack)
 		{
 			dmx_img_free(stack->frames[c]->image.image);
 		}
+		if(stack->frames[c]->type == DMX_FRAME_COMMAND)
+		{
+			if(stack->frames[c]->command.svalue1 != NULL)
+				free(stack->frames[c]->command.svalue1);
+			if(stack->frames[c]->command.svalue2 != NULL)
+				free(stack->frames[c]->command.svalue2);
+		}
 		free(stack->frames[c]);
 	}
 	free(stack->frames);
@@ -161,6 +168,44 @@ void dmx_stack_store_to_disc(char * file_name)
 
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.milis);
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.bpms);
+
+			}
+			else if(dmx_stack_list[i]->frames[c]->type == DMX_FRAME_COMMAND)
+			{
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->command.command);
+
+				if(dmx_stack_list[i]->frames[c]->command.svalue1)
+				{
+					SDL_WriteU8(file,strlen(dmx_stack_list[i]->frames[c]->command.svalue1));
+					SDL_RWwrite(file,dmx_stack_list[i]->frames[c]->command.svalue1,1,1+strlen(dmx_stack_list[i]->frames[c]->command.svalue1));
+				}
+				else
+				{
+					SDL_WriteU8(file,0);
+				}
+				if(dmx_stack_list[i]->frames[c]->command.svalue2)
+				{
+					SDL_WriteU8(file,strlen(dmx_stack_list[i]->frames[c]->command.svalue2));
+					SDL_RWwrite(file,dmx_stack_list[i]->frames[c]->command.svalue2,1,1+strlen(dmx_stack_list[i]->frames[c]->command.svalue2));
+				}
+				else
+				{
+					SDL_WriteU8(file,0);
+				}
+
+
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->command.ivalue1);
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->command.ivalue2);
+
+				char output[50];
+
+				snprintf(output, 50, "%f", dmx_stack_list[i]->frames[c]->command.fvalue1);
+				SDL_WriteU8(file,strlen(output));
+				SDL_RWwrite(file,output,1,1+strlen(output));
+
+				snprintf(output, 50, "%f", dmx_stack_list[i]->frames[c]->command.fvalue2);
+				SDL_WriteU8(file,strlen(output));
+				SDL_RWwrite(file,output,1,1+strlen(output));
 
 			}
 			else
@@ -290,6 +335,56 @@ void dmx_stack_load_from_disc(void)
 				}
 
 			}
+			else if(frame_type == DMX_FRAME_COMMAND)
+			{
+				//frame->command.command = 
+				SDL_ReadBE32(file);
+
+				unsigned int svalue1_length = SDL_ReadU8(file);
+				if(svalue1_length > 0)
+				{
+					char tmp_svalue1[DMX_NAME_LENGTH];
+					if(svalue1_length > (DMX_NAME_LENGTH-1)) svalue1_length=DMX_NAME_LENGTH-1;
+					SDL_RWread(file, tmp_svalue1, 1, svalue1_length+1);
+					//=strndup(tmp_svalue1,DMX_NAME_LENGTH);
+				}
+				else
+				{
+					//= NULL;
+				}
+				unsigned int svalue2_length = SDL_ReadU8(file);
+				if(svalue2_length > 0)
+				{
+					char tmp_svalue2[DMX_NAME_LENGTH];
+					if(svalue2_length > (DMX_NAME_LENGTH-1)) svalue2_length=DMX_NAME_LENGTH-1;
+					SDL_RWread(file, tmp_svalue2, 1, svalue2_length+1);
+					//=strndup(tmp_svalue1,DMX_NAME_LENGTH);
+				}
+				else
+				{
+					//= NULL;
+				}
+
+				//ival1 = 
+				SDL_ReadBE32(file);
+				//ival2 = 
+				SDL_ReadBE32(file);
+
+
+				unsigned int float1_length = SDL_ReadU8(file);
+				char float1input[50];
+				if(float1_length > 49) float1_length=49;
+				SDL_RWread(file, float1input, 1, float1_length+1);
+
+				//= atof(floatinput);
+
+				unsigned int float2_length = SDL_ReadU8(file);
+				char float2input[50];
+				if(float2_length > 49) float2_length=49;
+				SDL_RWread(file, float2input, 1, float2_length+1);
+
+				//= atof(floatinput);
+			}
 			else
 			{
 				printf("BROKEN: cannot load frame\n");
@@ -324,6 +419,12 @@ struct dmx_stack* dmx_stack_clone(struct dmx_stack* old_stack)
 		if(frame->type == DMX_FRAME_IMAGE)
 		{
 			frame->image.image = dmx_img_clone(old_stack->frames[c]->image.image);
+		}
+		if(frame->type == DMX_FRAME_COMMAND)
+		{
+			//todo
+			//frame->command.svalue1
+			//frame->command.svalue2
 		}
 		stack->frames[c]=frame;
 	}
@@ -468,6 +569,7 @@ void dmx_stack_process(struct dmx_stack* stack)
 		}
 		else if(active_frame->type == DMX_FRAME_COMMAND)
 		{
+			//todo
 		}
 
 		if(curr_active > stack->length)
