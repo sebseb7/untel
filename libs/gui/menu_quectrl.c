@@ -17,6 +17,7 @@
 #if LUA_CUE==1
 #include "dmx_luaqueue.h"
 #endif
+#include "dmx_stack.h"
 
 static struct menu* menu_quectrl = NULL;
 
@@ -68,6 +69,22 @@ static void menu_quectrl_redraw(void)
 		}
 	}
 #endif
+			
+	x=0;
+	y++;
+	
+	for(unsigned int i =0;i< dmx_stack_get_count();i++)
+	{
+		struct dmx_stack* stack = dmx_stack_getbyidx(i);
+		touch_binding_add(touchlist,button_x(x),92,button_y(y),54,3,i,0);
+		draw_button_icon(button_x(x),button_y(y),92,1,stack->name,155,0,0,0,255,0);
+		x++;
+		if(x>7)
+		{
+			x=0;
+			y++;
+		}
+	}
 	menu_autoupdate();
 }
 
@@ -102,6 +119,21 @@ static void menu_quectrl_update(void)
 		}
 	}
 #endif
+	x=0;
+	y++;
+	
+	for(unsigned int i =0;i< dmx_stack_get_count();i++)
+	{
+		struct dmx_stack* stack = dmx_stack_getbyidx(i);
+		draw_button_icon(button_x(x),button_y(y),92,1,stack->name,155,(stack->active)?155:0,0,0,255,0);
+		//draw_number_8x6(button_x(x),button_y(y),dmx_luaqueue->active_cnt,2,0,255,255,255);
+		x++;
+		if(x>7)
+		{
+			x=0;
+			y++;
+		}
+	}
 }
 
 
@@ -149,6 +181,18 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 			}
 		}
 #endif
+		else if(attr1 == 3)
+		{
+			struct dmx_stack* stack = dmx_stack_getbyidx(attr2);
+			if(stack->active == 0 )
+			{
+				stack->active = 1;
+			}
+			else
+			{
+				stack->active = 0;
+			}
+		}
 	}
 
 }
