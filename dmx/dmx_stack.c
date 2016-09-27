@@ -34,6 +34,7 @@ struct dmx_stack* dmx_stack_new(void)
 unsigned int dmx_stack_get_count(void)
 {
 	return dmx_stack_inuse;
+
 }
 struct dmx_stack* dmx_stack_getbyidx(unsigned int index)
 {
@@ -43,6 +44,7 @@ struct dmx_stack* dmx_stack_getbyidx(unsigned int index)
 	}
 	return NULL;
 }
+
 struct dmx_stack* dmx_stack_getbyname(char* name)
 {	
 	for(unsigned int i=0;i<dmx_stack_inuse;i++)
@@ -54,6 +56,7 @@ struct dmx_stack* dmx_stack_getbyname(char* name)
 	}
 	return NULL;
 }
+
 void dmx_stack_free(struct dmx_stack* stack)
 {
 	for (unsigned int c = 0 ; c < stack->length; c++ )
@@ -76,8 +79,6 @@ void dmx_stack_store(struct dmx_stack* stack)
 		if(0==strncmp(dmx_stack_list[i]->name,stack->name,DMX_NAME_LENGTH))
 		{
 			dmx_stack_free(dmx_stack_list[i]);
-
-
 			dmx_stack_list[i]=dmx_stack_clone(stack);
 			return;
 		}
@@ -387,6 +388,7 @@ void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img)
 	stack->frames[stack->length]=frame;
 	stack->length++;
 }
+
 void dmx_stack_del_imgframe(struct dmx_stack* stack,unsigned int idx)
 {
 	if(idx >= stack->length)
@@ -408,6 +410,7 @@ void dmx_stack_del_imgframe(struct dmx_stack* stack,unsigned int idx)
 
 	stack->length--;
 }
+
 unsigned int dmx_stack_frame_count(struct dmx_stack* stack)
 {
 	return stack->length;
