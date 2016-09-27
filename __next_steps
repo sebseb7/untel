@@ -1,8 +1,8 @@
 save/load devices
-waitframe
-testloop in programmer
+delete stacks
+command frame (with activation locks)
 (add at current position / replace / move up / move down)
-show stacks on a buttonpage
 priority???
 run any stack called "boot" initially
 command frames (startloop stoploop oneshot)
+more valgrinding
