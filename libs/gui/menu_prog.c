@@ -372,7 +372,7 @@ static void return_from_store(char * name)
 }
 
 
-static void update_list()
+static void update_list(void)
 {
 			unsigned int selected = 0;
 			if(list1 != NULL)
