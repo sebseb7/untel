@@ -442,6 +442,7 @@ void dmx_stack_process(struct dmx_stack* stack)
 		if(curr_active > stack->length)
 		{
 			done=1;
+			stack->active = 1;
 		}
 
 	}
