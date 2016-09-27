@@ -169,6 +169,13 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 					dmx_image_render(image,currtime);
 			}
 		}
+	
+		for(unsigned int i =0;i< dmx_stack_get_count();i++)
+		{
+			struct dmx_stack* stack = dmx_stack_getbyidx(i);
+			if(stack->active)
+				dmx_stack_process(stack);
+		}
 
 		if((programmer_images != NULL)&&(programmer_loop==0))
 		{
