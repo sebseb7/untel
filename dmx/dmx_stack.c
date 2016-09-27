@@ -9,6 +9,7 @@
 #include "SDL.h"
 
 #define DMX_STACK_FRAMES_ALLOCATE_INITIAL 100
+#define DMX_STACK_FRAMES_ALLOCATE_STEP 10
 #define DMX_STACK_ALLOCATE_INITIAL 100
 #define DMX_STACK_ALLOCATE_STEP 10
 
@@ -329,12 +330,30 @@ struct dmx_stack* dmx_stack_clone(struct dmx_stack* old_stack)
 	return stack;
 }
 
+static void dmx_stack_realloc_frames(struct dmx_stack* stack)
+{
+	if(stack->length == stack->alloc)
+	{
+		dmx_frame** frames = malloc(sizeof(dmx_frame*)*(stack->length+DMX_STACK_FRAMES_ALLOCATE_STEP));
+
+		for (unsigned int c = 0 ; c < stack->length; c++ )
+		{
+			frames[c] = stack->frames[c];
+		}
+
+		free(stack->frames);
+		stack->frames=frames;
+		stack->alloc=stack->length+DMX_STACK_FRAMES_ALLOCATE_STEP;
+
+		printf("realloc\n");
+	}
+}
+
 void dmx_stack_add_waitframe(struct dmx_stack* stack,unsigned int type,unsigned int value)
 {
 	if(stack->length == stack->alloc)
 	{
-		printf("stf2\n");
-		exit(EXIT_FAILURE);
+		dmx_stack_realloc_frames(stack);
 	}
 
 	dmx_frame* frame = malloc(sizeof(dmx_frame));
@@ -358,8 +377,7 @@ void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img)
 {
 	if(stack->length == stack->alloc)
 	{
-		printf("stf2\n");
-		exit(EXIT_FAILURE);
+		dmx_stack_realloc_frames(stack);
 	}
 
 	dmx_frame* frame = malloc(sizeof(dmx_frame));
