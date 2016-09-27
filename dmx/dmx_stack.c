@@ -137,9 +137,16 @@ void dmx_stack_store_to_disc(char * file_name)
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->r);
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->g);
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->image.image->b);
-				
-				SDL_WriteU8(file,strlen(dmx_stack_list[i]->frames[c]->image.image->color));
-				SDL_RWwrite(file,dmx_stack_list[i]->frames[c]->image.image->color,1,1+strlen(dmx_stack_list[i]->frames[c]->image.image->color));
+
+				if(dmx_stack_list[i]->frames[c]->image.image->color)
+				{
+					SDL_WriteU8(file,strlen(dmx_stack_list[i]->frames[c]->image.image->color));
+					SDL_RWwrite(file,dmx_stack_list[i]->frames[c]->image.image->color,1,1+strlen(dmx_stack_list[i]->frames[c]->image.image->color));
+				}
+				else
+				{
+					SDL_WriteU8(file,0);
+				}
 
 			}
 			else if(dmx_stack_list[i]->frames[c]->type == DMX_FRAME_WAIT)
@@ -245,10 +252,17 @@ void dmx_stack_load_from_disc(void)
 
 				unsigned int col_name_length = SDL_ReadU8(file);
 				printf("color nl: %i\n",col_name_length);
-				char tmp_colorname[DMX_NAME_LENGTH];
-				if(col_name_length > (DMX_NAME_LENGTH-1)) col_name_length=DMX_NAME_LENGTH-1;
-				SDL_RWread(file, tmp_colorname, 1, col_name_length+1);
-				image->color = strndup(tmp_colorname,DMX_NAME_LENGTH);
+				if(col_name_length > 0)
+				{
+					char tmp_colorname[DMX_NAME_LENGTH];
+					if(col_name_length > (DMX_NAME_LENGTH-1)) col_name_length=DMX_NAME_LENGTH-1;
+					SDL_RWread(file, tmp_colorname, 1, col_name_length+1);
+					image->color = strndup(tmp_colorname,DMX_NAME_LENGTH);
+				}
+				else
+				{
+					image->color = NULL;
+				}
 
 				dmx_stack_add_imgframe(stack,image);
 
