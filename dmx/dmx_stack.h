@@ -19,6 +19,7 @@ struct dmx_stack
 };
 
 struct dmx_stack* dmx_stack_new(void);
+void dmx_stack_delete(unsigned int index);
 unsigned int dmx_stack_get_count(void);
 struct dmx_stack* dmx_stack_getbyidx(unsigned int index);
 struct dmx_stack* dmx_stack_getbyname(char* name);

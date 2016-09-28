@@ -80,7 +80,9 @@ static void menu_quectrl_redraw(void)
 #endif
 			
 	touch_binding_add(touchlist,button_x(x),92,button_y(y),54,4,1,0);
-	draw_button_icon(button_x(x),button_y(y),92,1,"Load",155,(mode==1)?155:0,0,0,255,0);
+	draw_button_icon(button_x(x++),button_y(y),92,1,"Load",155,(mode==1)?155:0,0,0,255,0);
+	touch_binding_add(touchlist,button_x(x),92,button_y(y),54,4,2,0);
+	draw_button_icon(button_x(x++),button_y(y),92,1,"Delete",155,(mode==2)?155:0,0,0,255,0);
 	x=0;
 	y++;
 	
@@ -101,6 +103,7 @@ static void menu_quectrl_redraw(void)
 
 static void menu_quectrl_update(void)
 {
+	draw_filledRect(0,37,1024,500,0,0,0);
 	unsigned int x=0;
 	unsigned int y=0;
 	for(unsigned int i =0;i< dmx_queue_get_count();i++)
@@ -130,6 +133,9 @@ static void menu_quectrl_update(void)
 		}
 	}
 #endif
+	
+	draw_button_icon(button_x(x++),button_y(y),92,1,"Load",155,(mode==1)?155:0,0,0,255,0);
+	draw_button_icon(button_x(x++),button_y(y),92,1,"Delete",155,(mode==2)?155:0,0,0,255,0);
 	x=0;
 	y++;
 	
@@ -196,6 +202,7 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 		{
 			if(mode == 1)//load
 			{
+				mode = 0;
 				struct dmx_stack* stack = dmx_stack_getbyidx(attr2);
 				menu_prog_load_stack(stack);
 				printf("laod %s\n",stack->name);
@@ -203,6 +210,11 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 				struct menu* menu_prog = get_menu_prog();
 				menu_prog->parent=menu_quectrl;
 				set_current_menu(menu_prog);
+			}
+			else if(mode == 2)//delete
+			{
+				mode = 0;
+				dmx_stack_delete(attr2);
 			}
 			else//toggle
 			{
@@ -227,7 +239,6 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 			{
 				mode = attr2;
 			}
-			set_menu_dirty();
 		}
 	}
 

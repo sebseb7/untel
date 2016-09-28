@@ -45,6 +45,20 @@ struct dmx_stack* dmx_stack_getbyidx(unsigned int index)
 	return NULL;
 }
 
+void dmx_stack_delete(unsigned int index)
+{
+	if(index >= dmx_stack_inuse)
+		return;
+
+	dmx_stack_free(dmx_stack_list[index]);
+	
+	for(unsigned int x = index;x < dmx_stack_inuse;x++)
+	{
+		dmx_stack_list[x]=dmx_stack_list[x+1];
+	}
+	dmx_stack_inuse--;
+}
+
 struct dmx_stack* dmx_stack_getbyname(char* name)
 {	
 	for(unsigned int i=0;i<dmx_stack_inuse;i++)
