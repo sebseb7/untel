@@ -396,7 +396,7 @@ static void update_list(void)
 	unsigned int selected = 0;
 	if(list1 != NULL)
 	{
-		selected = list1->length;
+		selected = list1->selected;
 		menu_list_free(list1);
 	}
 	list1 = menu_list_new();
@@ -435,6 +435,11 @@ static void update_list(void)
 		free(label);
 	}
 
+	if(selected > dmx_stack_frame_count(prog_stack))
+	{
+		printf("?\n");
+		selected = dmx_stack_frame_count(prog_stack);
+	}
 
 	unsigned int offset = 0;
 	if(selected > (listsize-1))
@@ -582,11 +587,40 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		{
 			if((list1 != NULL)&&(list1->length>0))
 			{
-				//signed int selected = menu_list_get_selected(list1);
+				signed int selected = menu_list_get_selected(list1);
+				printf("replace: %i (l:%i)\n",selected,prog_stack->length);
 
-				//todo: implement it
+				if((selected != -1)&&(prog_stack->length > (unsigned int)selected))
+				{
+					dmx_frame_free(prog_stack->frames[selected]);
 
+					if(act_frame_type == DMX_FRAME_IMAGE)
+					{
+						struct dmx_img* img = dmx_img_clone(stash[act]);
+						prog_stack->frames[selected] =  dmx_frame_newimg(img);
+						dmx_stack_add_imgframe(prog_stack,img);
+
+					}
+					else if(act_frame_type == DMX_FRAME_WAIT)
+					{
+						prog_stack->frames[selected] = dmx_frame_newwait(act_wait_type,act_wait_value);
+					}
+					//else if(act_frame_type == DMX_FRAME_COMMAND)
+					//{
+						//dmx_stack_add_cmdframe(prog_stack,
+					//}
+					else
+					{
+						printf("ERR!!\n");
+					}
+
+				}
+
+
+
+				update_list();
 				set_menu_dirty();
+
 			}
 		}
 		else if(attr1 == 14) // preview loop
