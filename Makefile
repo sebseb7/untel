@@ -2,6 +2,10 @@ UNAME := $(shell uname)
 
 COMPILER = gcc
 
+ifeq ($(UNAME), Darwin)
+	COMPILER = clang
+endif
+
 DMX_OUT=0
 SDL_OUT=1
 LUA_CUE=0
@@ -76,7 +80,7 @@ dmxMidiCtrlNg: $(OBJECTS) Makefile
 
 gource:
 	git log --reverse --pretty=format:"%at|%B" > git.log
-	gource --seconds-per-day 4 --caption-file git.log -a 1 --caption-duration 7 --caption-size 13 -max-files 99999 -disable-progress -stop-at-end  -user-scale 1 -highlight-all-users .
+	gource --seconds-per-day 1 --caption-file git.log -a 1 --caption-duration 7 --caption-size 13 -max-files 99999 -disable-progress -stop-at-end  -user-scale 1 -highlight-all-users -1280x720 -o - . | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -crf 1 -threads 0 -bf 0 gource.mp4
 	rm git.log
 
 .PHONY : clean all gource plot
