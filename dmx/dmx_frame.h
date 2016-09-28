@@ -65,6 +65,8 @@ struct dmx_img* dmx_img_clone(struct dmx_img* image);
 void dmx_img_free(struct dmx_img* image);
 
 void dmx_img_render(struct dmx_img* image);
+void dmx_img_render_pct(struct dmx_img* image, float pct);
+void dmx_img_render_pct_add(struct dmx_img* image, float pct,unsigned int add);
 
 void dmx_img_device_clear(struct dmx_img* image);
 unsigned int dmx_img_device_count(struct dmx_img* image);

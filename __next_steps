@@ -1,5 +1,6 @@
 save/load devices
 delete stacks
+blend!
 command frame (with activation locks)
 (add at current position / replace / move up / move down)
 priority???

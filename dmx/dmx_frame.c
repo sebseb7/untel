@@ -284,6 +284,14 @@ unsigned int dmx_img_iscolrgb(struct dmx_img* image)
 
 void dmx_img_render(struct dmx_img* image)
 {
+	dmx_img_render_pct(image,1.0f);
+}
+void dmx_img_render_pct(struct dmx_img* image, float pct) 
+{
+	dmx_img_render_pct_add(image,pct,0);
+}
+void dmx_img_render_pct_add(struct dmx_img* image, float pct,unsigned int add) 
+{
 	for(unsigned int i = 0;i < image->dev_count;i++)
 	{
 		for(unsigned int d = 0;d < dmx_get_device_count();d++)
@@ -299,9 +307,18 @@ void dmx_img_render(struct dmx_img* image)
 
 					if(image->is_col == DMX_ATTR_COLOR_RGB)
 					{
-						par->red = image->r;
-						par->green = image->g;
-						par->blue = image->b;
+						if(add)
+						{
+							par->red += image->r*pct;
+							par->green += image->g*pct;
+							par->blue += image->b*pct;
+						}
+						else
+						{
+							par->red = image->r*pct;
+							par->green = image->g*pct;
+							par->blue = image->b*pct;
+						}
 					}
 					else if(image->is_col == DMX_ATTR_COLOR_NAME)
 					{
@@ -315,20 +332,35 @@ void dmx_img_render(struct dmx_img* image)
 								unsigned int b=0;
 
 								dmx_attr_colors_get_rgb(i,&r,&g,&b);
-								par->red = r;
-								par->green = g;
-								par->blue = b;
+								if(add)
+								{
+									par->red += r*pct;
+									par->green += g*pct;
+									par->blue += b*pct;
+								}
+								else
+								{
+									par->red = r*pct;
+									par->green = g*pct;
+									par->blue = b*pct;
+								}
 							}
 						}
 					}
 
 					if(image->is_dim)
 					{
-						par->dim = image->dim;
+						if(add)
+						{
+							par->dim += image->dim*pct;
+						}
+						else
+						{
+							par->dim = image->dim*pct;
+						}
 					}
 				}
 			}
 		}
 	}
 }
-
