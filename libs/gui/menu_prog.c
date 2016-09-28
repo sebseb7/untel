@@ -56,6 +56,8 @@ static const unsigned int listsize = 15;
 
 static void menu_prog_redraw(void)
 {
+	set_programmer_image_list(&stash[0]);
+	
 	clearDisplay();
 	if(touchlist != NULL)
 		touch_binding_free(touchlist);
@@ -471,7 +473,10 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		if(x < 40)
 		{
 			if(menu_prog->parent != NULL)
+			{
+				set_programmer_image_list(NULL);
 				set_current_menu(menu_prog->parent);
+			}
 		}
 	}
 
@@ -721,7 +726,6 @@ struct menu* get_menu_prog(void)
 		stash[1] = dmx_img_new();
 		stash[2] = dmx_img_new();
 		stash[3] = dmx_img_new();
-		set_programmer_image_list(&stash[0]);
 	}
 	if(prog_stack == NULL)
 	{
