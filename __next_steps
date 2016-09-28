@@ -1,8 +1,7 @@
 save/load devices
-delete stacks
+insert at current position /  move up / move down  / delete at current position
 blend!
 command frame (with activation locks)
-(add at current position / replace / move up / move down)
 priority???
 run any stack called "boot" initially
 command frames (startloop stoploop oneshot)
