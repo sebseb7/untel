@@ -24,6 +24,9 @@ void setLedXY(uint16_t x, uint16_t y, uint8_t red,uint8_t green, uint8_t blue) {
 
 	if(current_pixelbuffer != NULL)
 	{
+		//when drawing a big filled rect, this is inefficient, the color does not change, and the bufferindex just needs to be incremented instead of recalculated
+		//lowlevel fillrect?
+
 		unsigned int color = (red<<16)+(green<<8)+blue;
 		current_pixelbuffer[(y*LCD_WIDTH)+x] = color;
 	}
