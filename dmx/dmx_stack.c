@@ -491,13 +491,29 @@ dmx_frame* dmx_frame_newwait(unsigned int type,unsigned int value)
 
 void dmx_stack_add_waitframe(struct dmx_stack* stack,unsigned int type,unsigned int value)
 {
+	dmx_stack_add_waitframe_atidx(stack,type,value,-1);
+}
+
+void dmx_stack_add_waitframe_atidx(struct dmx_stack* stack,unsigned int type,unsigned int value,signed int idx)
+{
 	if(stack->length == stack->alloc)
 	{
 		dmx_stack_realloc_frames(stack);
 	}
-	
-	stack->frames[stack->length]=dmx_frame_newwait(type,value);
+
 	stack->length++;
+	if(idx == -1)
+	{
+		stack->frames[stack->length-1]=dmx_frame_newwait(type,value);
+	}
+	else
+	{
+		for(signed int x = stack->length-1; x > idx;x--)
+		{
+			stack->frames[x]=stack->frames[x-1];
+		}
+		stack->frames[idx]=dmx_frame_newwait(type,value);
+	}
 }
 
 dmx_frame* dmx_frame_newimg(struct dmx_img* img)
@@ -511,13 +527,28 @@ dmx_frame* dmx_frame_newimg(struct dmx_img* img)
 
 void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img)
 {
+	dmx_stack_add_imgframe_atidx(stack,img,-1);
+}
+void dmx_stack_add_imgframe_atidx(struct dmx_stack* stack,struct dmx_img* img,signed int idx)
+{
 	if(stack->length == stack->alloc)
 	{
 		dmx_stack_realloc_frames(stack);
 	}
 
-	stack->frames[stack->length]=dmx_frame_newimg(img);
 	stack->length++;
+	if(idx == -1)
+	{
+		stack->frames[stack->length - 1]=dmx_frame_newimg(img);
+	}
+	else
+	{
+		for(signed int x = stack->length-1; x > idx;x--)
+		{
+			stack->frames[x]=stack->frames[x-1];
+		}
+		stack->frames[idx]=dmx_frame_newimg(img);
+	}
 }
 
 void dmx_stack_del_imgframe(struct dmx_stack* stack,unsigned int idx)

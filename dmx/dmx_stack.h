@@ -35,10 +35,12 @@ unsigned int dmx_stack_frame_count(struct dmx_stack* stack);
 
 dmx_frame* dmx_frame_newimg(struct dmx_img* img);
 void dmx_stack_add_imgframe(struct dmx_stack* stack,struct dmx_img* img);
+void dmx_stack_add_imgframe_atidx(struct dmx_stack* stack,struct dmx_img* img,signed int idx);
 void dmx_stack_del_imgframe(struct dmx_stack* stack,unsigned int idx);
 
 dmx_frame* dmx_frame_newwait(unsigned int type,unsigned int value);
 void dmx_stack_add_waitframe(struct dmx_stack* stack,unsigned int type,unsigned int value);
+void dmx_stack_add_waitframe_atidx(struct dmx_stack* stack,unsigned int type,unsigned int value,signed int idx);
 
 dmx_frame* dmx_stack_frame_getbyidx(struct dmx_stack* stack,unsigned int idx);
 

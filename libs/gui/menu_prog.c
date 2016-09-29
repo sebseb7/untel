@@ -520,12 +520,16 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			if(act_frame_type == DMX_FRAME_IMAGE)
 			{
 				struct dmx_img* img = dmx_img_clone(stash[act]);
-				dmx_stack_add_imgframe(prog_stack,img);
+				signed int selected = menu_list_get_selected(list1);
+				if(selected == -1) selected=0;
+				dmx_stack_add_imgframe_atidx(prog_stack,img,selected);
 
 			}
 			else if(act_frame_type == DMX_FRAME_WAIT)
 			{
-				dmx_stack_add_waitframe(prog_stack,act_wait_type,act_wait_value);
+				signed int selected = menu_list_get_selected(list1);
+				if(selected == -1) selected=0;
+				dmx_stack_add_waitframe_atidx(prog_stack,act_wait_type,act_wait_value,selected);
 			}
 			else if(act_frame_type == DMX_FRAME_COMMAND)
 			{

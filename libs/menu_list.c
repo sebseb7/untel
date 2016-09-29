@@ -120,7 +120,7 @@ void menu_list_del_entry_by_idx(struct menu_list* menu, signed int position)
 			{
 				menu->offset--;
 			}
-			else if(menu->selected > 0)
+			else if(menu->selected >= menu->length)
 			{
 				menu->selected--;
 			}
