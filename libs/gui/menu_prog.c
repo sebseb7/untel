@@ -47,6 +47,7 @@ static struct touch_binding_list* touchlist = NULL;
 static unsigned int act = 0;
 static unsigned int act_frame_type = DMX_FRAME_IMAGE;
 static unsigned int act_attribute = 0;
+static unsigned int act_wait_blend = 0;
 static unsigned int act_wait_type = 0;
 static unsigned int act_wait_value = 0;
 
@@ -361,6 +362,8 @@ static void menu_prog_redraw(void)
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"2",155,0,0,0,255,0);
 		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,3);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"3",155,0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,4,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Blend",155,(act_wait_blend==1)?155:0,0,0,255,0);
 		buttony++;buttonx=0;
 		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,13,1,0);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"0",155,0,0,0,255,0);
@@ -419,11 +422,11 @@ static void update_list(void)
 		{
 			if(frame->wait.milis>0)
 			{
-				snprintf(label,DMX_NAME_LENGTH,"WAIT %i ms",frame->wait.milis);
+				snprintf(label,DMX_NAME_LENGTH,"WAIT %i ms%s",frame->wait.milis,(frame->wait.blend)?" (blend)":"");
 			}
 			else
 			{
-				snprintf(label,DMX_NAME_LENGTH,"WAIT %i mbpm",frame->wait.bpms);
+				snprintf(label,DMX_NAME_LENGTH,"WAIT %i mbpm%s",frame->wait.bpms,(frame->wait.blend)?" (blend)":"");
 			}
 		}
 		else
@@ -474,6 +477,8 @@ static void update_keypad(unsigned int selected)
 	{
 		act_frame_type = DMX_FRAME_WAIT;
 		tab=5;
+
+		act_wait_blend=frame->wait.blend;
 
 		if(frame->wait.milis>0)
 		{
@@ -529,7 +534,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			{
 				signed int selected = menu_list_get_selected(list1);
 				if(selected == -1) selected=0;
-				dmx_stack_add_waitframe_atidx(prog_stack,act_wait_type,act_wait_value,selected);
+				dmx_stack_add_waitframe_atidx(prog_stack,act_wait_type,act_wait_value,act_wait_blend,selected);
 			}
 			else if(act_frame_type == DMX_FRAME_COMMAND)
 			{
@@ -572,6 +577,10 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			{
 				act_wait_type=attr3;
 			}
+			else if(attr2 == 4)
+			{
+				act_wait_blend = (act_wait_blend)?0:1;
+			}
 			set_menu_dirty();
 		}
 		else if(attr1 == 10) // set active attribute
@@ -607,11 +616,11 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 					}
 					else if(act_frame_type == DMX_FRAME_WAIT)
 					{
-						prog_stack->frames[selected] = dmx_frame_newwait(act_wait_type,act_wait_value);
+						prog_stack->frames[selected] = dmx_frame_newwait(act_wait_type,act_wait_value,act_wait_blend);
 					}
 					//else if(act_frame_type == DMX_FRAME_COMMAND)
 					//{
-						//dmx_stack_add_cmdframe(prog_stack,
+					//dmx_stack_add_cmdframe(prog_stack,
 					//}
 					else
 					{

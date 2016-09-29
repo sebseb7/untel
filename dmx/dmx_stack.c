@@ -51,7 +51,7 @@ void dmx_stack_delete(unsigned int index)
 		return;
 
 	dmx_stack_free(dmx_stack_list[index]);
-	
+
 	for(unsigned int x = index;x < dmx_stack_inuse;x++)
 	{
 		dmx_stack_list[x]=dmx_stack_list[x+1];
@@ -186,6 +186,7 @@ void dmx_stack_store_to_disc(char * file_name)
 			else if(dmx_stack_list[i]->frames[c]->type == DMX_FRAME_WAIT)
 			{
 
+				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.blend);
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.milis);
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.bpms);
 
@@ -342,16 +343,17 @@ void dmx_stack_load_from_disc(void)
 			else if(frame_type == DMX_FRAME_WAIT)
 			{
 
+				unsigned int blend = SDL_ReadBE32(file);
 				unsigned int milis = SDL_ReadBE32(file);
 				unsigned int bpms = SDL_ReadBE32(file);
 
 				if(milis>0)
 				{
-					dmx_stack_add_waitframe(stack,0,milis);
+					dmx_stack_add_waitframe(stack,0,milis,blend);
 				}
 				else
 				{
-					dmx_stack_add_waitframe(stack,1,bpms);
+					dmx_stack_add_waitframe(stack,1,bpms,blend);
 				}
 
 			}
@@ -471,10 +473,13 @@ static void dmx_stack_realloc_frames(struct dmx_stack* stack)
 	}
 }
 
-dmx_frame* dmx_frame_newwait(unsigned int type,unsigned int value)
+dmx_frame* dmx_frame_newwait(unsigned int type,unsigned int value,unsigned int blend)
 {
 	dmx_frame* frame = malloc(sizeof(dmx_frame));
 	frame->type=DMX_FRAME_WAIT;
+
+	frame->wait.blend=blend;
+
 	if(type==0)
 	{
 		frame->wait.milis=value;
@@ -485,16 +490,17 @@ dmx_frame* dmx_frame_newwait(unsigned int type,unsigned int value)
 		frame->wait.milis=0;
 		frame->wait.bpms=value;
 	}
+
 	return frame;
 }
 
 
-void dmx_stack_add_waitframe(struct dmx_stack* stack,unsigned int type,unsigned int value)
+void dmx_stack_add_waitframe(struct dmx_stack* stack,unsigned int type,unsigned int value,unsigned int blend)
 {
-	dmx_stack_add_waitframe_atidx(stack,type,value,-1);
+	dmx_stack_add_waitframe_atidx(stack,type,value,blend,-1);
 }
 
-void dmx_stack_add_waitframe_atidx(struct dmx_stack* stack,unsigned int type,unsigned int value,signed int idx)
+void dmx_stack_add_waitframe_atidx(struct dmx_stack* stack,unsigned int type,unsigned int value,unsigned int blend,signed int idx)
 {
 	if(stack->length == stack->alloc)
 	{
@@ -504,7 +510,7 @@ void dmx_stack_add_waitframe_atidx(struct dmx_stack* stack,unsigned int type,uns
 	stack->length++;
 	if(idx == -1)
 	{
-		stack->frames[stack->length-1]=dmx_frame_newwait(type,value);
+		stack->frames[stack->length-1]=dmx_frame_newwait(type,value,blend);
 	}
 	else
 	{
@@ -512,7 +518,7 @@ void dmx_stack_add_waitframe_atidx(struct dmx_stack* stack,unsigned int type,uns
 		{
 			stack->frames[x]=stack->frames[x-1];
 		}
-		stack->frames[idx]=dmx_frame_newwait(type,value);
+		stack->frames[idx]=dmx_frame_newwait(type,value,blend);
 	}
 }
 

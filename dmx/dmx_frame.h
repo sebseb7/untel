@@ -28,23 +28,24 @@ struct dmx_img
 
 struct dmx_frame_image
 {
-	unsigned int type;
+	unsigned int type;// union type
 	struct dmx_img* image;
 };
 
 struct dmx_frame_wait
 {
-	unsigned int type;
+	unsigned int type;// union type
+	unsigned int blend;
 	unsigned int milis;
 	unsigned int bpms;
 };
 
 struct dmx_frame_command
 {
-	unsigned int type;
+	unsigned int type;// union type
 	unsigned int command;
-	char *svalue1;
-	char *svalue2;
+	char* svalue1;
+	char* svalue2;
 	unsigned int ivalue1;
 	unsigned int ivalue2;
 	float fvalue1;
@@ -53,7 +54,7 @@ struct dmx_frame_command
 
 typedef union
 {
-	unsigned int type;
+	unsigned int type;// union type
 	struct dmx_frame_wait wait;
 	struct dmx_frame_image image; 
 	struct dmx_frame_command command; 

@@ -32,6 +32,7 @@ dmx_frame* dmx_frame_new(unsigned int type)
 	}
 	else if(type == DMX_FRAME_WAIT)
 	{
+		frame->wait.blend = 0;
 		frame->wait.milis = 0;
 		frame->wait.bpms = 0;
 	}
@@ -45,7 +46,7 @@ dmx_frame* dmx_frame_new(unsigned int type)
 		frame->command.fvalue1=0.0f;
 		frame->command.fvalue2=0.0f;
 	}
-	
+
 	return frame;
 }
 
@@ -145,12 +146,12 @@ void dmx_img_device_del(struct dmx_img* image,char* name)
 		if(strncmp(image->dev_names[i],name,DMX_NAME_LENGTH)==0)
 		{
 			free(image->dev_names[i]);
-			
+
 			if(i < (image->dev_count - 1))
 			{
 				image->dev_names[i] = image->dev_names[image->dev_count - 1];
 			}
-			
+
 			image->dev_count--;
 		}
 	}
