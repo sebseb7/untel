@@ -186,7 +186,7 @@ void dmx_stack_store_to_disc(char * file_name)
 			else if(dmx_stack_list[i]->frames[c]->type == DMX_FRAME_WAIT)
 			{
 
-				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.blend);
+				SDL_WriteU8(file,dmx_stack_list[i]->frames[c]->wait.blend);
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.milis);
 				SDL_WriteBE32(file,dmx_stack_list[i]->frames[c]->wait.bpms);
 
@@ -343,7 +343,7 @@ void dmx_stack_load_from_disc(void)
 			else if(frame_type == DMX_FRAME_WAIT)
 			{
 
-				unsigned int blend = SDL_ReadBE32(file);
+				unsigned int blend = SDL_ReadU8(file);
 				unsigned int milis = SDL_ReadBE32(file);
 				unsigned int bpms = SDL_ReadBE32(file);
 
