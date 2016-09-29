@@ -1,5 +1,5 @@
 save/load devices
-insert at current position /  move up / move down  / delete at current position
+insert at current position -< except last pos /  move up / move down
 blend!
 command frame (with activation locks)
 priority???
