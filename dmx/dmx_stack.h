@@ -8,6 +8,7 @@
 struct dmx_stack 
 {
 	char name[DMX_NAME_LENGTH];
+	char group[DMX_NAME_LENGTH];
 
 	unsigned int active;
 	unsigned long long lastframetime;

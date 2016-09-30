@@ -23,6 +23,7 @@ struct dmx_stack* dmx_stack_new(void)
 	struct dmx_stack* stack = malloc(sizeof(struct dmx_stack));
 
 	strcpy(stack->name,"");
+	strcpy(stack->group,"");
 	stack->active=0;
 	stack->length=0;
 	stack->alloc=DMX_STACK_FRAMES_ALLOCATE_INITIAL;
@@ -144,6 +145,8 @@ void dmx_stack_store_to_disc(char * file_name)
 	{
 		SDL_WriteU8(file,strlen(dmx_stack_list[i]->name));
 		SDL_RWwrite(file,dmx_stack_list[i]->name,1,1+strlen(dmx_stack_list[i]->name));
+		SDL_WriteU8(file,strlen(dmx_stack_list[i]->group));
+		SDL_RWwrite(file,dmx_stack_list[i]->group,1,1+strlen(dmx_stack_list[i]->group));
 		SDL_WriteBE32(file,dmx_stack_list[i]->length);
 
 		for(unsigned int c=0;c<dmx_stack_list[i]->length;c++)
@@ -273,6 +276,10 @@ void dmx_stack_load_from_disc(void)
 		if(name_length > (DMX_NAME_LENGTH-1)) name_length=DMX_NAME_LENGTH-1;
 		unsigned int xy = SDL_RWread(file, stack->name, 1, name_length+1);
 		printf("namelen: %i\n",xy);
+		unsigned int group_length = SDL_ReadU8(file);
+		if(group_length > (DMX_NAME_LENGTH-1)) group_length=DMX_NAME_LENGTH-1;
+		unsigned int xz = SDL_RWread(file, stack->group, 1, group_length+1);
+		printf("groulen: %i\n",xz);
 		stack->active=0;
 		stack->length=0;
 
@@ -428,6 +435,7 @@ struct dmx_stack* dmx_stack_clone(struct dmx_stack* old_stack)
 	struct dmx_stack* stack = malloc(sizeof(struct dmx_stack));
 
 	strcpy(stack->name,old_stack->name);
+	strcpy(stack->group,old_stack->group);
 	stack->active=old_stack->active;
 	stack->length=old_stack->length;
 	stack->alloc=old_stack->length;
@@ -610,10 +618,20 @@ void dmx_stack_process(struct dmx_stack* stack)
 	}
 
 	unsigned int done = 0;
+	unsigned int blend = 0;
+	float pct = 0.0f;
 
 	unsigned long long curr = getmilis();
 
 	unsigned int curr_active = stack->active;
+
+	printf("act: %i\n",curr_active);
+
+
+
+
+
+
 
 	do
 	{
@@ -621,18 +639,36 @@ void dmx_stack_process(struct dmx_stack* stack)
 
 		if(active_frame->type == DMX_FRAME_IMAGE)
 		{
-			dmx_img_render(active_frame->image.image);
+			if(blend==0) dmx_img_render(active_frame->image.image);
+			if(blend==1) dmx_img_render_pct_add(active_frame->image.image,pct,1);
 			curr_active++;
 		}
 		else if(active_frame->type == DMX_FRAME_WAIT)
 		{
-			if( (curr - stack->lastframetime) > active_frame->wait.milis )
+			if(active_frame->wait.blend==1)
 			{
+				if(blend==1) done=1;
+				pct = (curr - stack->lastframetime)/(float)active_frame->wait.milis;
+				printf("pct: %f\n",(curr - stack->lastframetime)/(float)active_frame->wait.milis);
 				curr_active++;
-				stack->active = curr_active;
-				stack->lastframetime = curr;
+				blend = 1;
+				if( (curr - stack->lastframetime) > active_frame->wait.milis )
+				{
+					stack->active = curr_active;
+					stack->lastframetime = curr;
+				}
 			}
-			done=1;
+			else
+			{
+				blend = 0;
+				if( (curr - stack->lastframetime) > active_frame->wait.milis )
+				{
+					curr_active++;
+					stack->active = curr_active;
+					stack->lastframetime = curr;
+				}
+				done=1;
+			}
 		}
 		else if(active_frame->type == DMX_FRAME_COMMAND)
 		{
@@ -641,7 +677,7 @@ void dmx_stack_process(struct dmx_stack* stack)
 
 		if(curr_active > stack->length)
 		{
-			done=1;
+			if(blend==0)done=1;
 			stack->active = 1;
 		}
 
