@@ -83,5 +83,9 @@ gource:
 	gource --seconds-per-day 1 --caption-file git.log -a 1 --caption-duration 7 --caption-size 13 -max-files 99999 -disable-progress -stop-at-end  -user-scale 1 -highlight-all-users -1280x720 -o - . | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -crf 1 -threads 0 -bf 0 gource.mp4
 	rm git.log
 
-.PHONY : clean all gource plot
+kext: 
+	sudo kextunload -b com.apple.driver.AppleUSBFTDI
+	sudo kextunload -b com.FTDI.driver.FTDIUSBSerialDriver
+
+.PHONY : clean all gource plot kext
 
