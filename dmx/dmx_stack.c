@@ -71,6 +71,18 @@ struct dmx_stack* dmx_stack_getbyname(char* name)
 	}
 	return NULL;
 }
+struct dmx_stack* dmx_stack_getactiveingroup(char* group)
+{	
+	for(unsigned int i=0;i<dmx_stack_inuse;i++)
+	{
+		if(0==strncmp(dmx_stack_list[i]->group,group,DMX_NAME_LENGTH))
+		{
+			if(dmx_stack_list[i]->active != 0)
+				return dmx_stack_list[i];
+		}
+	}
+	return NULL;
+}
 
 void dmx_frame_free(dmx_frame* frame)
 {

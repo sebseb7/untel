@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <string.h>
 
 #include "menu.h"
 #include "menu_prog.h"
@@ -221,6 +221,19 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 				struct dmx_stack* stack = dmx_stack_getbyidx(attr2);
 				if(stack->active == 0 )
 				{
+					if(strnlen(stack->group,DMX_NAME_LENGTH) > 0)
+					{
+						struct dmx_stack* stack2 = dmx_stack_getactiveingroup(stack->group);
+						if(stack2!=NULL)
+						{
+							printf("radio !\n");
+							stack2->active=0;
+						}
+
+
+						printf("group\n");
+					};	
+				
 					stack->active = 1;
 				}
 				else

@@ -170,8 +170,9 @@ static void menu_prog_redraw(void)
 	if((list1 != NULL)&&(list1->length>0))
 	{
 		touch_binding_add(touchlist,button_x(6),92,button_y(0),54,9,0,0);//delete
-		touch_binding_add(touchlist,button_x(7),92,button_y(1),54,11,0,0);//store
 		touch_binding_add(touchlist,button_x(7),92,button_y(0),54,14,0,0);//loop
+		touch_binding_add(touchlist,button_x(7),92,button_y(1),54,11,0,0);//store
+		touch_binding_add(touchlist,button_x(6),92,button_y(1),54,15,0,0);//group
 	}
 
 	draw_button_icon(button_x(5),button_y(0),92,1,"Add",(validimg)?155:55,0,0,0,(validimg)?255:55,0);
@@ -185,6 +186,7 @@ static void menu_prog_redraw(void)
 	{
 		draw_button_icon(button_x(7),button_y(0),92,1,"Loop",55,0,0,0,55,0);
 	}
+	draw_button_icon(button_x(6),button_y(1),92,1,"Group",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
 	draw_button_icon(button_x(7),button_y(1),92,1,"Store",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
 
 	buttony=2;buttonx=0;
@@ -393,6 +395,10 @@ static void return_from_store(char * name)
 	dmx_stack_store(prog_stack);
 	dmx_stack_store_to_disc("stack");
 }
+static void return_from_group(char * name)
+{
+	strncpy(prog_stack->group,name,DMX_NAME_LENGTH);
+}
 
 
 static unsigned int update_list(void)
@@ -550,6 +556,10 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 		else if(attr1 == 11) // store
 		{
 			invoke_keyboard("Store Programmer List",prog_stack->name,return_from_store);
+		}
+		else if(attr1 == 15) // group
+		{
+			invoke_keyboard("Set Group",prog_stack->group,return_from_group);
 		}
 		else if(attr1 == 12) // set frame type
 		{
