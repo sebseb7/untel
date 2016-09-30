@@ -7,12 +7,13 @@
 #include "mcugui/rect.h"
 #include "mcugui/text.h"
 
-struct menu_list* menu_list_new(void)
+struct menu_list* menu_list_new(unsigned int moveable)
 {
 	struct menu_list* menu_list = malloc(sizeof(struct menu_list));
 	menu_list->length=0;
 	menu_list->selected=0;
 	menu_list->offset=0;
+	menu_list->moveable = moveable;
 	menu_list->first = NULL;
 	menu_list->last  = NULL;
 	menu_list->touchlist = NULL;
@@ -172,11 +173,18 @@ void menu_list_draw(struct menu_list* menu,unsigned int x,unsigned int y,unsigne
 	menu->touchlist = touch_binding_new();
 
 	touch_binding_add(menu->touchlist,245,52,0,42,1,0,size);
+	if(menu->moveable == 1)
+	{
+		touch_binding_add(menu->touchlist,245,52,47,42,2,0,size);
+		touch_binding_add(menu->touchlist,245,52,(size*18-4)-42-47,42,3,0,size);
+	}
 	touch_binding_add(menu->touchlist,245,52,(size*18-4)-42,42,4,0,size);
 
 	draw_button_h(x+245,y,52,42,"^",155,0,0,0,255,0);
+	draw_button_h(x+245,y+47,52,42,"^^",155,0,0,0,255,0);
 	//draw_button_h(x+245,y+47,52,42,"Edit",155,0,0,0,255,0);
 	//draw_button_h(x+245,y+94,52,42,"Save",155,0,0,0,255,0);
+	draw_button_h(x+245,y+((size*18-4)-(42*2)-5),52,42,"vv",155,0,0,0,255,0);
 	draw_button_h(x+245,y+((size*18-4)-42),52,42,"v",155,0,0,0,255,0);
 
 }
@@ -206,6 +214,36 @@ signed int menu_list_touch(struct menu_list* menu,unsigned int x,unsigned int y)
 					}
 				}
 				return menu->selected;
+			}
+			else if(attr1 == 2)
+			{
+				if((menu->selected + menu->offset) > 0)
+				{
+					if(menu->selected > 0)
+					{
+						menu->selected--;
+					}
+					else
+					{
+						menu->offset--;
+					}
+					return -2;
+				}
+			}
+			else if(attr1 == 3)
+			{
+				if((menu->selected + menu->offset) < (menu->length -1))
+				{
+					if(menu->selected < (attr3-1))
+					{
+						menu->selected++;
+					}
+					else
+					{
+						menu->offset++;
+					}
+					return -3;
+				}
 			}
 			else if(attr1 == 4)
 			{

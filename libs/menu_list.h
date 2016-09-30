@@ -28,12 +28,13 @@ struct menu_list
 	unsigned int length;
 	unsigned int selected;
 	unsigned int offset;
+	unsigned int moveable;
 	struct menu_list_entry* first;
 	struct menu_list_entry* last;
 	struct touch_binding_list* touchlist;
 };
 
-struct menu_list* menu_list_new(void);
+struct menu_list* menu_list_new(unsigned int moveable);
 void menu_list_free(struct menu_list* menu);
 struct menu_list_entry* menu_list_entry_new(unsigned int type,const char* label,unsigned int value1,unsigned int value2);
 void menu_list_entry_free(struct menu_list_entry* entry);

@@ -375,6 +375,7 @@ static void menu_prog_redraw(void)
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Stack OFF",55,0,0,0,55,0);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Stack Trigg",55,0,0,0,55,0);
 		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Repeat",55,0,0,0,55,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Lua",55,0,0,0,55,0);
 	}
 
 
@@ -402,7 +403,7 @@ static void update_list(void)
 		selected = list1->selected;
 		menu_list_free(list1);
 	}
-	list1 = menu_list_new();
+	list1 = menu_list_new(1);
 	for(unsigned int i=0;i < dmx_stack_frame_count(prog_stack);i++)
 	{
 		dmx_frame* frame = dmx_stack_frame_getbyidx(prog_stack,i);
@@ -764,6 +765,30 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 
 				set_menu_dirty();
 			}
+			else if(selected == -2)
+			{
+
+				signed int sel = menu_list_get_selected(list1);
+				printf("moveup %i\n",sel);
+				dmx_frame* frame = prog_stack->frames[sel+1];
+				prog_stack->frames[sel+1] = prog_stack->frames[sel];
+				prog_stack->frames[sel] = frame;;
+				update_list();
+				set_menu_dirty();
+				//move up
+			}
+			else if(selected == -3)
+			{
+				signed int sel = menu_list_get_selected(list1);
+				printf("movedown %i\n",sel);
+				dmx_frame* frame = prog_stack->frames[sel-1];
+				prog_stack->frames[sel-1] = prog_stack->frames[sel];
+				prog_stack->frames[sel] = frame;;
+				update_list();
+				set_menu_dirty();
+				//move down
+			}
+
 		}
 	}
 }
