@@ -395,7 +395,7 @@ static void return_from_store(char * name)
 }
 
 
-static void update_list(void)
+static unsigned int update_list(void)
 {
 	unsigned int selected = 0;
 	if(list1 != NULL)
@@ -439,10 +439,10 @@ static void update_list(void)
 		free(label);
 	}
 
-	if(selected > dmx_stack_frame_count(prog_stack))
+	if(selected >= dmx_stack_frame_count(prog_stack))
 	{
-		printf("?\n");
-		selected = dmx_stack_frame_count(prog_stack);
+		printf("?tb\n");
+		selected = dmx_stack_frame_count(prog_stack)-1;
 	}
 
 	unsigned int offset = 0;
@@ -453,6 +453,8 @@ static void update_list(void)
 	}
 	list1->selected=selected;
 	list1->offset=offset;
+
+	return (offset+selected);
 }
 
 static void update_keypad(unsigned int selected)
@@ -806,8 +808,9 @@ void menu_prog_load_stack(struct dmx_stack* stack)
 	set_programmer_stack(prog_stack);
 	printf("loaded %s %d\n",stack->name,stack->length);
 
-	update_list();
-	update_keypad(0);
+	unsigned int sel = update_list();
+	if(sel == 0) sel = 1;
+	update_keypad(sel-1);
 	set_menu_dirty();
 }
 
