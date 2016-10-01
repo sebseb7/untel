@@ -293,6 +293,8 @@ void dmx_img_render_pct(struct dmx_img* image, float pct)
 }
 void dmx_img_render_pct_add(struct dmx_img* image, float pct,unsigned int add) 
 {
+	if(pct > 1.0) pct = 1.0;
+
 	for(unsigned int i = 0;i < image->dev_count;i++)
 	{
 		for(unsigned int d = 0;d < dmx_get_device_count();d++)
@@ -310,9 +312,9 @@ void dmx_img_render_pct_add(struct dmx_img* image, float pct,unsigned int add)
 					{
 						if(add)
 						{
-							par->red += image->r*pct;
-							par->green += image->g*pct;
-							par->blue += image->b*pct;
+							par->red = (image->r*pct) + (par->red*(1.0f-pct));
+							par->green = (image->g*pct) + (par->green*(1.0f-pct));
+							par->blue = (image->b*pct) + (par->blue*(1.0f-pct));
 						}
 						else
 						{
@@ -335,9 +337,9 @@ void dmx_img_render_pct_add(struct dmx_img* image, float pct,unsigned int add)
 								dmx_attr_colors_get_rgb(i,&r,&g,&b);
 								if(add)
 								{
-									par->red += r*pct;
-									par->green += g*pct;
-									par->blue += b*pct;
+									par->red = (r*pct) + (par->red*(1.0f-pct));
+									par->green = (g*pct) + (par->green*(1.0f-pct));
+									par->blue = (b*pct) + (par->blue*(1.0f-pct));
 								}
 								else
 								{
@@ -353,7 +355,7 @@ void dmx_img_render_pct_add(struct dmx_img* image, float pct,unsigned int add)
 					{
 						if(add)
 						{
-							par->dim += image->dim*pct;
+							par->dim = (image->dim*pct)+(par->dim*(1.0f-pct));
 						}
 						else
 						{
