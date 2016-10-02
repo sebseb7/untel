@@ -771,7 +771,8 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			signed int selected = menu_list_touch(list1,relx,rely);
 			if(selected >= 0)
 			{
-				update_keypad(selected);
+				if(loop_enable == 0 )
+					update_keypad(selected);
 
 				set_menu_dirty();
 			}

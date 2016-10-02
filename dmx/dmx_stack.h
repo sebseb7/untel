@@ -11,6 +11,7 @@ struct dmx_stack
 	char group[DMX_NAME_LENGTH];
 
 	unsigned int active;
+	unsigned int blendpointer;
 	unsigned long long lastframetime;
 
 	unsigned int length;
