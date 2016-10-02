@@ -624,8 +624,6 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 					{
 						struct dmx_img* img = dmx_img_clone(stash[act]);
 						prog_stack->frames[selected] =  dmx_frame_newimg(img);
-						dmx_stack_add_imgframe(prog_stack,img);
-
 					}
 					else if(act_frame_type == DMX_FRAME_WAIT)
 					{
