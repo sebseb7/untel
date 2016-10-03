@@ -1,6 +1,5 @@
 save/load devices
-insert at current position -< except last pos /  move up / move down
-blend!
+insert at current position -< except last pos 
 command frame (with activation locks)
 priority???
 run any stack called "boot" initially
