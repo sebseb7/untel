@@ -25,6 +25,7 @@ struct dmx_stack* dmx_stack_new(void)
 	strcpy(stack->name,"");
 	strcpy(stack->group,"");
 	stack->active=0;
+	stack->lastframetime=0;
 	stack->blendpointer=0;
 	stack->length=0;
 	stack->alloc=DMX_STACK_FRAMES_ALLOCATE_INITIAL;
@@ -625,89 +626,129 @@ void dmx_stack_process(struct dmx_stack* stack)
 	if(stack->active == 0)
 		return;
 
-	if(stack->active > stack->length)
+	if(stack->active >= stack->length)
 	{
 		stack->active = 1;
 	}
-
-	unsigned int blend = 0;
-	unsigned int done = 0;
-
-	float pct = 0.0f;
 
 	unsigned long long curr = getmilis();
 
 	unsigned int curr_active = stack->active;
 
-	printf("act: %i\n",curr_active);
+	unsigned int mode = 0;
 
-
-	unsigned int iswait = 0;
-
-	for(unsigned int x = 0;x<stack->length;x++)
+	unsigned int onlywait=1;
+	for(unsigned int x=1; x <= stack->length ;x++)
 	{
-		printf("%i dd\n",x);
-		if(stack->frames[x]->type==DMX_FRAME_WAIT;
+		if( stack->frames[x-1]->type != DMX_FRAME_WAIT )
+		{
+			onlywait=0;
+			break;
+		}
+	}
+	if(onlywait)
+		return;
+
+	for(unsigned int x=curr_active; x <= stack->length ;x++)
+	{
+		if( stack->frames[x-1]->type == DMX_FRAME_WAIT )
+		{
+			if(stack->frames[x-1]->wait.blend==1)
+			{
+				mode = 2;
+			}
+			else
+			{
+				mode = 1;
+			}
+			
+			break;
+		}
+		
 	}
 
-
-
+	if(stack->frames[curr_active-1]->type == DMX_FRAME_WAIT)
+	{
+		do
+		{
+			curr_active--;
+			if(curr_active==0)
+			{
+				curr_active=stack->length;
+			}
+		}
+		while(stack->frames[curr_active-1]->type != DMX_FRAME_WAIT);
+		
+		curr_active++;
+		
+		if(curr_active > stack->length)
+		{
+			curr_active=1;
+		}
+	}
 
 	do
 	{
 		dmx_frame* active_frame = stack->frames[(curr_active)-1];
+		dmx_img_render(active_frame->image.image);
 
-
-		if(active_frame->type == DMX_FRAME_IMAGE)
-		{
-				if(blend==0) dmx_img_render(active_frame->image.image);
-				if(blend==1) dmx_img_render_pct_add(active_frame->image.image,pct,1);
-				curr_active++;
-		}
-		else if(active_frame->type == DMX_FRAME_WAIT)
-		{
-			if(blend==1) 
-			{
-				done=1;
-			}
-			
-			if(active_frame->wait.blend==1)
-			{
-				pct = (curr - stack->lastframetime)/(float)active_frame->wait.milis;
-				printf("pct: %f\n",(curr - stack->lastframetime)/(float)active_frame->wait.milis);
-				curr_active++;
-				blend = 1;
-				if( (curr - stack->lastframetime) > active_frame->wait.milis )
-				{
-					stack->active = curr_active;
-					stack->lastframetime = curr;
-				}
-			}
-			else
-			{
-				blend = 0;
-				if( (curr - stack->lastframetime) > active_frame->wait.milis )
-				{
-					curr_active++;
-					stack->active = curr_active;
-					stack->lastframetime = curr;
-				}
-				done=1;
-			}
-		}
-		else if(active_frame->type == DMX_FRAME_COMMAND)
-		{
-			//todo
-		}
-
+		curr_active++;
+		
 		if(curr_active > stack->length)
 		{
-			if(blend==0)done=1;
-			stack->active = 1;
+			curr_active=1;
+
+			if(mode == 0)
+				return;
 		}
 
+	}while( stack->frames[curr_active-1]->type != DMX_FRAME_WAIT );
+
+	if(stack->lastframetime == 0)
+	{
+		stack->lastframetime = curr;
 	}
-	while(done==0);
+
+	float pct = ((curr - stack->lastframetime) == 0)?0.0f:((curr - stack->lastframetime)/(float)stack->frames[curr_active-1]->wait.milis);
+				
+	if( (curr - stack->lastframetime) > stack->frames[curr_active-1]->wait.milis )
+	{
+		curr_active++;
+		
+		if(curr_active > stack->length)
+		{
+			curr_active=1;
+		}
+		stack->lastframetime = curr;
+		stack->active = curr_active;
+	}
+	else
+	{
+		curr_active++;
+		
+		if(curr_active > stack->length)
+		{
+			curr_active=1;
+		}
+	}
+
+	if(mode==2)
+	{
+		
+		do
+		{
+			dmx_frame* active_frame = stack->frames[(curr_active)-1];
+			dmx_img_render_pct_add(active_frame->image.image,pct,1);
+
+			curr_active++;
+		
+			if(curr_active > stack->length)
+			{
+				curr_active=1;
+			}
+
+		}while( stack->frames[curr_active-1]->type != DMX_FRAME_WAIT );
+	}
 
 }
 
