@@ -624,7 +624,7 @@ void dmx_stack_process(struct dmx_stack* stack)
 	if(stack->active == 0)
 		return;
 
-	if(stack->active >= stack->length)
+	if(stack->active > stack->length)
 	{
 		stack->active = 1;
 	}
@@ -669,7 +669,7 @@ void dmx_stack_process(struct dmx_stack* stack)
 		
 	}
 
-	printf("\nmode:%i pct:%f act:%i\n",mode,pct,curr_active);
+	//printf("\nmode:%i pct:%f act:%i\n",mode,pct,curr_active);
 
 	//scroll back
 	if(stack->frames[curr_active-1]->type == DMX_FRAME_WAIT)
@@ -685,44 +685,52 @@ void dmx_stack_process(struct dmx_stack* stack)
 		while(stack->frames[curr_active-1]->type != DMX_FRAME_WAIT);
 		
 		curr_active++;
+		//printf("inc5\n");
 		
 		if(curr_active > stack->length)
 		{
+			//printf("-\n");
 			curr_active=1;
 		}
 	}
 
+	//printf("bs %i\n",curr_active);
 	//replay
-	do
+	if(stack->frames[curr_active-1]->type == DMX_FRAME_IMAGE) 
 	{
-		if(stack->frames[curr_active-1]->type == DMX_FRAME_IMAGE)
+		do
 		{
-			dmx_frame* active_frame = stack->frames[(curr_active)-1];
-			if(mode==2)
+			if(stack->frames[curr_active-1]->type == DMX_FRAME_IMAGE)
 			{
-				printf("x %f\n",pct);
-				dmx_img_render_pct(active_frame->image.image,1.0f-pct);
+				dmx_frame* active_frame = stack->frames[(curr_active)-1];
+				if(mode==2)
+				{
+					//printf("x %f\n",pct);
+					dmx_img_render_pct(active_frame->image.image,1.0f-pct);
+				}
+				else
+				{
+					dmx_img_render(active_frame->image.image);
+				}
 			}
-			else
-			{
-				dmx_img_render(active_frame->image.image);
-			}
-		}
 
-		if(stack->frames[curr_active-1]->type != DMX_FRAME_WAIT)
-		{
-			curr_active++;
-		
-			if(curr_active > stack->length)
+			if(stack->frames[curr_active-1]->type != DMX_FRAME_WAIT)
 			{
-				curr_active=1;
-	
-				if(mode == 0)
-					return;
-			}
-		}
+				curr_active++;
+				//printf("inc4\n");
 
-	}while( stack->frames[curr_active-1]->type != DMX_FRAME_WAIT );
+				if(curr_active > stack->length)
+				{
+					//printf("-\n");
+					curr_active=1;
+
+					if(mode == 0)
+						return;
+				}
+			}
+
+		}while( stack->frames[curr_active-1]->type != DMX_FRAME_WAIT );
+	};
 
 	if(stack->lastframetime == 0)
 	{
@@ -730,26 +738,31 @@ void dmx_stack_process(struct dmx_stack* stack)
 	}
 
 	//curr_active is implicit WAIT
-	
+
 	stack->active = curr_active;
-				
+	//printf("set a1 %i\n",curr_active);
 	if( (curr - stack->lastframetime) > stack->frames[curr_active-1]->wait.milis )
 	{
 		curr_active++;
-		
+
+		//printf("inc3\n");
 		if(curr_active > stack->length)
 		{
+			//printf("-\n");
 			curr_active=1;
 		}
 		stack->lastframetime = curr;
 		stack->active = curr_active;
+		//printf("set a2 %i\n",curr_active);
 	}
 	else
 	{
 		curr_active++;
-		
+
+		//printf("inc1\n");
 		if(curr_active > stack->length)
 		{
+			//printf("-\n");
 			curr_active=1;
 		}
 	}
@@ -758,7 +771,7 @@ void dmx_stack_process(struct dmx_stack* stack)
 
 	if(mode==2)
 	{
-		
+
 		do
 		{
 			if(stack->frames[curr_active-1]->type == DMX_FRAME_IMAGE)
@@ -770,9 +783,11 @@ void dmx_stack_process(struct dmx_stack* stack)
 			if(stack->frames[curr_active-1]->type != DMX_FRAME_WAIT)
 			{
 				curr_active++;
-		
+				//printf("inc2\n");
+
 				if(curr_active > stack->length)
 				{
+					//iprintf("-\n");
 					curr_active=1;
 				}
 			}

@@ -106,6 +106,7 @@ static void constructor(void) {
 #if LUA_CUE==1
 	dmx_queue_add("LED-SCENE-004",init,deinit,tick);
 #else
-	dmx_queue_activate(dmx_queue_add("LED-SCENE-004",init,deinit,tick));
+	dmx_queue_add("LED-SCENE-004",init,deinit,tick);
+	//dmx_queue_activate(dmx_queue_add("LED-SCENE-004",init,deinit,tick));
 #endif
 }

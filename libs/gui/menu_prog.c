@@ -386,6 +386,8 @@ static void menu_prog_redraw(void)
 		touch_binding_add(touchlist,button_x(5),297,button_y(3),listsize*18-4,7,0,0);
 		menu_list_draw(list1,button_x(5),button_y(3),listsize);
 	}
+	
+	menu_autoupdate();
 
 }
 
@@ -410,6 +412,8 @@ static unsigned int update_list(void)
 		menu_list_free(list1);
 	}
 	list1 = menu_list_new(1);
+	unsigned int active = prog_stack->active;
+
 	for(unsigned int i=0;i < dmx_stack_frame_count(prog_stack);i++)
 	{
 		dmx_frame* frame = dmx_stack_frame_getbyidx(prog_stack,i);
@@ -419,7 +423,7 @@ static unsigned int update_list(void)
 		if(frame->type == DMX_FRAME_IMAGE)
 		{
 			struct dmx_img* image = frame->image.image;
-			snprintf(label,DMX_NAME_LENGTH,"IMG %i %c %s %s",
+			snprintf(label,DMX_NAME_LENGTH,"%c IMG %i %c %s %s",(active==(i+1))?'X':' ',
 					image->dev_count,
 					(image->is_dim)?'D':'-',
 					(image->is_col==DMX_ATTR_COLOR_NAME)?"CN":"--",
@@ -429,11 +433,11 @@ static unsigned int update_list(void)
 		{
 			if(frame->wait.milis>0)
 			{
-				snprintf(label,DMX_NAME_LENGTH,"WAIT %i ms%s",frame->wait.milis,(frame->wait.blend)?" (blend)":"");
+				snprintf(label,DMX_NAME_LENGTH,"%c WAIT %i ms%s",(active==(i+1))?'X':' ',frame->wait.milis,(frame->wait.blend)?" (blend)":"");
 			}
 			else
 			{
-				snprintf(label,DMX_NAME_LENGTH,"WAIT %i mbpm%s",frame->wait.bpms,(frame->wait.blend)?" (blend)":"");
+				snprintf(label,DMX_NAME_LENGTH,"%c WAIT %i mbpm%s",(active==(i+1))?'X':' ',frame->wait.bpms,(frame->wait.blend)?" (blend)":"");
 			}
 		}
 		else
@@ -447,7 +451,7 @@ static unsigned int update_list(void)
 
 	if(selected >= dmx_stack_frame_count(prog_stack))
 	{
-		printf("?tb\n");
+		//printf("?tb\n");
 		selected = dmx_stack_frame_count(prog_stack)-1;
 	}
 
@@ -463,11 +467,18 @@ static unsigned int update_list(void)
 	return (offset+selected);
 }
 
+static void menu_prog_update(void)
+{
+	update_list();
+	set_menu_dirty();
+}
+
+
 static void update_keypad(unsigned int selected)
 {
 	dmx_frame* frame = prog_stack->frames[selected];
 
-	printf("aa %i\n",frame->type);
+	//printf("aa %i\n",frame->type);
 
 	if(frame->type == DMX_FRAME_IMAGE)
 	{
@@ -614,7 +625,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			if((list1 != NULL)&&(list1->length>0))
 			{
 				signed int selected = menu_list_get_selected(list1);
-				printf("replace: %i (l:%i)\n",selected,prog_stack->length);
+				//printf("replace: %i (l:%i)\n",selected,prog_stack->length);
 
 				if((selected != -1)&&(prog_stack->length > (unsigned int)selected))
 				{
@@ -780,7 +791,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			{
 
 				signed int sel = menu_list_get_selected(list1);
-				printf("moveup %i\n",sel);
+				//printf("moveup %i\n",sel);
 				dmx_frame* frame = prog_stack->frames[sel+1];
 				prog_stack->frames[sel+1] = prog_stack->frames[sel];
 				prog_stack->frames[sel] = frame;;
@@ -791,7 +802,7 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 			else if(selected == -3)
 			{
 				signed int sel = menu_list_get_selected(list1);
-				printf("movedown %i\n",sel);
+				//printf("movedown %i\n",sel);
 				dmx_frame* frame = prog_stack->frames[sel-1];
 				prog_stack->frames[sel-1] = prog_stack->frames[sel];
 				prog_stack->frames[sel] = frame;;
@@ -815,7 +826,7 @@ void menu_prog_load_stack(struct dmx_stack* stack)
 	prog_stack=dmx_stack_clone(stack);
 	prog_stack->active=1;
 	set_programmer_stack(prog_stack);
-	printf("loaded %s %d\n",stack->name,stack->length);
+	//printf("loaded %s %d\n",stack->name,stack->length);
 
 	unsigned int sel = update_list();
 	if(sel == 0) sel = 1;
@@ -828,6 +839,7 @@ struct menu* get_menu_prog(void)
 	if(menu_prog == NULL)
 	{
 		menu_prog = malloc(sizeof(struct menu));
+		menu_prog->update = menu_prog_update;
 		menu_prog->redraw = menu_prog_redraw;
 		menu_prog->touch = menu_prog_touch;
 		menu_prog->parent = NULL;
