@@ -267,7 +267,7 @@ void dmx_stack_load_from_disc(void)
 	strcat(file_path,base_path);
 	strcat(file_path,file_name);
 	free(base_path);	
-	printf("file: %s\n",file_path);
+	//printf("file: %s\n",file_path);
 	SDL_RWops *file = SDL_RWFromFile(file_path, "r");
 	free(file_path);
 
@@ -278,35 +278,33 @@ void dmx_stack_load_from_disc(void)
 	unsigned int stacks = SDL_ReadBE32(file);
 
 
-	printf("stacks: %i\n",stacks);
+	//printf("stacks: %i\n",stacks);
 
 	for(unsigned int x = 0; x < stacks;x++)
 	{
 		struct dmx_stack* stack = malloc(sizeof(struct dmx_stack));
 
-		printf("stack:\n");
+		//printf("stack:\n");
 
 		unsigned int name_length = SDL_ReadU8(file);
 		if(name_length > (DMX_NAME_LENGTH-1)) name_length=DMX_NAME_LENGTH-1;
-		unsigned int xy = SDL_RWread(file, stack->name, 1, name_length+1);
-		printf("namelen: %i\n",xy);
+		SDL_RWread(file, stack->name, 1, name_length+1);
 		unsigned int group_length = SDL_ReadU8(file);
 		if(group_length > (DMX_NAME_LENGTH-1)) group_length=DMX_NAME_LENGTH-1;
-		unsigned int xz = SDL_RWread(file, stack->group, 1, group_length+1);
-		printf("groulen: %i\n",xz);
+		SDL_RWread(file, stack->group, 1, group_length+1);
 		stack->active=0;
 		stack->length=0;
 
 		stack->alloc=SDL_ReadBE32(file);// if we define a limit later, enforce it here
 		stack->frames=malloc(sizeof(dmx_frame*)*stack->alloc);
 
-		printf("alloc: %i\n",stack->alloc);
+		//printf("alloc: %i\n",stack->alloc);
 
 		for(unsigned int c=0;c<stack->alloc;c++)
 		{
 			unsigned int frame_type = SDL_ReadBE32(file);
 
-			printf("ft: %i\n",frame_type);
+			//printf("ft: %i\n",frame_type);
 
 			if(frame_type == DMX_FRAME_IMAGE)
 			{
@@ -315,12 +313,12 @@ void dmx_stack_load_from_disc(void)
 
 				unsigned int dev_count = SDL_ReadBE32(file);
 
-				printf("dev: %i\n",dev_count);// if we define a limit later, enforce it here
+				//printf("dev: %i\n",dev_count);// if we define a limit later, enforce it here
 
 				for(unsigned int x = 0;x<dev_count;x++)
 				{
 					unsigned int dev_name_length = SDL_ReadU8(file);
-					printf("devnl: %i\n",dev_name_length);
+					//printf("devnl: %i\n",dev_name_length);
 					char input[DMX_NAME_LENGTH];
 					if(dev_name_length > (DMX_NAME_LENGTH-1)) dev_name_length=DMX_NAME_LENGTH-1;
 					SDL_RWread(file, input, 1, dev_name_length+1);
@@ -331,21 +329,21 @@ void dmx_stack_load_from_disc(void)
 				image->is_col = SDL_ReadBE32(file);//todo: sanity check
 
 				unsigned int float_length = SDL_ReadU8(file);
-				printf("float nl: %i\n",float_length);
+				//printf("float nl: %i\n",float_length);
 				char floatinput[50];
 				if(float_length > 49) float_length=49;
 				SDL_RWread(file, floatinput, 1, float_length+1);
 
 				image->dim = atof(floatinput);
 
-				printf("dim: %f\n",image->dim);
+				//printf("dim: %f\n",image->dim);
 
 				image->r = SDL_ReadBE32(file);
 				image->g = SDL_ReadBE32(file);
 				image->b = SDL_ReadBE32(file);
 
 				unsigned int col_name_length = SDL_ReadU8(file);
-				printf("color nl: %i\n",col_name_length);
+				//printf("color nl: %i\n",col_name_length);
 				if(col_name_length > 0)
 				{
 					char tmp_colorname[DMX_NAME_LENGTH];
@@ -649,12 +647,16 @@ void dmx_stack_process(struct dmx_stack* stack)
 	if(onlywait)
 		return;
 
+	float pct = 0.0f;
+
 	for(unsigned int x=curr_active; x <= stack->length ;x++)
 	{
 		if( stack->frames[x-1]->type == DMX_FRAME_WAIT )
 		{
 			if(stack->frames[x-1]->wait.blend==1)
 			{
+				pct = ((curr - stack->lastframetime) == 0)?0.0f:((curr - stack->lastframetime)/(float)stack->frames[x-1]->wait.milis);
+				if(pct > 1.0f) pct=1.0f;
 				mode = 2;
 			}
 			else
@@ -667,6 +669,9 @@ void dmx_stack_process(struct dmx_stack* stack)
 		
 	}
 
+	printf("\nmode:%i pct:%f act:%i\n",mode,pct,curr_active);
+
+	//scroll back
 	if(stack->frames[curr_active-1]->type == DMX_FRAME_WAIT)
 	{
 		do
@@ -687,19 +692,34 @@ void dmx_stack_process(struct dmx_stack* stack)
 		}
 	}
 
+	//replay
 	do
 	{
-		dmx_frame* active_frame = stack->frames[(curr_active)-1];
-		dmx_img_render(active_frame->image.image);
-
-		curr_active++;
-		
-		if(curr_active > stack->length)
+		if(stack->frames[curr_active-1]->type == DMX_FRAME_IMAGE)
 		{
-			curr_active=1;
+			dmx_frame* active_frame = stack->frames[(curr_active)-1];
+			if(mode==2)
+			{
+				printf("x %f\n",pct);
+				dmx_img_render_pct(active_frame->image.image,1.0f-pct);
+			}
+			else
+			{
+				dmx_img_render(active_frame->image.image);
+			}
+		}
 
-			if(mode == 0)
-				return;
+		if(stack->frames[curr_active-1]->type != DMX_FRAME_WAIT)
+		{
+			curr_active++;
+		
+			if(curr_active > stack->length)
+			{
+				curr_active=1;
+	
+				if(mode == 0)
+					return;
+			}
 		}
 
 	}while( stack->frames[curr_active-1]->type != DMX_FRAME_WAIT );
@@ -709,7 +729,9 @@ void dmx_stack_process(struct dmx_stack* stack)
 		stack->lastframetime = curr;
 	}
 
-	float pct = ((curr - stack->lastframetime) == 0)?0.0f:((curr - stack->lastframetime)/(float)stack->frames[curr_active-1]->wait.milis);
+	//curr_active is implicit WAIT
+	
+	stack->active = curr_active;
 				
 	if( (curr - stack->lastframetime) > stack->frames[curr_active-1]->wait.milis )
 	{
@@ -732,19 +754,27 @@ void dmx_stack_process(struct dmx_stack* stack)
 		}
 	}
 
+	//blend
+
 	if(mode==2)
 	{
 		
 		do
 		{
-			dmx_frame* active_frame = stack->frames[(curr_active)-1];
-			dmx_img_render_pct_add(active_frame->image.image,pct,1);
-
-			curr_active++;
-		
-			if(curr_active > stack->length)
+			if(stack->frames[curr_active-1]->type == DMX_FRAME_IMAGE)
 			{
-				curr_active=1;
+				dmx_frame* active_frame = stack->frames[(curr_active)-1];
+				dmx_img_render_pct_add(active_frame->image.image,pct,1);
+			}
+
+			if(stack->frames[curr_active-1]->type != DMX_FRAME_WAIT)
+			{
+				curr_active++;
+		
+				if(curr_active > stack->length)
+				{
+					curr_active=1;
+				}
 			}
 
 		}while( stack->frames[curr_active-1]->type != DMX_FRAME_WAIT );

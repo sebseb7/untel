@@ -312,12 +312,13 @@ void dmx_img_render_pct_add(struct dmx_img* image, float pct,unsigned int add)
 					{
 						if(add)
 						{
-							par->red = (image->r*pct) + (par->red*(1.0f-pct));
-							par->green = (image->g*pct) + (par->green*(1.0f-pct));
-							par->blue = (image->b*pct) + (par->blue*(1.0f-pct));
+							par->red += (image->r*pct);
+							par->green += (image->g*pct);
+							par->blue += (image->b*pct);
 						}
 						else
 						{
+							printf("r2 %f\n",image->r*pct);
 							par->red = image->r*pct;
 							par->green = image->g*pct;
 							par->blue = image->b*pct;
@@ -337,12 +338,13 @@ void dmx_img_render_pct_add(struct dmx_img* image, float pct,unsigned int add)
 								dmx_attr_colors_get_rgb(i,&r,&g,&b);
 								if(add)
 								{
-									par->red = (r*pct) + (par->red*(1.0f-pct));
-									par->green = (g*pct) + (par->green*(1.0f-pct));
-									par->blue = (b*pct) + (par->blue*(1.0f-pct));
+									par->red += (r*pct);
+									par->green += (g*pct);
+									par->blue += (b*pct);
 								}
 								else
 								{
+									printf("r %f\n",r*pct);
 									par->red = r*pct;
 									par->green = g*pct;
 									par->blue = b*pct;
@@ -353,13 +355,14 @@ void dmx_img_render_pct_add(struct dmx_img* image, float pct,unsigned int add)
 
 					if(image->is_dim)
 					{
+						printf("dim %f %f\n",pct,image->dim);
 						if(add)
 						{
-							par->dim = (image->dim*pct)+(par->dim*(1.0f-pct));
+							par->dim += (image->dim*pct);
 						}
 						else
 						{
-							par->dim = image->dim*pct;
+							par->dim = (image->dim*pct);
 						}
 					}
 				}
