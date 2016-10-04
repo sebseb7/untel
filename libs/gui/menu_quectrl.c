@@ -205,7 +205,7 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 				mode = 0;
 				struct dmx_stack* stack = dmx_stack_getbyidx(attr2);
 				menu_prog_load_stack(stack);
-				printf("laod %s\n",stack->name);
+				//printf("laod %s\n",stack->name);
 
 				struct menu* menu_prog = get_menu_prog();
 				menu_prog->parent=menu_quectrl;
@@ -226,12 +226,12 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 						struct dmx_stack* stack2 = dmx_stack_getactiveingroup(stack->group);
 						if(stack2!=NULL)
 						{
-							printf("radio !\n");
+							//printf("radio !\n");
 							stack2->active=0;
 						}
 
 
-						printf("group\n");
+						//printf("group\n");
 					};	
 				
 					stack->active = 1;
