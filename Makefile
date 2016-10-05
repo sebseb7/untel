@@ -52,7 +52,7 @@ FLAGS+= -DDMX_OUT=$(DMX_OUT) -DSDL_OUT=$(SDL_OUT) -DLUA_CUE=$(LUA_CUE)
 all: dmxMidiCtrlNg
 
 plot:
-	./dmxMidiCtrlNg | feedgnuplot --stream trigger --lines --domain --xlen 60000 --ymin 0 --ymax 256 --terminal 'x11'
+	./dmxMidiCtrlNg | feedgnuplot --stream trigger --lines --domain --xlen 60000 --ymin 0 --ymax 256 --terminal 'xterm'
 
 clean:
 	@rm -f $(DEPS)

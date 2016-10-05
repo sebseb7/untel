@@ -696,7 +696,10 @@ void dmx_stack_process(struct dmx_stack* stack)
 
 	//printf("bs %i\n",curr_active);
 	//replay
-	if(stack->frames[curr_active-1]->type == DMX_FRAME_IMAGE) 
+	if(
+		(stack->frames[curr_active-1]->type == DMX_FRAME_IMAGE)||
+		(stack->frames[curr_active-1]->type == DMX_FRAME_COMMAND)
+	) 
 	{
 		do
 		{
@@ -713,7 +716,13 @@ void dmx_stack_process(struct dmx_stack* stack)
 					dmx_img_render(active_frame->image.image);
 				}
 			}
-
+			else if(stack->frames[curr_active-1]->type == DMX_FRAME_COMMAND)
+			{
+				//execute command
+				//
+				//during blend execute to 50%
+			}
+			
 			if(stack->frames[curr_active-1]->type != DMX_FRAME_WAIT)
 			{
 				curr_active++;
@@ -778,6 +787,12 @@ void dmx_stack_process(struct dmx_stack* stack)
 			{
 				dmx_frame* active_frame = stack->frames[(curr_active)-1];
 				dmx_img_render_pct_add(active_frame->image.image,pct,1);
+			}
+			else if(stack->frames[curr_active-1]->type == DMX_FRAME_COMMAND)
+			{
+				//execute command
+				//
+				//during blend execute starting 50%
 			}
 
 			if(stack->frames[curr_active-1]->type != DMX_FRAME_WAIT)
