@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "SDL.h"
+
 #include "dmx_devices.h"
 #include "dmx_channels.h"
 #include <led_gamma.h>
@@ -280,9 +282,61 @@ void dmx_device_render_strobe_sdl(struct dmx_device* device,unsigned int* pixelb
 
 void dmx_device_store_to_disc(void)
 {
+	char *file_name = "device";
+	char *base_path = SDL_GetPrefPath("net.exse", "untel");
+	char *file_path = calloc((strlen(base_path)+strlen(file_name)+1),sizeof(char));
+	strcat(file_path,base_path);
+	strcat(file_path,file_name);
+	free(base_path);	
+	SDL_RWops *file = SDL_RWFromFile(file_path, "w");
+	free(file_path);
+
+	SDL_WriteBE32(file,devices_inuse);
+	for(unsigned int i=0;i<devices_inuse;i++)
+	{
+		SDL_WriteBE32(file,dmx_device_list[i].type);
+		SDL_WriteBE32(file,dmx_device_list[i].addr);
+		SDL_WriteU8(file,strnlen(dmx_device_list[i].name,DMX_NAME_LENGTH));
+		SDL_RWwrite(file,dmx_device_list[i].name,1,1+strnlen(dmx_device_list[i].name,DMX_NAME_LENGTH));
+	}
+	
+	SDL_RWclose(file);
 }
 
 void dmx_device_load_from_disc(void)
 {
+	char *file_name = "device";
+	char *base_path = SDL_GetPrefPath("net.exse", "untel");
+	char *file_path = calloc((strlen(base_path)+strlen(file_name)+1),sizeof(char));
+	strcat(file_path,base_path);
+	strcat(file_path,file_name);
+	free(base_path);	
+	SDL_RWops *file = SDL_RWFromFile(file_path, "r");
+	free(file_path);
+
+	if(file == NULL)
+		return;
+
+
+	unsigned int devices = SDL_ReadBE32(file);
+
+	for(unsigned int x = 0; x < devices;x++)
+	{
+		unsigned int type =SDL_ReadBE32(file);
+		unsigned int addr =SDL_ReadBE32(file);
+		unsigned int namelen=SDL_ReadU8(file);
+
+		char name[DMX_NAME_LENGTH];
+		if(namelen > DMX_NAME_LENGTH) namelen=DMX_NAME_LENGTH;
+		SDL_RWread(file, name, 1, namelen+1);
+
+		if(type == DMX_DEVICE_LEDPAR6)
+		{
+			dmx_device_create_ledpar6(addr,name);
+		}
+	}
+
+	SDL_RWclose(file);
 }
+
 
