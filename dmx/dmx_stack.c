@@ -464,8 +464,8 @@ struct dmx_stack* dmx_stack_clone(struct dmx_stack* old_stack)
 		}
 		if(frame->type == DMX_FRAME_COMMAND)
 		{
-			frame->command.svalue1 = stndup(old_stack->frames[c]->command->svalue1,DMX_NAME_LENGTH);
-			frame->command.svalue2 = stndup(old_stack->frames[c]->command->svalue2,DMX_NAME_LENGTH);
+			frame->command.svalue1 = strndup(old_stack->frames[c]->command.svalue1,DMX_NAME_LENGTH);
+			frame->command.svalue2 = strndup(old_stack->frames[c]->command.svalue2,DMX_NAME_LENGTH);
 		}
 		stack->frames[c]=frame;
 	}
