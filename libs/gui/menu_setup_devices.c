@@ -22,7 +22,7 @@ static struct touch_binding_list* touchlist = NULL;
 static struct menu_list* list1 = NULL;
 
 static const unsigned int listsize = 15;
-
+static unsigned int mode = 0;
 
 static unsigned int update_list(void)
 {
@@ -99,17 +99,18 @@ static void menu_setup_devices_redraw(void)
 	
 	update_list();
 
-	touch_binding_add(touchlist,button_x(1),92,button_y(0),54,1,0,0);//add
+	touch_binding_add(touchlist,button_x(0),92,button_y(0),54,1,0,0);//add
 
 	if((list1 != NULL)&&(list1->length>0))
 	{
 		touch_binding_add(touchlist,button_x(1),92,button_y(0),54,2,0,0);//edit
 		touch_binding_add(touchlist,button_x(2),92,button_y(0),54,3,0,0);//del
 	}
+	else if(mode==2) mode = 0;
 
-	draw_button_icon(button_x(0),button_y(0),92,1,"Add",155,0,0,0,255,0);
-	draw_button_icon(button_x(1),button_y(0),92,1,"Edit",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
-	draw_button_icon(button_x(2),button_y(0),92,1,"Delete",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
+	draw_button_icon(button_x(0),button_y(0),92,1,"Add",155,(mode==1)?155:0,0,55,255,0);
+	draw_button_icon(button_x(1),button_y(0),92,1,"Edit",((list1 != NULL)&&(list1->length>0))?155:55,(mode==2)?155:0,0,55,((list1 != NULL)&&(list1->length>0))?255:55,0);
+	draw_button_icon(button_x(2),button_y(0),92,1,"Delete",((list1 != NULL)&&(list1->length>0))?155:55,0,0,55,((list1 != NULL)&&(list1->length>0))?255:55,0);
 
 
 	if(list1 != NULL)
@@ -140,7 +141,25 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 	unsigned int rely = 0;
 	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3,&relx,&rely))
 	{
-		if(attr1 == 3)
+		if(attr1 == 1)
+		{
+			if(mode!=1)
+				mode=1;
+			else
+				mode=0;
+			
+			set_menu_dirty();
+		}	
+		else if(attr1 == 2)
+		{
+			if(mode!=2)
+				mode=2;
+			else
+				mode=0;
+			
+			set_menu_dirty();
+		}	
+		else if(attr1 == 3)
 		{
 			if((list1 != NULL)&&(list1->length>0))
 			{
@@ -153,7 +172,7 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 			}
 			
 		}
-		if(attr1 == 7)
+		else if(attr1 == 7)
 		{
 			signed int selected = menu_list_touch(list1,relx,rely);
 			if(selected >= 0)
