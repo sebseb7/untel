@@ -96,15 +96,26 @@ static void menu_setup_devices_redraw(void)
 
 	uint16_t text_width =  get_text_width_16pt("Setup Devices");
 	draw_text_16pt((LCD_WIDTH-text_width)>>1,9, "Setup Devices", 200,200,255);
-
-
-
+	
 	update_list();
+
+	touch_binding_add(touchlist,button_x(1),92,button_y(0),54,1,0,0);//add
+
+	if((list1 != NULL)&&(list1->length>0))
+	{
+		touch_binding_add(touchlist,button_x(1),92,button_y(0),54,2,0,0);//edit
+		touch_binding_add(touchlist,button_x(2),92,button_y(0),54,3,0,0);//del
+	}
+
+	draw_button_icon(button_x(0),button_y(0),92,1,"Add",155,0,0,0,255,0);
+	draw_button_icon(button_x(1),button_y(0),92,1,"Edit",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
+	draw_button_icon(button_x(2),button_y(0),92,1,"Delete",((list1 != NULL)&&(list1->length>0))?155:55,0,0,0,((list1 != NULL)&&(list1->length>0))?255:55,0);
+
 
 	if(list1 != NULL)
 	{
-		touch_binding_add(touchlist,button_x(5),297,button_y(3),listsize*18-4,7,0,0);
-		menu_list_draw(list1,button_x(5),button_y(3),listsize);
+		touch_binding_add(touchlist,button_x(5),297,button_y(0),listsize*18-4,7,0,0);
+		menu_list_draw(list1,button_x(5),button_y(0),listsize);
 	}
 
 }
@@ -129,6 +140,19 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 	unsigned int rely = 0;
 	if(touch_test(touchlist,x,y,&attr1,&attr2,&attr3,&relx,&rely))
 	{
+		if(attr1 == 3)
+		{
+			if((list1 != NULL)&&(list1->length>0))
+			{
+				signed int selected = menu_list_get_selected(list1);
+				if(selected >= 0)
+				{
+					dmx_devices_delete((unsigned int)selected);
+					set_menu_dirty();
+				}
+			}
+			
+		}
 		if(attr1 == 7)
 		{
 			signed int selected = menu_list_touch(list1,relx,rely);
