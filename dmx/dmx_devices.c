@@ -8,24 +8,6 @@
 #include "dmx_channels.h"
 #include <led_gamma.h>
 
-/*struct dmx_device {
-	unsigned int type;
-	unsigned int addr;
-	char name[DMX_NAME_LENGTH];
-	void* device;
-};
-
-struct dmx_device_ledpar {
-	unsigned int addr;
-	unsigned int type;
-	float red;
-	float green;
-	float blue;
-	float dim;
-	unsigned int blackout;
-};
-*/
-
 #define DMX_DEVICE_ALLOCATE_INITIAL 100
 #define DMX_DEVICE_ALLOCATE_STEP 10
 
@@ -101,6 +83,35 @@ void dmx_devices_clear(void)
 		}
 	}
 }
+void dmx_devices_delete(unsigned int index)
+{
+	if(index >= devices_inuse)
+		return;
+
+	if(dmx_device_list[index].type == DMX_DEVICE_LEDPAR6)
+	{
+		free(dmx_device_list[index].device);
+	}
+	else if(dmx_device_list[index].type == DMX_DEVICE_STROBE)
+	{
+		free(dmx_device_list[index].device);
+	}
+	else
+	{
+		printf("error deleting unknown device\n");
+	}
+
+	for(unsigned int x = index;x < devices_inuse;x++)
+	{
+		dmx_device_list[x].type=     dmx_device_list[x+1].type;
+		dmx_device_list[x].addr=     dmx_device_list[x+1].addr;
+		dmx_device_list[x].refcount= dmx_device_list[x+1].refcount;
+		for(unsigned int y=0;y<DMX_NAME_LENGTH;y++)
+			dmx_device_list[x].name[y]=     dmx_device_list[x+1].name[y];
+		dmx_device_list[x].device=   dmx_device_list[x+1].device;
+	}
+	devices_inuse--;
+}
 struct dmx_device* dmx_get_device(unsigned int type,char* name)
 {
 	for(unsigned int i=0;i<devices_inuse;i++)
@@ -129,19 +140,19 @@ struct dmx_device_ledpar6* dmx_device_create_ledpar6(unsigned int addr,char* nam
 		for(unsigned int i=0;i<devices_inuse;i++)
 		{
 			if(
-				(dmx_device_list[i].type==DMX_DEVICE_LEDPAR6)&&
-				(dmx_device_list[i].addr==addr)&&
-				(0==strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH))
-			)
+					(dmx_device_list[i].type==DMX_DEVICE_LEDPAR6)&&
+					(dmx_device_list[i].addr==addr)&&
+					(0==strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH))
+			  )
 			{
-					dmx_device_list[i].refcount++;
-					return dmx_device_list[i].device;
+				dmx_device_list[i].refcount++;
+				return dmx_device_list[i].device;
 			}
 		}
 	}
-	
+
 	struct dmx_device_ledpar6* ledpar = malloc(sizeof(*ledpar));
-	
+
 	ledpar->red = 0;
 	ledpar->green = 0;
 	ledpar->blue = 0;
@@ -160,19 +171,19 @@ struct dmx_device_strobe* dmx_device_create_strobe(unsigned int addr,char* name)
 		for(unsigned int i=0;i<devices_inuse;i++)
 		{
 			if(
-				(dmx_device_list[i].type==DMX_DEVICE_STROBE)&&
-				(dmx_device_list[i].addr==addr)&&
-				(0==strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH))
-			)
+					(dmx_device_list[i].type==DMX_DEVICE_STROBE)&&
+					(dmx_device_list[i].addr==addr)&&
+					(0==strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH))
+			  )
 			{
-					dmx_device_list[i].refcount++;
-					return dmx_device_list[i].device;
+				dmx_device_list[i].refcount++;
+				return dmx_device_list[i].device;
 			}
 		}
 	}
-	
+
 	struct dmx_device_strobe* strobe = malloc(sizeof(*strobe));
-	
+
 	strobe->freq = 0.0f;
 	strobe->dim  = 0.0f;
 
@@ -221,7 +232,7 @@ void dmx_device_render_strobe(struct dmx_device* device)
 	//dim = led_gamma(255*strobe->dim);
 	dim = 255*strobe->dim;
 	freq = 255*strobe->freq;
-	
+
 	dmx_channel_set(device->addr,freq);
 	dmx_channel_set(device->addr+1,dim);
 
@@ -232,7 +243,7 @@ void dmx_device_render_strobe(struct dmx_device* device)
 
 void dmx_device_render_ledpar6_sdl(struct dmx_device* device,unsigned int* pixelbuffer,unsigned int row, unsigned int col)
 {
-	
+
 	struct dmx_device_ledpar6* ledpar = device->device;
 
 	unsigned char red=0;
@@ -258,7 +269,7 @@ void dmx_device_render_ledpar6_sdl(struct dmx_device* device,unsigned int* pixel
 }
 void dmx_device_render_strobe_sdl(struct dmx_device* device,unsigned int* pixelbuffer,unsigned int row, unsigned int col)
 {
-	
+
 	struct dmx_device_strobe* strobe = device->device;
 
 	unsigned int red = 255*strobe->dim;
@@ -299,7 +310,7 @@ void dmx_device_store_to_disc(void)
 		SDL_WriteU8(file,strnlen(dmx_device_list[i].name,DMX_NAME_LENGTH));
 		SDL_RWwrite(file,dmx_device_list[i].name,1,1+strnlen(dmx_device_list[i].name,DMX_NAME_LENGTH));
 	}
-	
+
 	SDL_RWclose(file);
 }
 

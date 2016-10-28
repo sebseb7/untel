@@ -61,6 +61,7 @@ struct dmx_device* dmx_get_device(unsigned int type,char* name);
 struct dmx_device* dmx_get_device_byidx(unsigned int index);
 void dmx_devices_clear(void);
 void dmx_devices_free(void);
+void dmx_devices_delete(unsigned int index);
 				
 void dmx_device_render_strobe(struct dmx_device* device);
 void dmx_device_render_ledpar6(struct dmx_device* device);
