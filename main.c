@@ -108,7 +108,7 @@ int main(int argc __attribute__((__unused__)), char *argv[] __attribute__((__unu
 	
 //	while(looping-- > 0)
 
-	//dmx_device_load_from_disc();
+	dmx_device_load_from_disc();
 	dmx_stack_load_from_disc();
 
 

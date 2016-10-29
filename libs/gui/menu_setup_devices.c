@@ -143,6 +143,17 @@ static void menu_setup_devices_redraw(void)
 		draw_text_8x6(button_x(1),button_y(3)+20,"Addr:",255,255,255);
 		draw_number_8x6(button_x(1)+(6*6),button_y(3)+20,active_addr,3,' ',255,255,255);
 
+		
+		unsigned int valid = 1;
+
+		if((active_name == NULL)||(strncmp(active_name,"",DMX_NAME_LENGTH)==0)) valid=0;
+		if(active_type == 0) valid=0;
+		if(-1 !=  dmx_get_device_idx(active_name)) valid=0;
+		
+		
+		if(valid) 
+			touch_binding_add(touchlist,button_x(0),92,button_y(4),54,8,0,0);//save
+		draw_button_icon(button_x(0),button_y(4),92,1,"Save",(valid)?155:55,(mode==2)?155:0,0,55,(valid)?255:55,0);
 
 	}
 
@@ -184,6 +195,12 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 				mode=1;
 			else
 				mode=0;
+
+	
+			free(active_name);
+			active_name=strdup("");
+			active_type=0;
+			active_addr=0;
 
 			set_menu_dirty();
 		}	
@@ -233,6 +250,18 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 			{
 				set_menu_dirty();
 			}
+		}
+		else if(attr1 == 8)//save
+		{
+			if(active_type==DMX_DEVICE_LEDPAR6)
+			{
+				if(-1 ==  dmx_get_device_idx(active_name))
+				{
+					dmx_device_create_ledpar6(active_addr,active_name);
+					dmx_device_load_from_disc();
+				}
+			}
+			set_menu_dirty();
 		}
 	}
 }

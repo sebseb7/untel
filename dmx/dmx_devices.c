@@ -43,6 +43,18 @@ unsigned int dmx_get_device_count(void)
 {
 	return devices_inuse;
 }
+int dmx_get_device_idx(char* name)
+{
+	for(unsigned int i=0;i<devices_inuse;i++)
+	{
+		if(0==strncmp(dmx_device_list[i].name,name,DMX_NAME_LENGTH))
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
 void dmx_devices_free(void)
 {
 	for(unsigned int i=0;i<devices_inuse;i++)

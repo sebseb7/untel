@@ -57,6 +57,7 @@ struct dmx_device_ledpar6 * dmx_device_create_ledpar6(unsigned int addr,char* na
 struct dmx_device_miniscanhpe * dmx_device_create_miniscanhpe(unsigned int addr,char* name);
 struct dmx_device_fog*  dmx_device_create_fog(unsigned int addr);
 unsigned int dmx_get_device_count(void);
+int dmx_get_device_idx(char* name);
 struct dmx_device* dmx_get_device(unsigned int type,char* name);
 struct dmx_device* dmx_get_device_byidx(unsigned int index);
 void dmx_devices_clear(void);
