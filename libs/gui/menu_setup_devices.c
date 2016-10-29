@@ -258,7 +258,7 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 				if(-1 ==  dmx_get_device_idx(active_name))
 				{
 					dmx_device_create_ledpar6(active_addr,active_name);
-					dmx_device_load_from_disc();
+					dmx_device_store_to_disc();
 				}
 			}
 			set_menu_dirty();
