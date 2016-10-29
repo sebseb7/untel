@@ -230,6 +230,7 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 				if(selected >= 0)
 				{
 					dmx_devices_delete((unsigned int)selected);
+					dmx_device_store_to_disc();
 					set_menu_dirty();
 				}
 			}

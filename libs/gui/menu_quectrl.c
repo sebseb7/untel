@@ -215,6 +215,7 @@ static void menu_quectrl_touch(unsigned int x, unsigned int y)
 			{
 				mode = 0;
 				dmx_stack_delete(attr2);
+				dmx_stack_store_to_disc("stack");
 			}
 			else//toggle
 			{

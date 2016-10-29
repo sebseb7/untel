@@ -14,4 +14,6 @@ struct dmx_globvar
 void dmx_globvar_set(const char* name,unsigned int value);
 int dmx_globvar_get(const char* name,unsigned int *value);
 
+void dmx_globvar_free(void);
+
 #endif

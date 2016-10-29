@@ -5,6 +5,7 @@
 
 #include "main.h"
 #include "dmx_devices.h"
+#include "dmx_globvar.h"
 #include "dmx_stack.h"
 #include "dmx_image.h"
 #include "dmx_channels.h"
@@ -258,8 +259,10 @@ unsigned int queue_count = dmx_queue_get_count();
 		dmx_queue_del(queue);
 	}
 	dmx_devices_free();
+	dmx_globvar_free();
 #if SDL_OUT==1
 	sdl_deinit();
+	printf("deinit\n");
 #endif
 	return 0;
 }

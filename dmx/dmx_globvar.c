@@ -86,3 +86,19 @@ int dmx_globvar_get(const char* name,unsigned int *value)
 	return 0;
 }
 
+void dmx_globvar_free(void)
+{
+	if(0!=globvar_allocated)
+	{
+		if(globvar_inuse>0)
+		{
+			for(unsigned int i=0;i<globvar_inuse;i++)
+			{
+				free(dmx_globvar_list[i]->name);
+				free(dmx_globvar_list[i]);
+			}
+		}
+		free(dmx_globvar_list);
+	}
+}
+
