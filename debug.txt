@@ -1,3 +1,4 @@
 valgrind --tool=massif --massif-out-file=massif.txt ./dmxMidiCtrlNG && massif-visualizer massif.txt
 valgrind --tool=callgrind  --dump-every-bb=10000000 ./dmxMidiCtrlNg && kcachegrind
+valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all --gen-suppressions=all --suppressions=supp ./dmxMidiCtrlNg 
 
