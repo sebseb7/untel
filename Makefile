@@ -1,16 +1,14 @@
 UNAME := $(shell uname)
 
-COMPILER = gcc
+COMPILER = clang
 
-ifeq ($(UNAME), Darwin)
-	COMPILER = clang
+ifeq (, $(shell which clang))
+	COMPILER = gcc
 endif
 
 DMX_OUT=0
 SDL_OUT=1
 LUA_CUE=0
-
-
 
 SOURCES=$(wildcard main.c queues/*.c queues/par56/*.c queues/strobe/*.c libs/*.c libs/mcugui/*.c libs/gui/*.c dmx/*.c)
 
@@ -48,7 +46,7 @@ LDFLAGS+=$(shell sdl2-config --libs)
 endif
 
 FLAGS+= -DDMX_OUT=$(DMX_OUT) -DSDL_OUT=$(SDL_OUT) -DLUA_CUE=$(LUA_CUE)
-
+	
 all: dmxMidiCtrlNg
 
 plot:
