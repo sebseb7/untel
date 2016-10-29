@@ -153,7 +153,7 @@ static void menu_setup_devices_redraw(void)
 		
 		if(valid) 
 			touch_binding_add(touchlist,button_x(0),92,button_y(4),54,8,0,0);//save
-		draw_button_icon(button_x(0),button_y(4),92,1,"Save",(valid)?155:55,(mode==2)?155:0,0,55,(valid)?255:55,0);
+		draw_button_icon(button_x(0),button_y(4),92,1,"Save",(valid)?155:55,0,0,55,(valid)?255:55,0);
 
 	}
 
@@ -211,6 +211,15 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 			else
 				mode=0;
 
+			signed int selected = menu_list_get_selected(list1);
+			if(selected >= 0)
+			{
+				struct dmx_device* device = dmx_get_device_byidx(selected);
+			
+				active_name=strndup(device->name,DMX_NAME_LENGTH);
+				active_type=device->type;
+				active_addr=device->addr;
+			}
 			set_menu_dirty();
 		}	
 		else if(attr1 == 3)
@@ -248,6 +257,7 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 			signed int selected = menu_list_touch(list1,relx,rely);
 			if(selected >= 0)
 			{
+				if(mode==2) mode=0;
 				set_menu_dirty();
 			}
 		}
@@ -255,10 +265,22 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 		{
 			if(active_type==DMX_DEVICE_LEDPAR6)
 			{
-				if(-1 ==  dmx_get_device_idx(active_name))
+				
+				if((mode==1)&&(-1 ==  dmx_get_device_idx(active_name)))
 				{
 					dmx_device_create_ledpar6(active_addr,active_name);
 					dmx_device_store_to_disc();
+				}
+				if(mode==2)
+				{
+					signed int selected = menu_list_get_selected(list1);
+					if(selected >= 0)
+					{
+						dmx_devices_delete((unsigned int)selected);
+					}
+					dmx_device_create_ledpar6(active_addr,active_name);
+					dmx_device_store_to_disc();
+					mode=0;
 				}
 			}
 			set_menu_dirty();
