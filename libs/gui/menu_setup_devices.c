@@ -138,7 +138,7 @@ static void menu_setup_devices_redraw(void)
 		draw_button_icon(button_x(0),button_y(3),92,1,"Change Addr",155,0,0,55,255,0);
 
 		draw_text_8x6(button_x(1),button_y(2)+20,"Name:",255,255,255);
-		draw_text_8x6(button_x(1)+(6*6),button_y(2)+20,active_name,255,255,255);
+		draw_text_8x6(button_x(1)+(6*6),button_y(2)+20,active_name,255,((mode==1)&&(-1 !=  dmx_get_device_idx(active_name)))?0:255,((mode==1)&&(-1 !=  dmx_get_device_idx(active_name)))?0:255);
 
 		draw_text_8x6(button_x(1),button_y(3)+20,"Addr:",255,255,255);
 		draw_number_8x6(button_x(1)+(6*6),button_y(3)+20,active_addr,3,' ',255,255,255);
@@ -148,7 +148,7 @@ static void menu_setup_devices_redraw(void)
 
 		if((active_name == NULL)||(strncmp(active_name,"",DMX_NAME_LENGTH)==0)) valid=0;
 		if(active_type == 0) valid=0;
-		if(-1 !=  dmx_get_device_idx(active_name)) valid=0;
+		if((mode==1)&&(-1 !=  dmx_get_device_idx(active_name))) valid=0;
 		
 		
 		if(valid) 
