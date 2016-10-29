@@ -4,7 +4,7 @@
 #include "dmx_defines.h"
 
 enum {
-	DMX_DEVICE_GROUP,
+	DMX_DEVICE_GROUP=1,
 	DMX_DEVICE_FOG,
 	DMX_DEVICE_LEDPAR6,
 	DMX_DEVICE_LEDPAR7,

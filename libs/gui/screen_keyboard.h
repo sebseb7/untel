@@ -4,11 +4,9 @@
 #include <stdint.h>
 
 void invoke_keyboard(char*,char*,void (*)(char*));
-char* get_keyboard_buffer(void);
 
-
-void invoke_numeric_keyboard(char*,uint32_t);
-uint32_t get_keyboard_number(void);
+void invoke_numeric_keyboard(char*,uint32_t,void (*)(uint32_t));
+void invoke_addr_keyboard(char*,uint32_t,void (*)(uint32_t));
 
 #endif
 

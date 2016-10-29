@@ -4,6 +4,7 @@
 #include "menu_list.h"
 #include "menu_setup.h"
 #include "menu_setup_devices.h"
+#include "screen_keyboard.h"
 //#include "menu_setup_devices_add.h"
 //#include "menu_setup_devices_edit.h"
 //#include "dmxbox_hal.h"
@@ -23,6 +24,10 @@ static struct menu_list* list1 = NULL;
 
 static const unsigned int listsize = 15;
 static unsigned int mode = 0;
+
+static unsigned int active_type=0;
+static unsigned int active_addr=0;
+static char* active_name=NULL;
 
 static unsigned int update_list(void)
 {
@@ -119,6 +124,38 @@ static void menu_setup_devices_redraw(void)
 		menu_list_draw(list1,button_x(5),button_y(0),listsize);
 	}
 
+	if(mode!=0)
+	{
+		touch_binding_add(touchlist,button_x(0),92,button_y(1),54,4,DMX_DEVICE_LEDPAR6,0);
+		touch_binding_add(touchlist,button_x(1),92,button_y(1),54,4,DMX_DEVICE_FOG,0);
+		touch_binding_add(touchlist,button_x(2),92,button_y(1),54,4,DMX_DEVICE_STROBE,0);
+		draw_button_icon(button_x(0),button_y(1),92,1,"Par56",155,(active_type==DMX_DEVICE_LEDPAR6)?155:0,0,55,255,0);
+		draw_button_icon(button_x(1),button_y(1),92,1,"Fog",155,(active_type==DMX_DEVICE_FOG)?155:0,0,55,255,0);
+		draw_button_icon(button_x(2),button_y(1),92,1,"Strobe",155,(active_type==DMX_DEVICE_STROBE)?155:0,0,55,255,0);
+		touch_binding_add(touchlist,button_x(0),92,button_y(2),54,5,0,0);
+		touch_binding_add(touchlist,button_x(0),92,button_y(3),54,6,0,0);
+		draw_button_icon(button_x(0),button_y(2),92,1,"Change Name",155,0,0,55,255,0);
+		draw_button_icon(button_x(0),button_y(3),92,1,"Change Addr",155,0,0,55,255,0);
+
+		draw_text_8x6(button_x(1),button_y(2)+20,"Name:",255,255,255);
+		draw_text_8x6(button_x(1)+(6*6),button_y(2)+20,active_name,255,255,255);
+
+		draw_text_8x6(button_x(1),button_y(3)+20,"Addr:",255,255,255);
+		draw_number_8x6(button_x(1)+(6*6),button_y(3)+20,active_addr,3,' ',255,255,255);
+
+
+	}
+
+}
+static void return_from_namechange(char * name)
+{
+	free(active_name);
+	active_name=strndup(name,DMX_NAME_LENGTH);
+}
+
+static void return_from_addrchange(uint32_t newaddr)
+{
+	active_addr = newaddr;
 }
 
 static void menu_setup_devices_touch(unsigned int x, unsigned int y)
@@ -147,7 +184,7 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 				mode=1;
 			else
 				mode=0;
-			
+
 			set_menu_dirty();
 		}	
 		else if(attr1 == 2)
@@ -156,7 +193,7 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 				mode=2;
 			else
 				mode=0;
-			
+
 			set_menu_dirty();
 		}	
 		else if(attr1 == 3)
@@ -170,7 +207,24 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 					set_menu_dirty();
 				}
 			}
-			
+
+		}
+		else if(attr1 == 4)
+		{
+			if(active_type != attr2)
+				active_type = attr2;
+			else
+				active_type=0;
+
+			set_menu_dirty();
+		}
+		else if(attr1 == 5)
+		{
+			invoke_keyboard("Change Name",active_name,return_from_namechange);
+		}
+		else if(attr1 == 6)
+		{
+			invoke_numeric_keyboard("Change Address",active_addr,return_from_addrchange);
 		}
 		else if(attr1 == 7)
 		{
@@ -181,7 +235,6 @@ static void menu_setup_devices_touch(unsigned int x, unsigned int y)
 			}
 		}
 	}
-
 }
 
 struct menu* get_menu_setup_devices()
@@ -194,6 +247,7 @@ struct menu* get_menu_setup_devices()
 		menu_setup_devices->parent = NULL;
 		menu_setup_devices->update = NULL;
 	}
+	if(active_name == NULL) active_name=strdup("");
 
 	return menu_setup_devices;
 }

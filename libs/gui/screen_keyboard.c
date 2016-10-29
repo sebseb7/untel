@@ -32,6 +32,7 @@ static uint8_t blink = 0;
 
 static char buffer[MAXLENGTH+1];
 static uint8_t buffer_length=0;
+static uint8_t numeric_type=0;
 
 static struct menu* current_menu;
 
@@ -41,6 +42,7 @@ static struct menu* screen_keyboard(void);
 static struct menu* screen_keyboard_numeric(void);
 
 static void (*stored_callback)(char*)=NULL;
+static void (*stored_callback_num)(uint32_t)=NULL;
 
 void invoke_keyboard(char* desc,char* initial,void (*callback)(char*))
 {
@@ -54,7 +56,7 @@ void invoke_keyboard(char* desc,char* initial,void (*callback)(char*))
 	stored_callback=callback;
 }
 
-void invoke_numeric_keyboard(char* desc, uint32_t initial)
+void invoke_numeric_keyboard(char* desc, uint32_t initial,void (*callback)(uint32_t))
 {
 	snprintf(buffer,30,"%"PRIu32"",(unsigned int)initial);
 	buffer_length=strlen(buffer);
@@ -63,16 +65,21 @@ void invoke_numeric_keyboard(char* desc, uint32_t initial)
 	set_current_menu(screen_keyboard_numeric());
 	menu_autoupdate();
 	strcpy(current_title,desc);
+	stored_callback_num=callback;
+	numeric_type=0;
 }
 
-char* get_keyboard_buffer()
+void invoke_addr_keyboard(char* desc, uint32_t initial,void (*callback)(uint32_t))
 {
-	return buffer;
-}
-
-uint32_t get_keyboard_number()
-{
-	return strtol(buffer, NULL, 10);
+	snprintf(buffer,30,"%"PRIu32"",(unsigned int)initial);
+	buffer_length=strlen(buffer);
+	cursor_pos=buffer_length;
+	current_menu=get_current_menu();
+	set_current_menu(screen_keyboard_numeric());
+	menu_autoupdate();
+	strcpy(current_title,desc);
+	stored_callback_num=callback;
+	numeric_type=1;
 }
 
 static void screen_keyboard_redraw(void)
@@ -455,6 +462,10 @@ static void screen_keyboard_numeric_touch(unsigned int x, unsigned int y)
 	}else if(keychar == 13)
 	{
 		set_current_menu(current_menu);
+		if(stored_callback_num != NULL)
+		{
+			stored_callback_num(strtol(buffer, NULL, 10));
+		}
 	}else if(keychar == 127)
 	{
 		if((cursor_pos > 0) && (buffer_length > 0))
