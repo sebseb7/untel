@@ -58,7 +58,11 @@ static void menu_quectrl_redraw(void)
 			y++;
 		}
 	}
-	x=0;y++;
+	if(dmx_queue_get_count())
+	{
+		x=0;
+		y++;
+	}
 #if LUA_CUE==1
 	for(unsigned int i =0;i< dmx_luaqueue_get_count();i++)
 	{
@@ -118,7 +122,11 @@ static void menu_quectrl_update(void)
 			y++;
 		}
 	}
-	x=0;y++;
+	if(dmx_queue_get_count())
+	{
+		x=0;
+		y++;
+	}
 #if LUA_CUE==1
 	for(unsigned int i =0;i< dmx_luaqueue_get_count();i++)
 	{

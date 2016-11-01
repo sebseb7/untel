@@ -51,6 +51,9 @@ static unsigned int act_wait_blend = 0;
 static unsigned int act_wait_type = 0;
 static unsigned int act_wait_value = 0;
 
+static unsigned int act_cmd_type = 0;
+static char* act_cmd_svalue1 = NULL;
+
 static unsigned int loop_enable = 0;
 
 static const unsigned int listsize = 15;
@@ -373,11 +376,24 @@ static void menu_prog_redraw(void)
 	}
 	else if(tab==6) //COMMAND
 	{
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Stack ON",55,0,0,0,55,0);
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Stack OFF",55,0,0,0,55,0);
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Stack Trigg",55,0,0,0,55,0);
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Repeat",55,0,0,0,55,0);
-		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Lua",55,0,0,0,55,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,16,DMX_COMMAND_STACKON,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Stack ON",155,(act_cmd_type==DMX_COMMAND_STACKON)?155:0,0,0,255,0);
+		touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,16,DMX_COMMAND_STACKOFF,0);
+		draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Stack OFF",155,(act_cmd_type==DMX_COMMAND_STACKOFF)?155:0,0,0,255,0);
+		
+		
+		if((act_cmd_type==DMX_COMMAND_STACKON)||(act_cmd_type==DMX_COMMAND_STACKOFF))
+		{
+			buttony++;buttonx=0;
+			touch_binding_add(touchlist,button_x(buttonx),92,button_y(buttony),54,17,0,0);
+			draw_button_icon(button_x(buttonx++),button_y(buttony),92,1,"Change",155,0,0,55,255,0);
+		
+			draw_text_8x6(button_x(buttonx),button_y(buttony)+20,"Name:",255,255,255);
+			if(act_cmd_svalue1 != NULL)
+			{
+				draw_text_8x6(button_x(buttonx)+(6*6),button_y(buttony)+20,act_cmd_svalue1,255,255,255);
+			}
+		}
 	}
 
 
@@ -512,6 +528,12 @@ static void update_keypad(unsigned int selected)
 		}
 
 	}
+}
+
+static void return_from_svalue1_change(char * name)
+{
+	if(act_cmd_svalue1 != NULL) free(act_cmd_svalue1);
+	act_cmd_svalue1=strndup(name,DMX_NAME_LENGTH);
 }
 
 static void menu_prog_touch(unsigned int x, unsigned int y)
@@ -811,6 +833,15 @@ static void menu_prog_touch(unsigned int x, unsigned int y)
 				//move down
 			}
 
+		}
+		else if(attr1 == 16)
+		{
+			act_cmd_type = attr2;
+			set_menu_dirty();
+		}
+		else if(attr1 == 17)
+		{
+			invoke_keyboard("Change Stack Name",act_cmd_svalue1,return_from_svalue1_change);
 		}
 	}
 }

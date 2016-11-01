@@ -9,6 +9,12 @@ enum {
 	DMX_FRAME_COMMAND,
 };
 
+enum {
+	DMX_COMMAND_STACKON=1,
+	DMX_COMMAND_STACKOFF,
+};
+
+
 struct dmx_img
 {
 	unsigned int dev_alloc;

@@ -46,7 +46,11 @@ static void (*stored_callback_num)(uint32_t)=NULL;
 
 void invoke_keyboard(char* desc,char* initial,void (*callback)(char*))
 {
-	snprintf(buffer,30,"%s",initial);
+	if(initial == NULL)
+		snprintf(buffer,30,"");
+	else
+		snprintf(buffer,30,"%s",initial);
+
 	buffer_length=strlen(buffer);
 	cursor_pos=buffer_length;
 	current_menu=get_current_menu();
