@@ -10,7 +10,8 @@ DMX_OUT=0
 SDL_OUT=1
 LUA_CUE=0
 
-SOURCES=$(wildcard main.c queues/*.c queues/par56/*.c queues/strobe/*.c libs/*.c libs/mcugui/*.c libs/gui/*.c dmx/*.c)
+#SOURCES=$(wildcard main.c queues/*.c queues/par56/*.c queues/strobe/*.c libs/*.c libs/mcugui/*.c libs/gui/*.c dmx/*.c)
+SOURCES=$(wildcard main.c libs/*.c libs/mcugui/*.c libs/gui/*.c dmx/*.c)
 
 ifeq (0,${DMX_OUT})
 SOURCES := $(filter-out dmx/dmx_output.c, $(SOURCES))
